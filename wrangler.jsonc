@@ -1,1 +1,1 @@
-{"$schema":"https://developers.cloudflare.com/workers/wrangler/configuration.schema.json","assets":{"directory":"./"},"compatibility_date":"2026-09-30","name":"interstitium-labs-university"}
+{"$schema":"https://developers.cloudflare.com/workers/wrangler/configuration.schema.json","ai":{"binding":"AI"},"assets":{"directory":"./"},"compatibility_date":"2026-09-30","main":"./worker.js","name":"interstitium-labs-university"}
