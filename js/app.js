@@ -72,20 +72,11 @@
   }
 
   function loadCatalog() {
-    // Prefer the gzipped catalog (smaller transfer); fall back to plain JSON.
-    // DecompressionStream('gzip') is built into all modern browsers.
-    function fetchJson(url, gunzip) {
-      return fetch(url, { credentials: 'same-origin' }).then(function (r) {
+    return fetch('data/catalog.json', { credentials: 'same-origin' })
+      .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        if (gunzip && typeof DecompressionStream !== 'undefined') {
-          var ds = new DecompressionStream('gzip');
-          return new Response(r.body.pipeThrough(ds)).json();
-        }
         return r.json();
-      });
-    }
-    return fetchJson('data/catalog.json.gz', true)
-      .catch(function () { return fetchJson('data/catalog.json', false); })
+      })
       .then(function (json) {
         json = json || {};
         catalogState.data = {
