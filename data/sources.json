@@ -1,0 +1,648 @@
+[
+  {
+    "name": "Hackers-Arise",
+    "url": "https://hackers-arise.com/",
+    "category": "cybersecurity",
+    "description": "OccupyTheWeb's hacker-training library: Linux for hackers, network basics, OSINT, password cracking, Wi-Fi, web exploitation, forensics, SCADA/ICS. Cross-mapped topic-by-topic into the IL-06 offensive spine.",
+    "used_in": [
+      "il06-hackers-arise"
+    ]
+  },
+  {
+    "name": "HackTheBox",
+    "url": "https://www.hackthebox.com/",
+    "category": "cybersecurity",
+    "description": "Hands-on penetration-testing labs and machines; the proving ground for offensive technique.",
+    "used_in": [
+      "il06-offensive"
+    ]
+  },
+  {
+    "name": "TryHackMe",
+    "url": "https://tryhackme.com/",
+    "category": "cybersecurity",
+    "description": "Guided browser-based security labs and learning paths, from complete beginner to advanced red/blue team rooms.",
+    "used_in": [
+      "il06-offensive",
+      "il06-defensive"
+    ]
+  },
+  {
+    "name": "OffSec",
+    "url": "https://www.offsec.com/",
+    "category": "cybersecurity",
+    "description": "Offensive Security: PEN-200 and the OSCP certification; the 'try harder' methodology for penetration testing.",
+    "used_in": [
+      "il06-offensive"
+    ]
+  },
+  {
+    "name": "PortSwigger Web Security Academy",
+    "url": "https://portswigger.net/web-security",
+    "category": "cybersecurity",
+    "description": "Free web-application security academy with labs: SQLi, XSS, SSRF, authentication flaws, and the Burp Suite methodology.",
+    "used_in": [
+      "il06-offensive"
+    ]
+  },
+  {
+    "name": "SANS Institute",
+    "url": "https://www.sans.org/",
+    "category": "cybersecurity",
+    "description": "Practitioner security training; the blue-team reference for SOC operations, forensics, and incident response depth.",
+    "used_in": [
+      "il06-defensive"
+    ]
+  },
+  {
+    "name": "CompTIA",
+    "url": "https://www.comptia.org/",
+    "category": "certification",
+    "description": "Vendor-neutral IT certifications: A+ through SecurityX/CloudNetX/DataAI; official objectives and stackable-credential maps.",
+    "used_in": [
+      "il09-comptia-core",
+      "il09-comptia-security",
+      "il09-comptia-data-cloud",
+      "il06-defensive"
+    ]
+  },
+  {
+    "name": "NIST NICE Framework (SP 800-181 Rev.1)",
+    "url": "https://csrc.nist.gov/pubs/sp/800/181/r1/final",
+    "category": "cybersecurity",
+    "description": "The NICE Workforce Framework: five categories (OG, DD, IO, PD, IN) and 42 work roles; the vocabulary IL-06 aligns to.",
+    "used_in": [
+      "il06-hackers-arise"
+    ]
+  },
+  {
+    "name": "NIST Zero Trust Architecture (SP 800-207)",
+    "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+    "category": "cybersecurity",
+    "description": "The canonical zero-trust architecture publication: tenets, logical components, and deployment models.",
+    "used_in": [
+      "il05-zero-trust"
+    ]
+  },
+  {
+    "name": "KodeKloud",
+    "url": "https://kodekloud.com/",
+    "category": "cloud-devops",
+    "description": "Hands-on DevOps/cloud training with in-browser labs and role-based paths (DevOps, SRE, Platform, Cloud, Kubernetes). The parity baseline for IL-05.",
+    "used_in": [
+      "il05-kodekloud"
+    ]
+  },
+  {
+    "name": "Kubernetes Documentation",
+    "url": "https://kubernetes.io/",
+    "category": "cloud-devops",
+    "description": "Official Kubernetes documentation: concepts, tasks, and reference for the CKA/CKAD/CKS stack.",
+    "used_in": [
+      "il05-cloud-native"
+    ]
+  },
+  {
+    "name": "Terraform Documentation",
+    "url": "https://developer.hashicorp.com/terraform",
+    "category": "cloud-devops",
+    "description": "Official Terraform docs: HCL, state, modules, and workflows for infrastructure as code.",
+    "used_in": [
+      "il05-terraform"
+    ]
+  },
+  {
+    "name": "Docker",
+    "url": "https://www.docker.com/",
+    "category": "cloud-devops",
+    "description": "Container platform documentation and getting-started material for the Docker layer of IL-05.",
+    "used_in": [
+      "il05-kodekloud"
+    ]
+  },
+  {
+    "name": "Jenkins",
+    "url": "https://www.jenkins.io/",
+    "category": "cloud-devops",
+    "description": "Automation server documentation: pipelines, agents, and CI/CD practice.",
+    "used_in": [
+      "il05-kodekloud"
+    ]
+  },
+  {
+    "name": "Ansible Documentation",
+    "url": "https://docs.ansible.com/",
+    "category": "cloud-devops",
+    "description": "Official Ansible docs: playbooks, roles, inventory, and automation patterns; the RHCE EX294 instrument.",
+    "used_in": [
+      "il05-kodekloud",
+      "il04-rhce"
+    ]
+  },
+  {
+    "name": "Git",
+    "url": "https://git-scm.com/",
+    "category": "programming",
+    "description": "Official Git documentation and reference; version control is prerequisite to every engineering path.",
+    "used_in": [
+      "il05-kodekloud",
+      "il03-pearson-systems"
+    ]
+  },
+  {
+    "name": "Prometheus",
+    "url": "https://prometheus.io/",
+    "category": "cloud-devops",
+    "description": "Monitoring and alerting toolkit documentation; the observability layer of the SRE path.",
+    "used_in": [
+      "il05-kodekloud"
+    ]
+  },
+  {
+    "name": "Grafana",
+    "url": "https://grafana.com/",
+    "category": "cloud-devops",
+    "description": "Observability dashboards and Loki log aggregation documentation.",
+    "used_in": [
+      "il05-kodekloud"
+    ]
+  },
+  {
+    "name": "MongoDB University",
+    "url": "https://learn.mongodb.com/",
+    "category": "data-ai",
+    "description": "Free official MongoDB courses and learning paths: Atlas, aggregation, data modeling, and certification preparation.",
+    "used_in": [
+      "il07-mongodb"
+    ]
+  },
+  {
+    "name": "MongoDB Introduction Learning Path",
+    "url": "https://learn.mongodb.com/learning-paths/introduction-to-mongodb",
+    "category": "data-ai",
+    "description": "MongoDB University's official beginner learning path: Atlas setup, the document model, and first queries.",
+    "used_in": [
+      "il07-mongodb"
+    ]
+  },
+  {
+    "name": "MIT OpenCourseWare",
+    "url": "https://ocw.mit.edu/",
+    "category": "reference",
+    "description": "MIT's open course materials: OCW Scholar sequences (18.01SC/18.02SC/18.03SC/18.06SC) and 6-3 course content. Training only \u2014 no certification.",
+    "used_in": [
+      "il03-mit-ocw",
+      "il02-math-spine",
+      "il08-mit-63"
+    ]
+  },
+  {
+    "name": "MIT xPRO",
+    "url": "https://xpro.mit.edu/",
+    "category": "certification",
+    "description": "MIT's professional-education portal: online professional certificates in cybersecurity, data engineering, and analytics.",
+    "used_in": [
+      "il06-fde-interface",
+      "il07-data-schools"
+    ]
+  },
+  {
+    "name": "MIT xPRO Cybersecurity",
+    "url": "https://xpro.mit.edu/courses/course-v1:xPRO-PCCYx/",
+    "category": "cybersecurity",
+    "description": "24-week online professional certificate in cybersecurity; 36 CEUs, pass/fail at 75 percent. External credential; the platform prepares, MIT xPRO certifies.",
+    "used_in": [
+      "il06-fde-interface"
+    ]
+  },
+  {
+    "name": "MIT xPRO Advanced Analytics",
+    "url": "https://xpro.mit.edu/courses/course-v1:xPRO+PCDSx+R1/",
+    "category": "data-ai",
+    "description": "24-week professional certificate in advanced analytics with AI, ML, and data science; 36 CEUs. External credential.",
+    "used_in": [
+      "il07-data-schools"
+    ]
+  },
+  {
+    "name": "Interview Kickstart FDE",
+    "url": "https://learn.interviewkickstart.com/course/forward-deployed-engineering",
+    "category": "career",
+    "description": "Forward Deployed Engineering program: AI Engineering spine (weeks 1-11) into the FDE spine and interview preparation. The interface-engineer career model.",
+    "used_in": [
+      "il06-fde-interface",
+      "il10-fde-career"
+    ]
+  },
+  {
+    "name": "ELVTR",
+    "url": "https://elvtr.com/",
+    "category": "cybersecurity",
+    "description": "Live online professional courses, including AI-Aided Cybersecurity (led by a Microsoft principal security architect). External live instruction.",
+    "used_in": [
+      "il06-fde-interface"
+    ]
+  },
+  {
+    "name": "Palantir Learn",
+    "url": "https://learn.palantir.com/",
+    "category": "certification",
+    "description": "Palantir's official learning portal: Foundry and AIP courses, speedruns, and deep dives feeding the Associate certification exams.",
+    "used_in": [
+      "il09-palantir"
+    ]
+  },
+  {
+    "name": "Humanmetrics",
+    "url": "https://www.humanmetrics.com/",
+    "category": "career",
+    "description": "Jung-typology career assessment instrument used as the self-knowledge layer of the IL-10 career path.",
+    "used_in": [
+      "il10-humanmetrics"
+    ]
+  },
+  {
+    "name": "JobRight AI",
+    "url": "https://jobright.ai/",
+    "category": "career",
+    "description": "AI job-matching platform wired as the career-outcome layer on IL-10 career paths: applications tracked against skills earned.",
+    "used_in": [
+      "il10-fde-career"
+    ]
+  },
+  {
+    "name": "Babson College",
+    "url": "https://www.babson.edu/",
+    "category": "career",
+    "description": "Babson's majors and minors directory informs the entrepreneurship track's curriculum structure. Domain root used; consult the official directory for current offerings.",
+    "used_in": [
+      "il10-entrepreneurship"
+    ]
+  },
+  {
+    "name": "The Academy SF",
+    "url": "https://www.theacademysf.com/",
+    "category": "career",
+    "description": "The Horowitz Andreessen Academy: AI, engineering, and founder education in San Francisco. Studied as a contemporary model for practitioner-led technical education.",
+    "used_in": [
+      "il10-entrepreneurship"
+    ]
+  },
+  {
+    "name": "MIT MicroMasters Finance",
+    "url": "https://micromasters.mit.edu/fin/",
+    "category": "certification",
+    "description": "MITx MicroMasters Program Credential in Finance: graduate-level finance courses plus proctored comprehensive exam; a degree-pathway credential.",
+    "used_in": [
+      "il10-quant-finance"
+    ]
+  },
+  {
+    "name": "MIT MicroMasters Statistics & Data Science",
+    "url": "https://micromasters.mit.edu/ds/",
+    "category": "data-ai",
+    "description": "MITx MicroMasters in Statistics and Data Science: four graduate-level courses plus proctored capstone. The graduate probability/statistics/ML preparation spine.",
+    "used_in": [
+      "il07-data-schools"
+    ]
+  },
+  {
+    "name": "Stanford Online",
+    "url": "https://online.stanford.edu/",
+    "category": "data-ai",
+    "description": "Stanford's online graduate and professional certificates, including the data-science and mining-massive-datasets offerings.",
+    "used_in": [
+      "il07-data-schools"
+    ]
+  },
+  {
+    "name": "Khan Academy",
+    "url": "https://www.khanacademy.org/",
+    "category": "math",
+    "description": "Free mastery-based math courses: the course-spine order (arithmetic through linear algebra) and unit/lesson/quiz anatomy absorbed into IL-02.",
+    "used_in": [
+      "il02-math-spine"
+    ]
+  },
+  {
+    "name": "ALEKS",
+    "url": "https://www.aleks.com/",
+    "category": "math",
+    "description": "McGraw Hill's adaptive math platform: knowledge-space theory, fringe-gated learning, and the Prep-for-Calculus topic grain that shapes IL-02's engine.",
+    "used_in": [
+      "il02-math-spine"
+    ]
+  },
+  {
+    "name": "Brilliant",
+    "url": "https://brilliant.org/",
+    "category": "math",
+    "description": "Interactive problem-driven math and science courses; the active-problem-solving complement to the IL-02 spine.",
+    "used_in": [
+      "il02-math-spine"
+    ]
+  },
+  {
+    "name": "Pearson",
+    "url": "https://www.pearson.com/",
+    "category": "programming",
+    "description": "Pearson's programming and MyLab Math courseware: the backbone of the IL-03 programming sequence and the IL-02 MyLab Math layer. Course access via Pearson's official store.",
+    "used_in": [
+      "il02-math-spine",
+      "il03-pearson-programming",
+      "il03-pearson-systems"
+    ]
+  },
+  {
+    "name": "OpenStax",
+    "url": "https://openstax.org/",
+    "category": "math",
+    "description": "Rice University's free open textbooks: College Algebra 2e and Precalculus 2e anchor the lower IL-02 spine.",
+    "used_in": [
+      "il02-math-spine"
+    ]
+  },
+  {
+    "name": "Princeton University Press",
+    "url": "https://press.princeton.edu/",
+    "category": "math",
+    "description": "Princeton-published mathematical texts: Lewis & Zax discrete mathematics, Gunning analysis, MacCluer honors calculus, and the Princeton Companions as reference backbones.",
+    "used_in": [
+      "il02-math-spine"
+    ]
+  },
+  {
+    "name": "SkillsPrep",
+    "url": "https://www.skillsprep.org/",
+    "category": "career",
+    "description": "The electrical training ALLIANCE's online learning system: interim credentials (Constructing Your Future), Tech Math, Reading Comprehension, and the etA preparatory courses.",
+    "used_in": [
+      "il02-tech-math",
+      "il02-electrician"
+    ]
+  },
+  {
+    "name": "electrical training ALLIANCE",
+    "url": "https://www.electricaltrainingalliance.org/",
+    "category": "career",
+    "description": "The IBEW/NECA joint apprenticeship training organization (etA): aptitude-test requirements, interim credentials, and the 270 training centers. Domain root used.",
+    "used_in": [
+      "il02-electrician"
+    ]
+  },
+  {
+    "name": "Red Hat Training",
+    "url": "https://www.redhat.com/en/services/training",
+    "category": "certification",
+    "description": "Official Red Hat training and certification: RHCSA (EX200) and RHCE (EX294) hands-on performance exams.",
+    "used_in": [
+      "il04-linux",
+      "il04-rhce"
+    ]
+  },
+  {
+    "name": "Linux Professional Institute",
+    "url": "https://www.lpi.org/",
+    "category": "certification",
+    "description": "Vendor-neutral Linux certification: Linux Essentials (lifetime) and LPIC-1/2/3; official objectives and topic weightings.",
+    "used_in": [
+      "il04-linux"
+    ]
+  },
+  {
+    "name": "Oracle Education",
+    "url": "https://education.oracle.com/",
+    "category": "certification",
+    "description": "Oracle University: Java SE 21 (1Z0-830), Database SQL (1Z0-071), and OCI 2026 certification paths with official objectives.",
+    "used_in": [
+      "il09-oracle"
+    ]
+  },
+  {
+    "name": "C++ Institute",
+    "url": "https://cppinstitute.org/",
+    "category": "certification",
+    "description": "Official C/C++ certification hierarchy: CPE/CPA/CPP; exam formats, syllabi, and pricing published by the Institute.",
+    "used_in": [
+      "il09-cpp-python"
+    ]
+  },
+  {
+    "name": "Python Institute",
+    "url": "https://pythoninstitute.org/",
+    "category": "certification",
+    "description": "Official Python certification hierarchy: PCEP/PCAP/PCPP1/PCPP2; syllabi and free aligned courses from OpenEDG.",
+    "used_in": [
+      "il09-cpp-python"
+    ]
+  },
+  {
+    "name": "Linux Foundation Training",
+    "url": "https://training.linuxfoundation.org/",
+    "category": "certification",
+    "description": "Linux Foundation education: blockchain certifications (HFCP, BCP) and the CNCF Kubernetes certification family.",
+    "used_in": [
+      "il09-lf-blockchain",
+      "il05-cloud-native"
+    ]
+  },
+  {
+    "name": "CNCF",
+    "url": "https://www.cncf.io/",
+    "category": "cloud-devops",
+    "description": "Cloud Native Computing Foundation: the Kubernetes certification program (KCNA, CKA, CKAD, CKS, KCSA) and training-partner ecosystem.",
+    "used_in": [
+      "il05-cloud-native"
+    ]
+  },
+  {
+    "name": "Webucator",
+    "url": "https://www.webucator.com/",
+    "category": "reference",
+    "description": "Corporate/self-paced IT training vendor (Java+Python and full-stack bundles). Studied as competitive context; its bundles are merged into IL-03's canonical programming sequence rather than duplicated.",
+    "used_in": [
+      "il03-pearson-systems"
+    ]
+  },
+  {
+    "name": "Per Scholas",
+    "url": "https://perscholas.org/",
+    "category": "reference",
+    "description": "Tuition-free nonprofit tech training (Cloud DevOps, Software Engineering, Cybersecurity cohorts). Studied as competitive context; its DevOps cohort maps onto IL-05's canonical path.",
+    "used_in": [
+      "il05-kodekloud"
+    ]
+  },
+  {
+    "name": "Neuronal Dynamics (EPFL)",
+    "url": "https://neuronaldynamics.epfl.ch/",
+    "category": "data-ai",
+    "description": "Gerstner, Kistler, Naud & Paninski's open computational-neuroscience text with video lectures, Python exercises, and slides. The open anchor for IL-07's NeuroAI track.",
+    "used_in": [
+      "il07-neuroai"
+    ]
+  },
+  {
+    "name": "MIT Press",
+    "url": "https://mitpress.mit.edu/",
+    "category": "reference",
+    "description": "Publisher of Dayan & Abbott's Theoretical Neuroscience, the field's standard graduate text; cited as the anchor reference, not reproduced.",
+    "used_in": [
+      "il07-neuroai"
+    ]
+  },
+  {
+    "name": "Internet Sacred Text Archive",
+    "url": "https://sacred-texts.com/",
+    "category": "esoteric",
+    "description": "Public-domain archive of religious and esoteric texts, including Hermetic and alchemical primary sources in translation.",
+    "used_in": [
+      "il01-hermetic-foundations",
+      "il01-dee-enochian"
+    ]
+  },
+  {
+    "name": "Project Gutenberg",
+    "url": "https://www.gutenberg.org/",
+    "category": "esoteric",
+    "description": "Public-domain ebook library carrying historical esoteric works used as primary-source reading in IL-01.",
+    "used_in": [
+      "il01-hermetic-foundations"
+    ]
+  },
+  {
+    "name": "CCRU Archive",
+    "url": "https://ccru.net/",
+    "category": "esoteric",
+    "description": "The Cybernetic Culture Research Unit's archived writings: the primary corpus for the IL-01 hyperstition seminar.",
+    "used_in": [
+      "il01-ccru-seminar"
+    ]
+  },
+  {
+    "name": "Principia Cybernetica",
+    "url": "http://pespmc1.vub.ac.be/",
+    "category": "esoteric",
+    "description": "The Principia Cybernetica Web: cybernetics and systems-theory reference for the IL-01 cybernetics arc.",
+    "used_in": [
+      "il01-ccru-seminar"
+    ]
+  },
+  {
+    "name": "Hugging Face LLM Course",
+    "url": "https://huggingface.co/learn/llm-course",
+    "category": "data-ai",
+    "description": "Hugging Face's open LLM course: transformers, fine-tuning, RLHF, and evaluation; the applied spine of the LLM-engineering module.",
+    "used_in": [
+      "il07-ai-ml"
+    ]
+  },
+  {
+    "name": "PyTorch",
+    "url": "https://pytorch.org/",
+    "category": "data-ai",
+    "description": "Official PyTorch tutorials and documentation; the primary framework of the IL-07 deep-learning modules.",
+    "used_in": [
+      "il07-ai-ml"
+    ]
+  },
+  {
+    "name": "CMU SCS Course Catalog",
+    "url": "http://coursecatalog.web.cmu.edu/",
+    "category": "reference",
+    "description": "Carnegie Mellon's official School of Computer Science catalog: the 15-112 through 15-451 core sequence and constrained electives used as the IL-08 CMU spine.",
+    "used_in": [
+      "il08-cmu-cs"
+    ]
+  },
+  {
+    "name": "Stanford ExploreCourses",
+    "url": "https://explorecourses.stanford.edu/",
+    "category": "reference",
+    "description": "Stanford's official course catalog: CS 106A/B through CS 161 and the depth tracks used as the IL-08 Stanford cross-walk.",
+    "used_in": [
+      "il08-stanford-cs"
+    ]
+  },
+  {
+    "name": "NEURON Simulator",
+    "url": "https://www.neuron.yale.edu/",
+    "category": "data-ai",
+    "description": "The NEURON simulator for detailed biophysical/compartmental neuron models; the lab instrument for IL-07's neural-modeling module.",
+    "used_in": [
+      "il07-neuroai"
+    ]
+  },
+  {
+    "name": "Brian2",
+    "url": "https://brian2.readthedocs.io/",
+    "category": "data-ai",
+    "description": "Brian2 spiking neural-network simulator documentation; the flexible lab instrument for IL-07's neural-modeling module.",
+    "used_in": [
+      "il07-neuroai"
+    ]
+  },
+  {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com/",
+    "category": "certification",
+    "description": "Anthropic's Claude Certified exams (Associate/Developer/Architect); exam-booking details were not on a retrievable official page, so the domain root is given and specs are not asserted.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "OpenAI",
+    "url": "https://openai.com/",
+    "category": "certification",
+    "description": "OpenAI certifications remain employer/university pilot-only with no public exam spec; tracked as a program page, never implied as bookable.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "NVIDIA",
+    "url": "https://www.nvidia.com/",
+    "category": "certification",
+    "description": "NVIDIA Certified Associate: Generative AI LLMs (NCA-GENL); official objectives page not retrieved, so specs are not asserted.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "Databricks",
+    "url": "https://www.databricks.com/",
+    "category": "certification",
+    "description": "Databricks Certified Generative AI Engineer Associate; official page not verified from the vendor domain, so specs are not asserted.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "Microsoft Learn",
+    "url": "https://learn.microsoft.com/",
+    "category": "certification",
+    "description": "Microsoft's certification portal: Azure AI Fundamentals (AI-901) and Azure AI Apps and Agents Developer Associate (AI-103); consult Microsoft Learn for current exam pages.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "Google Cloud",
+    "url": "https://cloud.google.com/",
+    "category": "certification",
+    "description": "Google Cloud credentials: Generative AI Leader and Professional Machine Learning Engineer; consult Google Cloud's official pages for current blueprints.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "AWS Training",
+    "url": "https://aws.amazon.com/training/",
+    "category": "certification",
+    "description": "AWS Training and Certification: AI Practitioner (AIF-C01) and Machine Learning Engineer Associate (MLA-C02); consult AWS for current exam guides.",
+    "used_in": [
+      "il09-vendor-ai"
+    ]
+  }
+]
