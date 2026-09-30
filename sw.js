@@ -1,7 +1,7 @@
 /* Interstitium Labs — service worker.
    Cache-first app shell (versioned), network-first for catalog data.
    No third-party requests are ever cached or made. */
-var CACHE = 'il-university-v1';
+var CACHE = 'il-university-v2'; // v2: sharded catalog loader (data/catalog/index.json + shards)
 
 var SHELL = [
   './',
