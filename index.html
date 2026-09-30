@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interstitium Labs — Knowledge Operating System</title>
+<meta name="description" content="Interstitium Labs: a knowledge operating system. Structured sittings, adaptive math, Socratic AI tutor. A plant, not a video LMS.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <!-- AI Pantheon battle cinematic (procedural canvas; see js/hero.js) -->
+  <section class="pantheon" aria-label="AI Pantheon battle cinematic">
+    <canvas id="pantheon-canvas" aria-hidden="true"></canvas>
+    <div class="pantheon-veil" aria-hidden="true"></div>
+    <div class="pantheon-plate gold" aria-hidden="true">SENTINEL-9<span class="ops" id="plate-gold-ops">— OPS</span></div>
+    <div class="pantheon-plate cyan" aria-hidden="true">NULLWEAVER<span class="ops" id="plate-cyan-ops">— OPS</span></div>
+    <div class="pantheon-sigil" aria-hidden="true">
+      <picture>
+        <source srcset="assets/sigil-hero-static.png" media="(prefers-reduced-motion: reduce)">
+        <img src="assets/sigil-hero-rotate.gif" alt="" width="360" height="360" fetchpriority="high">
+      </picture>
+    </div>
+    <div class="wrap pantheon-copy">
+      <p class="eyebrow">Knowledge operating system <span class="dot">·</span> Adaptive OS</p>
+      <h1>The connective tissue of knowledge.</h1>
+      <p class="lede">Structured sittings. Original katas. Adaptive math. A plant, not a video LMS.</p>
+      <p class="pantheon-summary" id="pantheon-summary" hidden>Two AI entities duel through recursive terminal cascades: SENTINEL-9 and NULLWEAVER trade volleys of streaming commands, each trying to out-compute the other. Motion is reduced, so a static keyframe is shown.</p>
+      <div class="pantheon-ctas">
+        <a class="btn" href="paths.html">Begin a sitting</a>
+        <a class="btn btn-ghost" href="#academies">Browse the academies</a>
+      </div>
+    </div>
+    <div class="pantheon-controls" role="group" aria-label="Cinematic controls">
+      <button type="button" class="btn btn-sm btn-ghost" id="pantheon-skip">Skip cinematic</button>
+      <button type="button" class="btn btn-sm btn-ghost" id="pantheon-motion" aria-pressed="false">Reduce motion</button>
+      <button type="button" class="btn btn-sm btn-ghost" id="pantheon-sound" aria-pressed="false">Sound: off</button>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="scale-h">
+    <div class="wrap">
+      <h2 id="scale-h" class="sr-only">Scale</h2>
+      <div class="counters" id="counters" role="list"></div>
+    </div>
+  </section>
+
+  <div class="terminal-storm" aria-hidden="true"><canvas></canvas><div class="storm-label">Place · Fringe · Gate · Deepen</div></div>
+
+  <section class="block" id="academies" aria-labelledby="acad-h">
+    <div class="wrap" data-catalog-slot>
+      <p class="eyebrow">Curriculum OS</p>
+      <h2 id="acad-h">Ten academies</h2>
+      <p class="lede">Esoteric study is source-critical. Engineering is inspectable. Math sits on a cert. Code is a sitting you can fail. Not a photocopy of anyone's PDF.</p>
+      <div class="grid grid-3" id="academy-grid" style="margin-top:1.6rem"></div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="paths-h">
+    <div class="wrap" data-catalog-slot>
+      <p class="eyebrow">Paths</p>
+      <h2 id="paths-h">Paths that beat the catalog sites on architecture</h2>
+      <p class="lede">Filter by role, skill, cert, time. Adaptive gates. Honest evidence. <a href="paths.html">All paths</a>.</p>
+      <div class="grid grid-3" id="path-preview" style="margin-top:1.6rem"></div>
+    </div>
+  </section>
+
+  <div class="terminal-storm" aria-hidden="true"><canvas></canvas><div class="storm-label">Noah · Socratic · Local-first</div></div>
+
+  <section class="block" aria-labelledby="noah-h">
+    <div class="wrap">
+      <p class="eyebrow">Noah Live Assist</p>
+      <h2 id="noah-h">Bring Noah your hypothesis</h2>
+      <p class="lede">Socratic in-lab help — never an answer dump first. An educational Interstitium agent, local-first. Try it now:</p>
+      <div class="grid" style="grid-template-columns:1fr; margin-top:1.4rem">
+        <div class="noah-panel" style="max-width:760px">
+          <div class="noah-head">
+            <img class="sig" src="assets/sigil.svg" alt="" width="26" height="26">
+            <div><div class="name">Noah</div><div class="sub">Socratic tutor · local engine</div></div>
+          </div>
+          <div class="noah-log" id="noah-log" aria-live="polite" aria-label="Noah conversation"></div>
+          <form class="noah-input" id="noah-form">
+            <label class="sr-only" for="noah-q">Ask Noah a question</label>
+            <input id="noah-q" type="text" placeholder="State your hypothesis, e.g. &quot;I think CIDR /24 means…&quot;" autocomplete="off">
+            <button class="btn btn-sm" type="submit">Ask</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="honest-h">
+    <div class="wrap">
+      <p class="eyebrow">Doctrine</p>
+      <h2 id="honest-h">Honesty over fleet wallpaper</h2>
+      <div class="grid grid-3" style="margin-top:1.4rem">
+        <div class="card"><h3>No fake API keys</h3><p>Mastery lives in <span style="font-family:var(--mono)">localStorage</span> — inspectable, yours, offline-capable.</p></div>
+        <div class="card"><h3>We do not fake a fleet</h3><p>One deep SuperLab plus official vendor sandboxes linked as deepens — never 800 pretend cloud VMs.</p></div>
+        <div class="card"><h3>Orchestrate, don't clone</h3><p>The vendor map routes IL topics to official portals. Not a photocopy of anyone's PDF.</p></div>
+      </div>
+      <p style="margin-top:1.4rem"><a href="honesty.html">Read the transparency ledger</a> · <a href="enroll.html">Enrollment</a></p>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script src="js/noah.js"></script>
+<script src="js/hero.js"></script>
+<script>
+(function () {
+  'use strict';
+  IL.hero.init();
+
+  function counter(n, label) {
+    var d = document.createElement('div');
+    d.className = 'counter'; d.setAttribute('role', 'listitem');
+    d.innerHTML = '<div class="n">' + IL.esc(n) + '</div><div class="l">' + IL.esc(label) + '</div>';
+    return d;
+  }
+
+  function academyCard(a) {
+    var c = document.createElement('article');
+    c.className = 'card';
+    c.innerHTML =
+      '<div class="code">' + IL.esc(a.code) + '</div>' +
+      '<h3><a href="academy.html?id=' + IL.esc(a.code) + '">' + IL.esc(a.name) + '</a></h3>' +
+      '<p>' + IL.esc(a.blurb || a.tagline || '') + '</p>' +
+      '<div class="meta"><span><b>' + IL.esc(IL.fmtHours(a.hours)) + '</b></span>' +
+      (a.tagline ? '<span>' + IL.esc(a.tagline) + '</span>' : '') + '</div>';
+    return c;
+  }
+
+  function pathCard(p) {
+    var c = document.createElement('article');
+    c.className = 'card';
+    var tags = (p.tags || []).slice(0, 3).map(function (t) {
+      return '<span class="tag skill">' + IL.esc(t) + '</span>';
+    }).join('');
+    c.innerHTML =
+      '<div class="code">' + IL.esc(p.academy || '') + '</div>' +
+      '<h3><a href="path.html?id=' + IL.esc(p.id) + '">' + IL.esc(p.title) + '</a></h3>' +
+      '<p>' + IL.esc(p.subtitle || '') + '</p>' +
+      '<div>' + tags + '</div>' +
+      '<div class="meta"><span><b>' + IL.esc(IL.fmtHours(p.hours)) + '</b></span>' +
+      '<span>' + IL.esc(p.difficulty || '') + '</span><span>' + IL.esc(p.type || '') + '</span></div>';
+    return c;
+  }
+
+  function render() {
+    var cat = IL.getCatalog();
+    // counters: computed from catalog, or the standing verified figures
+    var box = document.getElementById('counters');
+    box.innerHTML = '';
+    var nAcad = cat.academies.length || 10;
+    var hours = IL.totalHours() || 7330;
+    var sittings = 0;
+    cat.paths.forEach(function (p) { sittings += (p.modules || []).length; });
+    if (!sittings) sittings = 138;
+    box.appendChild(counter(String(nAcad), 'academies'));
+    box.appendChild(counter(hours.toLocaleString('en-US'), 'hours'));
+    box.appendChild(counter(String(sittings), 'sittings'));
+    box.appendChild(counter('12', 'weeks'));
+
+    var grid = document.getElementById('academy-grid');
+    grid.innerHTML = '';
+    cat.academies.forEach(function (a) { grid.appendChild(academyCard(a)); });
+
+    var prev = document.getElementById('path-preview');
+    prev.innerHTML = '';
+    var paths = cat.paths.slice(0, 6);
+    if (!paths.length) {
+      prev.innerHTML = '<div class="empty-state"><h3>Paths are being published</h3>' +
+        '<p>The path catalog is still being assembled. The ten academies above are the standing index — check back, or <a href="honesty.html">read the ledger</a>.</p></div>';
+    } else {
+      paths.forEach(function (p) { prev.appendChild(pathCard(p)); });
+    }
+  }
+  IL.renderPage = render;
+  IL.onCatalog(render);
+
+  /* Noah teaser chat (real local engine) */
+  var log = document.getElementById('noah-log');
+  var form = document.getElementById('noah-form');
+  var input = document.getElementById('noah-q');
+  function addMsg(cls, text) {
+    var d = document.createElement('div');
+    d.className = 'noah-msg ' + cls;
+    d.textContent = text;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
+  }
+  addMsg('noah', 'I am Noah — Socratic, local, lab-aware. Bring me your hypothesis, not "just give me the answer." What are you working through?');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.trim();
+    if (!q) return;
+    addMsg('user', q);
+    input.value = '';
+    var thinking = document.createElement('div');
+    thinking.className = 'noah-msg noah';
+    thinking.innerHTML = '<span class="noah-thinking">Noah is thinking <span class="dots"><i></i><i></i><i></i></span></span>';
+    log.appendChild(thinking);
+    log.scrollTop = log.scrollHeight;
+    setTimeout(function () {
+      var res = IL.noah.ask(q, {});
+      thinking.textContent = res.reply;
+      (res.nudges || []).forEach(function (n) {
+        var s = document.createElement('span');
+        s.className = 'nudge';
+        s.textContent = 'Nudge: ' + n;
+        thinking.appendChild(s);
+      });
+      log.scrollTop = log.scrollHeight;
+    }, 450);
+  });
+})();
+</script>
+</body>
+</html>

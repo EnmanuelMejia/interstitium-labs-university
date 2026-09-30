@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sitting — Interstitium Labs</title>
+<meta name="description" content="An adaptive sitting: Place, Fringe, Gate, Deepen. Local CAT-style placement, ALEKS-style fringe, Socratic Noah.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block" aria-labelledby="sit-h">
+    <div class="wrap" data-catalog-slot>
+      <p class="eyebrow">Adaptive OS <span class="dot">·</span> The sitting</p>
+      <h1 id="sit-h">Place → Fringe → Gate → Deepen</h1>
+      <p class="lede" id="sit-lede">Mastery lives in your browser. No fake API keys.</p>
+
+      <div class="grid" style="grid-template-columns:minmax(0,1fr) 340px; gap:1.6rem; margin-top:1.6rem" id="sit-layout">
+        <div>
+          <div class="stages" role="tablist" aria-label="Sitting stages">
+            <button class="stage-tab" role="tab" aria-selected="true" data-stage="place" id="tab-place">1 · Place</button>
+            <button class="stage-tab" role="tab" aria-selected="false" data-stage="fringe" id="tab-fringe">2 · Fringe</button>
+            <button class="stage-tab" role="tab" aria-selected="false" data-stage="gate" id="tab-gate">3 · Gate</button>
+            <button class="stage-tab" role="tab" aria-selected="false" data-stage="deepen" id="tab-deepen">4 · Deepen</button>
+          </div>
+
+          <section class="stage-panel active" id="panel-place" role="tabpanel" aria-labelledby="tab-place"></section>
+          <section class="stage-panel" id="panel-fringe" role="tabpanel" aria-labelledby="tab-fringe"></section>
+          <section class="stage-panel" id="panel-gate" role="tabpanel" aria-labelledby="tab-gate"></section>
+          <section class="stage-panel" id="panel-deepen" role="tabpanel" aria-labelledby="tab-deepen"></section>
+        </div>
+
+        <aside aria-label="Noah tutor">
+          <div class="noah-panel">
+            <div class="noah-head">
+              <img class="sig" src="assets/sigil.svg" alt="" width="26" height="26">
+              <div><div class="name">Noah</div><div class="sub">Socratic tutor · local engine</div></div>
+            </div>
+            <div class="noah-log" id="noah-log" aria-live="polite" aria-label="Noah conversation"></div>
+            <form class="noah-input" id="noah-form">
+              <label class="sr-only" for="noah-q">Ask Noah — bring your hypothesis</label>
+              <input id="noah-q" type="text" placeholder="Your hypothesis…" autocomplete="off">
+              <button class="btn btn-sm" type="submit">Ask</button>
+            </form>
+          </div>
+          <form id="goal-form" style="margin-top:1rem" aria-label="Sitting goal">
+            <label for="goal-input">Sitting goal</label>
+            <input type="text" id="goal-input" maxlength="200" placeholder="e.g. Clear the fractions fringe">
+            <button class="btn btn-sm btn-ghost" type="submit" style="margin-top:0.5rem">Set goal</button>
+            <p id="goal-echo" style="font-size:0.85rem;color:var(--ink-faint);margin-top:0.4rem"></p>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script src="js/adaptive.js"></script>
+<script src="js/noah.js"></script>
+<script>
+(function () {
+  'use strict';
+  var A = function () { return window.IL.adaptive; };
+  var pathId = IL.qs('id');
+  var path = null;
+  var topics = [];
+  var storeKey = 'il_sitting_' + (pathId || 'free');
+  var state = loadState();
+
+  function loadState() {
+    try {
+      var s = JSON.parse(localStorage.getItem(storeKey) || 'null');
+      if (s && typeof s === 'object') { s.mastery = s.mastery || {}; s.sm2 = s.sm2 || {}; return s; }
+    } catch (e) {}
+    return { topics: [], mastery: {}, sm2: {} };
+  }
+  function persist() {
+    try { localStorage.setItem(storeKey, JSON.stringify({ topics: state.topics, mastery: state.mastery, sm2: state.sm2 })); } catch (e) {}
+  }
+
+  /* ---------- stage tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.stage-tab'));
+  function selectStage(name) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.stage === name;
+      t.setAttribute('aria-selected', String(on));
+      document.getElementById('panel-' + t.dataset.stage).classList.toggle('active', on);
+    });
+    if (name === 'fringe') renderFringe();
+    if (name === 'gate') renderGate();
+    if (name === 'deepen') renderDeepen();
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () { selectStage(t.dataset.stage); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var i = tabs.indexOf(t);
+      var n = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      tabs[n].focus(); selectStage(tabs[n].dataset.stage);
+    });
+  });
+
+  /* ---------- shared quiz widget (one question at a time) ---------- */
+  function quizWidget(container, items, opts) {
+    opts = opts || {};
+    container.innerHTML = '';
+    var idx = 0;
+    var answers = new Array(items.length).fill(null);
+    var shell = IL.el('div', { 'class': 'quiz-shell' });
+    var prog = IL.el('p', { text: '' });
+    prog.style.cssText = 'font-family:var(--mono);font-size:0.8rem;color:var(--ink-faint)';
+    var qbox = IL.el('div');
+    var nav = IL.el('div', { 'class': 'quiz-actions' });
+    var prev = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Previous' });
+    var nextb = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Next' });
+    var done = IL.el('button', { 'class': 'btn btn-sm', type: 'button', text: opts.doneLabel || 'Finish' });
+    nav.appendChild(prev); nav.appendChild(nextb); nav.appendChild(done);
+    shell.appendChild(prog); shell.appendChild(qbox); shell.appendChild(nav);
+    container.appendChild(shell);
+
+    function draw() {
+      var it = items[idx];
+      prog.textContent = 'Question ' + (idx + 1) + ' of ' + items.length + (it.topic ? ' · ' + it.topic : '');
+      qbox.innerHTML = '';
+      var qd = IL.el('div', { 'class': 'question' });
+      qd.appendChild(IL.el('h3', { text: it.q }));
+      var ul = IL.el('ul', { 'class': 'choices', role: 'radiogroup', 'aria-label': 'Question ' + (idx + 1) });
+      (it.choices || []).forEach(function (c, ci) {
+        var lab = IL.el('label', answers[idx] === ci ? { 'class': 'picked' } : {});
+        var radio = IL.el('input', { type: 'radio', name: 'q' + idx, value: String(ci) });
+        if (answers[idx] === ci) radio.checked = true;
+        radio.addEventListener('change', function () {
+          answers[idx] = ci;
+          Array.prototype.forEach.call(ul.querySelectorAll('label'), function (l) { l.classList.remove('picked'); });
+          lab.classList.add('picked');
+          if (opts.onAnswer) opts.onAnswer(idx, ci);
+        });
+        lab.appendChild(radio);
+        lab.appendChild(document.createTextNode(c));
+        ul.appendChild(lab);
+      });
+      qd.appendChild(ul);
+      if (it.explain && opts.showExplain) {
+        var ex = IL.el('div', { 'class': 'explain', text: it.explain });
+        qd.appendChild(ex);
+      }
+      qbox.appendChild(qd);
+      prev.disabled = idx === 0;
+      nextb.disabled = idx === items.length - 1;
+      qd.querySelector('h3').setAttribute('tabindex', '-1');
+      qd.querySelector('h3').focus({ preventScroll: true });
+    }
+    prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(); } });
+    nextb.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(); } });
+    done.addEventListener('click', function () {
+      if (opts.onDone) opts.onDone(answers);
+    });
+    draw();
+    return { answers: answers };
+  }
+
+  function masteryBars(container, mastery) {
+    container.innerHTML = '';
+    var list = Object.keys(mastery).sort(function (a, b) { return mastery[a] - mastery[b]; });
+    if (!list.length) {
+      container.innerHTML = '<div class="empty-state"><h3>No placement yet</h3><p>Run the Place diagnostic to map your fringe.</p></div>';
+      return;
+    }
+    list.forEach(function (t) {
+      var m = mastery[t];
+      var row = IL.el('div', { 'class': 'topic-row' });
+      var left = IL.el('div');
+      left.appendChild(IL.el('div', { 'class': 't', text: t }));
+      var bar = IL.el('div', { 'class': 'mastery-bar', role: 'img', 'aria-label': t + ' mastery ' + Math.round(m * 100) + ' percent' });
+      bar.appendChild(IL.el('i', {}));
+      bar.firstChild.style.width = Math.round(m * 100) + '%';
+      left.appendChild(bar);
+      row.appendChild(left);
+      row.appendChild(IL.el('div', { 'class': 'm', text: Math.round(m * 100) + '%' }));
+      container.appendChild(row);
+    });
+  }
+
+  /* ---------- PLACE ---------- */
+  function diagnosticItems() {
+    var items = [];
+    if (path) {
+      (path.assessments || []).forEach(function (a) {
+        if (a.kind === 'diagnostic' && items.length < 8) {
+          (a.items || []).forEach(function (it) {
+            if (items.length < 8) items.push({ q: it.q, choices: it.choices, answer: it.answer, topic: it.topic || 'general', difficulty: 0.5 });
+          });
+        }
+      });
+    }
+    if (!items.length) {
+      topics.forEach(function (t) {
+        try {
+          var g = A().genMath(t, t);
+          items.push({ q: g.q, choices: g.choices, answer: g.answer, topic: t, difficulty: 0.5, explain: g.explain });
+        } catch (e) { /* topic has no generator; skip */ }
+      });
+    }
+    return items.slice(0, 10);
+  }
+
+  function renderPlace() {
+    var panel = document.getElementById('panel-place');
+    panel.innerHTML = '';
+    var items = diagnosticItems();
+    if (!items.length) {
+      panel.innerHTML = '<div class="empty-state"><h3>Diagnostic unavailable</h3>' +
+        '<p>This path names no topics yet and provides no diagnostic items. Name a topic to Noah on the right, or pick a published path.</p></div>';
+      return;
+    }
+    var intro = IL.el('p', { text: 'A short CAT-style diagnostic maps your starting fringe. Answer honestly — wrong answers route you to the right work, not to shame.' });
+    intro.style.color = 'var(--ink-dim)';
+    panel.appendChild(intro);
+    var holder = IL.el('div');
+    panel.appendChild(holder);
+    var result = IL.el('div', { style: 'margin-top:1.2rem' });
+    panel.appendChild(result);
+    quizWidget(holder, items, {
+      doneLabel: 'Finish placement',
+      showExplain: false,
+      onDone: function (answers) {
+        var graded = items.map(function (it, i) {
+          return { topicId: it.topic, correct: answers[i] === it.answer, difficulty: it.difficulty || 0.5 };
+        });
+        var out = A().place(pathId || 'free', graded);
+        state.mastery = out.mastery;
+        if (!state.topics.length) state.topics = topics.slice();
+        persist();
+        result.innerHTML = '<h3>Placement complete</h3>';
+        var bars = IL.el('div');
+        result.appendChild(bars);
+        masteryBars(bars, out.mastery);
+        var p2 = IL.el('p', {});
+        p2.innerHTML = 'Your fringe — the inner edge of what you are ready to learn: <strong>' +
+          (out.fringe.length ? out.fringe.map(IL.esc).join(', ') : 'clear — attempt the gate') + '</strong>';
+        result.appendChild(p2);
+        var go = IL.el('button', { 'class': 'btn', type: 'button', text: 'Work the fringe' });
+        go.addEventListener('click', function () { selectStage('fringe'); });
+        result.appendChild(go);
+      }
+    });
+  }
+
+  /* ---------- FRINGE ---------- */
+  var currentItem = null;
+  function renderFringe() {
+    var panel = document.getElementById('panel-fringe');
+    panel.innerHTML = '';
+    var due = A().dueReviews(state);
+    if (due.length) {
+      var d = IL.el('p', { 'class': 'notice cyan', text: 'Spaced-repetition due: ' + due.join(', ') + '. Reviews come first.' });
+      panel.appendChild(d);
+    }
+    var bars = IL.el('div');
+    panel.appendChild(IL.el('h3', { text: 'Mastery map' }));
+    panel.appendChild(bars);
+    masteryBars(bars, state.mastery);
+
+    var step = A().next(state);
+    var box = IL.el('div', { style: 'margin-top:1.4rem' });
+    panel.appendChild(box);
+    if (step.done || !step.topicId) {
+      box.innerHTML = '<div class="notice cyan"><strong>Fringe clear.</strong> ' +
+        IL.esc(step.note || 'Attempt the gate.') + '</div>';
+      var go = IL.el('button', { 'class': 'btn', type: 'button', text: 'Attempt the gate' });
+      go.addEventListener('click', function () { selectStage('gate'); });
+      box.appendChild(go);
+      return;
+    }
+    currentItem = step;
+    var head = IL.el('p', {});
+    head.innerHTML = '<strong>Next:</strong> <span class="tag">' + IL.esc(step.kind) + '</span> <span style="font-family:var(--mono)">' + IL.esc(step.topicId) + '</span>';
+    box.appendChild(head);
+
+    if (step.item && step.item.choices) {
+      var holder = IL.el('div');
+      box.appendChild(holder);
+      var fb = IL.el('div', { style: 'margin-top:0.8rem' });
+      box.appendChild(fb);
+      quizWidget(holder, [{ q: step.item.prompt || step.item.q, choices: step.item.choices, answer: step.item.answer, explain: step.item.explain }],
+        {
+          doneLabel: 'Check answer',
+          showExplain: true,
+          onDone: function (answers) {
+            var ok = answers[0] === step.item.answer;
+            A().record(state, step.topicId, ok, 0.6);
+            persist();
+            fb.innerHTML = ok
+              ? '<div class="notice cyan"><strong>Correct.</strong> Mastery updated — the fringe re-sequenced.</div>'
+              : '<div class="notice"><strong>Not yet.</strong> Wrong answers get Socratic tips — bring your hypothesis to Noah on the right, then try the next item.</div>';
+            var more = IL.el('button', { 'class': 'btn btn-sm', type: 'button', text: 'Next item' });
+            more.addEventListener('click', renderFringe);
+            fb.appendChild(more);
+          }
+        });
+    } else {
+      // study/review without generated choices: honest self-check
+      var card = IL.el('div', { 'class': 'card' });
+      card.innerHTML = '<h3>Study: ' + IL.esc(step.topicId) + '</h3>' +
+        '<p>Work this topic from the Deepen sources, then report honestly:</p>';
+      var row = IL.el('div', { 'class': 'quiz-actions' });
+      var got = IL.el('button', { 'class': 'btn btn-sm', type: 'button', text: 'I can teach it' });
+      var fuzzy = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Still fuzzy' });
+      got.addEventListener('click', function () { A().record(state, step.topicId, true, 0.3); persist(); renderFringe(); });
+      fuzzy.addEventListener('click', function () { A().record(state, step.topicId, false, 0.3); persist(); renderFringe(); });
+      row.appendChild(got); row.appendChild(fuzzy);
+      card.appendChild(row);
+      box.appendChild(card);
+    }
+  }
+
+  /* ---------- GATE ---------- */
+  function gateAssessment() {
+    if (!path) return null;
+    var list = (path.assessments || []).filter(function (a) { return (a.items || []).length >= 5; });
+    if (!list.length) return null;
+    return list.find(function (a) { return a.kind === 'gate'; }) || list[0];
+  }
+
+  function renderGate() {
+    var panel = document.getElementById('panel-gate');
+    panel.innerHTML = '';
+    var verdict = A().gate(state, pathId || 'free');
+    var vbox = IL.el('div', { 'class': 'notice' + (verdict.passed ? ' cyan' : '') });
+    vbox.innerHTML = '<strong>Gate status:</strong> ' + (verdict.passed ? 'PASSED' : 'not yet passed') +
+      ' · mean mastery ' + Math.round(verdict.score * 100) + '%' +
+      (verdict.fringe.length ? ' · remaining fringe: ' + verdict.fringe.map(IL.esc).join(', ') : '');
+    panel.appendChild(vbox);
+
+    var ga = gateAssessment();
+    if (!ga) {
+      panel.innerHTML += '<div class="empty-state"><h3>No gate authored yet</h3>' +
+        '<p>This path has no gate assessment with enough items. The fringe above is still fully workable.</p></div>';
+      return;
+    }
+    var info = IL.el('p', {});
+    info.innerHTML = 'Gate assessment: <strong>' + IL.esc(ga.title) + '</strong> · ' +
+      (ga.items || []).length + ' questions' + (ga.minutes ? ' · ' + ga.minutes + ' minutes' : ' · untimed');
+    info.style.color = 'var(--ink-dim)';
+    panel.appendChild(info);
+    var holder = IL.el('div');
+    panel.appendChild(holder);
+    var result = IL.el('div', { style: 'margin-top:1rem' });
+    panel.appendChild(result);
+
+    var ctrl = A().timed(ga);
+    var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining' });
+    holder.appendChild(timer);
+    var qholder = IL.el('div');
+    holder.appendChild(qholder);
+    var tick = setInterval(function () {
+      var s = ctrl.remaining();
+      var mm = String(Math.floor(s / 60)).padStart(2, '0');
+      var ss = String(s % 60).padStart(2, '0');
+      timer.textContent = mm + ':' + ss;
+      timer.classList.toggle('low', s < 300);
+      if (s <= 0) { clearInterval(tick); finish(); }
+    }, 500);
+
+    function finish() {
+      clearInterval(tick);
+      var res = ctrl.submit();
+      (res.perTopic ? Object.keys(res.perTopic) : []).forEach(function (t) {
+        var pt = res.perTopic[t];
+        A().record(state, t, pt.score >= 0.5, 0.7);
+      });
+      if (!state.topics.length) state.topics = topics.slice();
+      persist();
+      var v = A().gate(state, pathId || 'free');
+      result.innerHTML = '<h3>Gate ' + (res.passed ? 'passed' : 'not passed') + ' — ' +
+        Math.round(res.score * 100) + '%</h3>' +
+        '<p style="color:var(--ink-dim)">' + res.correct + ' of ' + res.total + ' correct. ' +
+        (v.passed ? 'Mean mastery across path topics clears the gate. Deepen now.' : 'Fringe updated — work it, then re-attempt.') + '</p>';
+      var go = IL.el('button', { 'class': 'btn', type: 'button', text: v.passed ? 'Deepen' : 'Back to the fringe' });
+      go.addEventListener('click', function () { selectStage(v.passed ? 'deepen' : 'fringe'); });
+      result.appendChild(go);
+    }
+
+    quizWidget(qholder, (ga.items || []).map(function (it) {
+      return { q: it.q, choices: it.choices, answer: it.answer, topic: it.topic };
+    }), {
+      doneLabel: 'Submit gate',
+      showExplain: false,
+      onAnswer: function (i, c) { ctrl.answer(i, c); },
+      onDone: finish
+    });
+  }
+
+  /* ---------- DEEPEN ---------- */
+  function renderDeepen() {
+    var panel = document.getElementById('panel-deepen');
+    panel.innerHTML = '';
+    if (!path || !(path.modules || []).length) {
+      panel.innerHTML = '<div class="empty-state"><h3>Deepen sources</h3>' +
+        '<p>No module sources are published for this path yet. Deepen routes to official portals — never cloned content.</p></div>';
+      return;
+    }
+    panel.appendChild(IL.el('p', { text: 'Official deepens — Interstitium routes you outward; it does not clone. We do not fake a fleet.' }));
+    path.modules.forEach(function (m) {
+      var d = IL.el('div', { 'class': 'module' });
+      d.innerHTML = '<h3>' + IL.esc(m.title) + '</h3>' +
+        (m.il_provides ? '<p style="color:var(--ink-dim)">Interstitium provides: ' + IL.esc(m.il_provides) + '</p>' : '');
+      var ul = IL.el('ul', { 'class': 'source-list' });
+      (m.sources || []).forEach(function (s) {
+        var li = IL.el('li');
+        li.innerHTML = (/^https?:\/\//.test(s.url || ''))
+          ? '<a href="' + IL.esc(s.url) + '" rel="noopener">' + IL.esc(s.name || 'Source') + '</a>' +
+            (s.note ? '<span class="note">' + IL.esc(s.note) + '</span>' : '')
+          : IL.esc(s.name || 'Source');
+        ul.appendChild(li);
+      });
+      d.appendChild(ul);
+      panel.appendChild(d);
+    });
+  }
+
+  /* ---------- Noah panel ---------- */
+  var nlog = document.getElementById('noah-log');
+  var nform = document.getElementById('noah-form');
+  var ninput = document.getElementById('noah-q');
+  function nmsg(cls, text) {
+    var d = document.createElement('div');
+    d.className = 'noah-msg ' + cls;
+    d.textContent = text;
+    nlog.appendChild(d);
+    nlog.scrollTop = nlog.scrollHeight;
+    return d;
+  }
+  nmsg('noah', 'Socratic mode: bring me your hypothesis about this path. I will not dump the answer first.');
+  nform.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = ninput.value.trim();
+    if (!q) return;
+    nmsg('user', q);
+    ninput.value = '';
+    var th = document.createElement('div');
+    th.className = 'noah-msg noah';
+    th.innerHTML = '<span class="noah-thinking">Noah is thinking <span class="dots"><i></i><i></i><i></i></span></span>';
+    nlog.appendChild(th);
+    nlog.scrollTop = nlog.scrollHeight;
+    setTimeout(function () {
+      var res = IL.noah.ask(q, { pathId: pathId, topicId: currentItem && currentItem.topicId });
+      th.textContent = res.reply;
+      (res.nudges || []).forEach(function (n) {
+        var s = document.createElement('span');
+        s.className = 'nudge'; s.textContent = 'Nudge: ' + n;
+        th.appendChild(s);
+      });
+      nlog.scrollTop = nlog.scrollHeight;
+    }, 450);
+  });
+
+  /* ---------- goal ---------- */
+  var gform = document.getElementById('goal-form');
+  var ginput = document.getElementById('goal-input');
+  var gecho = document.getElementById('goal-echo');
+  function paintGoal() {
+    var open = [];
+    try { open = (A().listGoals ? A().listGoals() : []).filter(function (g) { return g && !g.done; }); } catch (e) {}
+    var latest = open.length ? open[open.length - 1].text : '';
+    gecho.textContent = latest ? 'Current goal: ' + latest : '';
+    if (latest) ginput.value = latest;
+  }
+  gform.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = ginput.value.trim();
+    if (!v) return;
+    try { A().setGoal(v); } catch (e) {}
+    paintGoal();
+  });
+
+  /* ---------- boot ---------- */
+  function deriveTopics() {
+    var set = [];
+    function add(t) { if (t && set.indexOf(t) === -1) set.push(t); }
+    if (path) (path.modules || []).forEach(function (m) { (m.topics || []).forEach(add); });
+    if (!set.length) {
+      // Free sitting: a prereq-chained math spine the engine can sequence.
+      ['whole-numbers', 'fractions', 'decimals', 'percents',
+       'linear-equations', 'systems', 'exponents', 'units-measurement'].forEach(add);
+    }
+    return set;
+  }
+
+  function boot() {
+    path = pathId ? IL.pathById(pathId) : null;
+    document.title = (path ? path.title : 'Free sitting') + ' — Interstitium Labs';
+    document.getElementById('sit-lede').textContent = path
+      ? path.title + ' · ' + IL.fmtHours(path.hours) + ' · mastery lives in your browser.'
+      : 'A free sitting on core math topics. Pick a path for the full adaptive route.';
+    topics = deriveTopics();
+    if (!state.topics.length) { state.topics = topics.slice(); persist(); }
+    else { topics.forEach(function (t) { if (state.topics.indexOf(t) === -1) state.topics.push(t); }); persist(); }
+    paintGoal();
+    renderPlace();
+  }
+  IL.renderPage = boot;
+  IL.onCatalog(boot);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assessment Center — Interstitium Labs</title>
+<meta name="description" content="Timed simulations: aptitude batteries, gate assessments, diagnostics. Countdown, per-question navigation, Socratic feedback.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block" aria-labelledby="as-h">
+    <div class="wrap" data-catalog-slot id="assess-wrap">
+      <p class="eyebrow">Adaptive OS <span class="dot">·</span> Assessment center</p>
+      <h1 id="as-h">Timed simulations</h1>
+      <p class="lede" id="as-lede">Aptitude batteries, gates, diagnostics. Wrong answers get Socratic tips — never an answer dump first.</p>
+      <div id="assess-body" style="margin-top:1.6rem"></div>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script src="js/adaptive.js"></script>
+<script>
+(function () {
+  'use strict';
+  var A = function () { return window.IL.adaptive; };
+  var aid = IL.qs('a');
+  var body = document.getElementById('assess-body');
+
+  function mmss(s) {
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function listView() {
+    document.title = 'Assessment Center — Interstitium Labs';
+    var list = IL.assessments();
+    body.innerHTML = '';
+    if (!list.length) {
+      body.innerHTML = '<div class="empty-state"><h3>Assessments being authored</h3>' +
+        '<p>Timed assessments ship with the path catalog. Every timed assessment carries at least ten authored items with explanations — nothing placeholder.</p></div>';
+      return;
+    }
+    var grid = IL.el('div', { 'class': 'grid grid-3' });
+    list.forEach(function (a) {
+      var n = (a.items || []).length;
+      var c = IL.el('article', { 'class': 'card' });
+      c.innerHTML =
+        '<div class="code">' + IL.esc(a.kind || 'assessment') + '</div>' +
+        '<h3>' + IL.esc(a.title) + '</h3>' +
+        '<p>' + IL.esc(a.pathTitle || '') + '</p>' +
+        '<div class="meta"><span><b>' + n + ' questions</b></span>' +
+        '<span>' + (a.minutes != null ? a.minutes + ' min' : 'untimed') + '</span></div>' +
+        '<p style="margin-top:0.8rem">' +
+        (n >= 10
+          ? '<a class="btn btn-sm btn-gold" href="assess.html?a=' + IL.esc(a.id) + '">Run assessment</a>'
+          : '<span class="pill soon">authoring</span>') + '</p>';
+      grid.appendChild(c);
+    });
+    body.appendChild(grid);
+  }
+
+  function runnerView(a) {
+    document.title = a.title + ' — Assessment Center';
+    var items = a.items || [];
+    body.innerHTML = '';
+    if (items.length < 10) {
+      body.innerHTML = '<div class="empty-state"><h3>Still being authored</h3>' +
+        '<p>This assessment does not yet carry its full item bank. <a href="assess.html">Back to the center</a>.</p></div>';
+      return;
+    }
+    var ctrl = A().timed(a);
+    var head = IL.el('div');
+    head.innerHTML = '<h2>' + IL.esc(a.title) + '</h2>' +
+      '<p style="color:var(--ink-dim)">' + IL.esc(a.pathTitle || '') + ' · ' + items.length +
+      ' questions' + (a.minutes ? ' · ' + a.minutes + ' minutes' : '') + '</p>';
+    body.appendChild(head);
+
+    var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining', text: mmss(ctrl.remaining()) });
+    body.appendChild(timer);
+
+    var nav = IL.el('div', { 'class': 'qnav', role: 'group', 'aria-label': 'Question navigation' });
+    body.appendChild(nav);
+    var qbox = IL.el('div');
+    body.appendChild(qbox);
+    var actions = IL.el('div', { 'class': 'quiz-actions' });
+    var prev = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Previous' });
+    var next = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Next' });
+    var flag = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Flag for review' });
+    var submit = IL.el('button', { 'class': 'btn btn-sm', type: 'button', text: 'Submit assessment' });
+    actions.appendChild(prev); actions.appendChild(next); actions.appendChild(flag); actions.appendChild(submit);
+    body.appendChild(actions);
+
+    var idx = 0;
+    var flagged = {};
+    var finished = false;
+    var sel = new Array(items.length).fill(null); // local mirror of controller state
+
+    function drawNav() {
+      nav.innerHTML = '';
+      items.forEach(function (it, i) {
+        var b = IL.el('button', {
+          type: 'button',
+          'aria-label': 'Question ' + (i + 1) + (sel[i] !== null ? ', answered' : ', unanswered') + (flagged[i] ? ', flagged' : ''),
+          text: String(i + 1)
+        });
+        if (sel[i] !== null) b.classList.add('answered');
+        if (i === idx) b.classList.add('current');
+        if (flagged[i]) b.classList.add('flagged');
+        b.addEventListener('click', function () { idx = i; draw(); });
+        nav.appendChild(b);
+      });
+    }
+
+    function draw() {
+      var it = items[idx];
+      qbox.innerHTML = '';
+      var qd = IL.el('div', { 'class': 'question' });
+      var h = IL.el('h3', { text: 'Question ' + (idx + 1) + ' — ' + it.q, tabindex: '-1' });
+      qd.appendChild(h);
+      var ul = IL.el('ul', { 'class': 'choices', role: 'radiogroup', 'aria-label': 'Question ' + (idx + 1) });
+      (it.choices || []).forEach(function (c, ci) {
+        var lab = IL.el('label', sel[idx] === ci ? { 'class': 'picked' } : {});
+        var radio = IL.el('input', { type: 'radio', name: 'aq' + idx, value: String(ci) });
+        if (sel[idx] === ci) radio.checked = true;
+        radio.addEventListener('change', function () {
+          sel[idx] = ci;
+          ctrl.answer(idx, ci);
+          lab.classList.add('picked');
+          Array.prototype.forEach.call(ul.querySelectorAll('label'), function (l) { if (l !== lab) l.classList.remove('picked'); });
+          drawNav();
+        });
+        lab.appendChild(radio);
+        lab.appendChild(document.createTextNode(c));
+        ul.appendChild(lab);
+      });
+      qd.appendChild(ul);
+      qbox.appendChild(qd);
+      prev.disabled = idx === 0;
+      next.disabled = idx === items.length - 1;
+      h.focus({ preventScroll: true });
+      drawNav();
+    }
+
+    prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(); } });
+    next.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(); } });
+    flag.addEventListener('click', function () {
+      flagged[idx] = !flagged[idx];
+      flag.textContent = flagged[idx] ? 'Unflag question' : 'Flag for review';
+      drawNav();
+    });
+    // keyboard: [ and ] move between questions
+    document.addEventListener('keydown', function onKey(e) {
+      if (finished) { document.removeEventListener('keydown', onKey); return; }
+      if (e.target.matches('input, textarea, select')) return;
+      if (e.key === '[' && idx > 0) { idx--; draw(); }
+      if (e.key === ']' && idx < items.length - 1) { idx++; draw(); }
+    });
+
+    var tick = setInterval(function () {
+      var s = ctrl.remaining();
+      timer.textContent = mmss(s);
+      timer.classList.toggle('low', s < 300 && s > 0);
+      if (s <= 0) { clearInterval(tick); doSubmit(true); }
+    }, 500);
+
+    function doSubmit(auto) {
+      if (finished) return;
+      var un = sel.filter(function (x) { return x === null; }).length;
+      if (!auto && un > 0 && !confirm(un + ' question(s) unanswered. Submit anyway?')) {
+        return; // user cancelled: timer keeps running, nothing submitted
+      }
+      finished = true;
+      clearInterval(tick);
+      var res = ctrl.submit();
+      // fringe update: fold per-topic results into the path's sitting state
+      try {
+        var key = 'il_sitting_' + (a.pathId || 'free');
+        var st = JSON.parse(localStorage.getItem(key) || 'null') || { topics: [], mastery: {}, sm2: {} };
+        Object.keys(res.perTopic || {}).forEach(function (t) {
+          var pt = res.perTopic[t];
+          A().record(st, t, pt.score >= 0.5, 0.7);
+          if (st.topics.indexOf(t) === -1) st.topics.push(t);
+        });
+        localStorage.setItem(key, JSON.stringify(st));
+      } catch (e) {}
+      showResult(res, auto);
+    }
+    submit.addEventListener('click', function () { doSubmit(false); });
+
+    function showResult(res, auto) {
+      body.innerHTML = '';
+      var wrap = IL.el('div', { 'class': 'quiz-shell' });
+      wrap.innerHTML =
+        '<h2>' + (res.passed ? 'Passed' : 'Not passed') + ' — ' + Math.round(res.score * 100) + '%</h2>' +
+        '<div class="score-ring">' + res.correct + ' / ' + res.total + '</div>' +
+        '<p style="color:var(--ink-dim)">' + (auto ? 'Time expired — auto-submitted. ' : '') +
+        'Your fringe was updated from every miss. Review the explanations, work the fringe, re-attempt.</p>';
+      items.forEach(function (it, i) {
+        var ok = sel[i] === it.answer;
+        var qd = IL.el('div', { 'class': 'question' });
+        var h = IL.el('h3', { text: (ok ? 'Correct — ' : 'Missed — ') + 'Question ' + (i + 1) + ' — ' + it.q });
+        h.style.color = ok ? 'var(--cyan)' : 'var(--gold-bright)';
+        qd.appendChild(h);
+        var ul = IL.el('ul', { 'class': 'choices' });
+        (it.choices || []).forEach(function (c, ci) {
+          var li = IL.el('li', {
+            text: c + (ci === it.answer ? ' — correct' : ''),
+            style: 'border:1px solid var(--line-soft);border-radius:6px;padding:0.5rem 0.8rem;' +
+              (ci === it.answer ? 'border-color:var(--cyan-dim);color:var(--cyan);' : '')
+          });
+          ul.appendChild(li);
+        });
+        qd.appendChild(ul);
+        if (it.explain) qd.appendChild(IL.el('div', { 'class': 'explain', text: it.explain }));
+        wrap.appendChild(qd);
+      });
+      var row = IL.el('div', { 'class': 'quiz-actions' });
+      var again = IL.el('a', { 'class': 'btn', href: 'assess.html?a=' + encodeURIComponent(a.id), text: 'Re-attempt' });
+      var fringe = IL.el('a', { 'class': 'btn btn-ghost', href: 'learn.html?id=' + encodeURIComponent(a.pathId || ''), text: 'Work the fringe' });
+      row.appendChild(again); row.appendChild(fringe);
+      wrap.appendChild(row);
+      body.appendChild(wrap);
+      wrap.querySelector('h2').setAttribute('tabindex', '-1');
+      wrap.querySelector('h2').focus({ preventScroll: true });
+    }
+
+    draw();
+  }
+
+  function render() {
+    if (!aid) { listView(); return; }
+    var a = IL.assessmentById(aid);
+    if (!a) {
+      body.innerHTML = '<div class="empty-state"><h3>Assessment not found</h3>' +
+        '<p>No assessment matches <span style="font-family:var(--mono)">' + IL.esc(aid) + '</span>. ' +
+        '<a href="assess.html">Back to the center</a>.</p></div>';
+      return;
+    }
+    runnerView(a);
+  }
+  IL.renderPage = render;
+  IL.onCatalog(render);
+})();
+</script>
+</body>
+</html>

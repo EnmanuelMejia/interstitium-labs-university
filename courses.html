@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Enrolled Courses — Interstitium Labs</title>
+<meta name="description" content="Import your enrolled courses from browser history: paste, dedupe against the catalog, track with resume links.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block" aria-labelledby="mc-h">
+    <div class="wrap">
+      <p class="eyebrow">Personal <span class="dot">·</span> My enrolled courses</p>
+      <h1 id="mc-h">My Enrolled Courses</h1>
+      <p class="lede">Your actual courses, harvested from your own history — deduped against the Interstitium catalog (global rule: no duplicated courses), tracked with resume links. Everything stays in your browser.</p>
+
+      <div id="track" style="margin-top:1.6rem"></div>
+
+      <h2 style="margin-top:2.6rem">Import from history</h2>
+      <ol class="steps">
+        <li>In Chrome: <span style="font-family:var(--mono)">History → History → ⋮ → Export</span> (or copy rows from <span style="font-family:var(--mono)">chrome://history</span>). Phone history and dormant tabs count — paste them too.</li>
+        <li>Paste the export below — URLs and page titles. Nothing leaves your browser; parsing is local.</li>
+        <li>We extract course-like entries, dedupe against the catalog by URL and title similarity, and save the track to <span style="font-family:var(--mono)">localStorage</span>.</li>
+      </ol>
+      <form id="import-form" aria-label="Import courses from history">
+        <label for="history-paste">Paste history export</label>
+        <textarea id="history-paste" placeholder="https://www.udemy.com/course/...  Complete Python Bootcamp&#10;https://learn.mongodb.com/...  MongoDB Basics&#10;..."></textarea>
+        <div class="quiz-actions">
+          <button class="btn" type="submit">Parse and dedupe</button>
+          <button class="btn btn-ghost" type="button" id="clear-track">Clear my track</button>
+        </div>
+      </form>
+      <div id="import-report" role="status" style="margin-top:1rem"></div>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'il_enrolled_v1';
+  var trackEl = document.getElementById('track');
+  var report = document.getElementById('import-report');
+  var paste = document.getElementById('history-paste');
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; }
+  }
+  function save(list) {
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+  }
+
+  function platformOf(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ''); }
+    catch (e) { return ''; }
+  }
+
+  /* Extract candidate course entries: lines carrying http(s) URLs, with the
+     surrounding text as the title. Heuristic, local, honest about it. */
+  function extract(text) {
+    var out = [];
+    var urlRe = /https?:\/\/[^\s"'<>\])]+/g;
+    text.split(/\r?\n/).forEach(function (line) {
+      var m = line.match(urlRe);
+      if (!m) return;
+      m.forEach(function (u) {
+        u = u.replace(/[.,;:!?]+$/, '');
+        var title = line.replace(urlRe, '').replace(/^\W+|\W+$/g, '').trim();
+        if (!title) {
+          try {
+            var p = new URL(u).pathname.split('/').filter(Boolean).pop() || '';
+            title = decodeURIComponent(p).replace(/[-_+]+/g, ' ');
+          } catch (e) { title = u; }
+        }
+        if (title.length > 140) title = title.slice(0, 140) + '…';
+        out.push({ title: title, url: u, platform: platformOf(u), addedAt: new Date().toISOString() });
+      });
+    });
+    return out;
+  }
+
+  function normTitle(s) {
+    return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+  function tokens(s) {
+    return normTitle(s).split(' ').filter(function (w) { return w.length > 2; });
+  }
+  /* Jaccard similarity on title tokens; >= 0.55 counts as the same course. */
+  function similar(a, b) {
+    var A = tokens(a), B = tokens(b);
+    if (!A.length || !B.length) return false;
+    var setB = {};
+    B.forEach(function (w) { setB[w] = 1; });
+    var inter = A.filter(function (w) { return setB[w]; }).length;
+    var union = A.length + B.length - inter;
+    return union > 0 && inter / union >= 0.55;
+  }
+  function normUrl(u) {
+    return String(u || '').toLowerCase().replace(/^https?:\/\/(www\.)?/, '').replace(/[#?].*$/, '').replace(/\/$/, '');
+  }
+
+  /* Dedupe candidates against the catalog (global rule #1) and the track. */
+  function dedupe(cands) {
+    var kept = [], dupCat = [], dupSelf = [];
+    var seen = {};
+    var catCourses = [];
+    IL.paths().forEach(function (p) {
+      catCourses.push({ title: p.title, url: '' });
+      (p.modules || []).forEach(function (m) {
+        catCourses.push({ title: m.title, url: '' });
+        (m.sources || []).forEach(function (s) { if (s.url) catCourses.push({ title: s.name || '', url: s.url }); });
+      });
+    });
+    var track = load();
+    cands.forEach(function (c) {
+      var nu = normUrl(c.url);
+      if (seen[nu]) { dupSelf.push(c); return; }
+      var inTrack = track.some(function (t) { return normUrl(t.url) === nu || similar(t.title, c.title); });
+      if (inTrack) { dupSelf.push(c); return; }
+      var inCat = catCourses.some(function (k) {
+        return (k.url && normUrl(k.url) === nu) || (k.title && similar(k.title, c.title));
+      });
+      if (inCat) { dupCat.push(c); return; }
+      seen[nu] = 1;
+      kept.push(c);
+    });
+    return { kept: kept, dupCat: dupCat, dupSelf: dupSelf };
+  }
+
+  function renderTrack() {
+    var list = load();
+    trackEl.innerHTML = '';
+    if (!list.length) {
+      trackEl.innerHTML = '<div class="empty-state"><h3>No imports yet</h3>' +
+        '<p>Your track is empty. Paste a Chrome history export below — course URLs and titles are extracted, ' +
+        'deduped against the Interstitium catalog, and rendered here with resume links.</p></div>';
+      return;
+    }
+    var grid = IL.el('div', { 'class': 'grid grid-3' });
+    list.forEach(function (c, i) {
+      var card = IL.el('article', { 'class': 'card' });
+      card.innerHTML =
+        '<div class="code">' + IL.esc(c.platform || 'external') + '</div>' +
+        '<h3>' + IL.esc(c.title) + '</h3>' +
+        '<div class="meta"><span>added ' + IL.esc((c.addedAt || '').slice(0, 10)) + '</span></div>' +
+        '<p style="margin-top:0.8rem"><a class="btn btn-sm btn-ghost" href="' + IL.esc(c.url) + '" rel="noopener">Resume course</a> ' +
+        '<button class="btn btn-sm btn-ghost" type="button" data-rm="' + i + '">Remove</button></p>';
+      grid.appendChild(card);
+    });
+    trackEl.appendChild(grid);
+    trackEl.querySelectorAll('[data-rm]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var l = load();
+        l.splice(Number(b.dataset.rm), 1);
+        save(l); renderTrack();
+      });
+    });
+  }
+
+  document.getElementById('import-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = paste.value;
+    report.innerHTML = '';
+    if (!text.trim()) {
+      report.innerHTML = '<div class="notice"><strong>Nothing pasted.</strong> Paste a history export first.</div>';
+      return;
+    }
+    var cands = extract(text);
+    if (!cands.length) {
+      report.innerHTML = '<div class="notice"><strong>No URLs found.</strong> The paste contained no http(s) links.</div>';
+      return;
+    }
+    var r = dedupe(cands);
+    var track = load().concat(r.kept);
+    save(track);
+    renderTrack();
+    var html = '<div class="notice cyan"><strong>Import complete.</strong> ' +
+      r.kept.length + ' new, ' + r.dupCat.length + ' already in the Interstitium catalog (skipped — no duplicates), ' +
+      r.dupSelf.length + ' already on your track (skipped).</div>';
+    if (r.dupCat.length) {
+      html += '<p style="color:var(--ink-faint);font-size:0.9rem">Skipped as catalog duplicates: ' +
+        r.dupCat.slice(0, 8).map(function (c) { return IL.esc(c.title); }).join('; ') +
+        (r.dupCat.length > 8 ? ' …and ' + (r.dupCat.length - 8) + ' more' : '') + '</p>';
+    }
+    report.innerHTML = html;
+    paste.value = '';
+  });
+
+  document.getElementById('clear-track').addEventListener('click', function () {
+    if (!load().length) return;
+    if (confirm('Remove all imported courses from this browser?')) {
+      save([]); renderTrack();
+      report.innerHTML = '<div class="notice">Track cleared.</div>';
+    }
+  });
+
+  renderTrack();
+})();
+</script>
+</body>
+</html>

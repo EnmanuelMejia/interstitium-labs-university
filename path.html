@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Path — Interstitium Labs</title>
+<meta name="description" content="Interstitium Labs path detail: modules, official sources, assessments, and the adaptive sitting.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block" aria-labelledby="path-h">
+    <div class="wrap" data-catalog-slot id="path-wrap">
+      <p class="eyebrow"><a href="paths.html">Paths</a> <span class="dot">·</span> <span id="path-acad-crumb"></span></p>
+      <h1 id="path-h"></h1>
+      <p class="lede" id="path-sub"></p>
+      <div id="path-tags" style="margin:0.8rem 0"></div>
+      <dl class="kv" style="margin-top:1rem">
+        <dt>Hours</dt><dd id="path-hours"></dd>
+        <dt>Difficulty</dt><dd id="path-diff"></dd>
+        <dt>Track</dt><dd id="path-type"></dd>
+        <dt>Status</dt><dd id="path-status"></dd>
+      </dl>
+      <div class="hero-cta-row" style="margin-top:1.4rem">
+        <a class="btn" id="cta-sitting" href="#">Start a sitting</a>
+        <a class="btn btn-ghost" href="enroll.html">Enroll</a>
+      </div>
+
+      <h2 style="margin-top:2.6rem">Modules</h2>
+      <div id="modules"></div>
+
+      <h2 style="margin-top:2.2rem">Assessments</h2>
+      <div id="assessments"></div>
+
+      <div class="notice" style="margin-top:2rem">
+        <strong>Orchestrate, don't clone.</strong> Deepens link to official vendor portals and references —
+        Interstitium provides the adaptive spine, the katas, and the evidence log, never a photocopy of anyone's PDF.
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  function sourceItem(s) {
+    var li = document.createElement('li');
+    var name = IL.esc(s.name || 'Source');
+    var body = (/^https?:\/\//.test(s.url || ''))
+      ? '<a href="' + IL.esc(s.url) + '" rel="noopener">' + name + '</a>'
+      : name;
+    li.innerHTML = body + (s.note ? '<span class="note">' + IL.esc(s.note) + '</span>' : '');
+    return li;
+  }
+
+  function render() {
+    var id = IL.qs('id');
+    var wrap = document.getElementById('path-wrap');
+    var p = id && IL.pathById(id);
+    if (!p) {
+      document.title = 'Path not found — Interstitium Labs';
+      wrap.innerHTML = '<div class="empty-state"><h3>Path not found</h3>' +
+        '<p>No path matches <span style="font-family:var(--mono)">' + IL.esc(id || '(none)') + '</span>. ' +
+        '<a href="paths.html">Browse all paths</a>.</p></div>';
+      return;
+    }
+    document.title = p.title + ' — Interstitium Labs';
+    var acad = IL.academyByCode(p.academy);
+    document.getElementById('path-acad-crumb').textContent = p.academy || '';
+    document.getElementById('path-h').textContent = p.title;
+    document.getElementById('path-sub').textContent = p.subtitle || '';
+    document.getElementById('path-tags').innerHTML = (p.tags || []).map(function (t) {
+      return '<span class="tag skill">' + IL.esc(t) + '</span>';
+    }).join('');
+    document.getElementById('path-hours').textContent = IL.fmtHours(p.hours);
+    document.getElementById('path-diff').textContent = p.difficulty || '—';
+    document.getElementById('path-type').textContent = p.type || '—';
+    document.getElementById('path-status').textContent = p.status || '—';
+    document.getElementById('cta-sitting').href = 'learn.html?id=' + encodeURIComponent(p.id);
+
+    var mbox = document.getElementById('modules');
+    mbox.innerHTML = '';
+    (p.modules || []).forEach(function (m) {
+      var d = document.createElement('div');
+      d.className = 'module';
+      var topics = (m.topics || []).map(function (t) {
+        return '<span class="tag">' + IL.esc(t) + '</span>';
+      }).join('');
+      d.innerHTML = '<div class="kind">' + IL.esc(m.kind || 'module') + '</div>' +
+        '<h3>' + IL.esc(m.title) + '</h3>' +
+        (m.il_provides ? '<p style="color:var(--ink-dim)">' + IL.esc(m.il_provides) + '</p>' : '') +
+        (topics ? '<div>' + topics + '</div>' : '');
+      var ul = document.createElement('ul');
+      ul.className = 'source-list';
+      ul.setAttribute('aria-label', 'Official sources for ' + m.title);
+      (m.sources || []).forEach(function (s) { ul.appendChild(sourceItem(s)); });
+      if (!(m.sources || []).length) {
+        var li = document.createElement('li');
+        li.textContent = 'Sources being attributed — none listed yet.';
+        ul.appendChild(li);
+      }
+      d.appendChild(ul);
+      mbox.appendChild(d);
+    });
+    if (!(p.modules || []).length) {
+      mbox.innerHTML = '<div class="empty-state"><h3>Modules being published</h3><p>Module detail for this path is still being written.</p></div>';
+    }
+
+    var abox = document.getElementById('assessments');
+    abox.innerHTML = '';
+    (p.assessments || []).forEach(function (a) {
+      var c = document.createElement('article');
+      c.className = 'card';
+      c.innerHTML =
+        '<div class="code">' + IL.esc(a.kind || 'assessment') + '</div>' +
+        '<h3>' + IL.esc(a.title) + '</h3>' +
+        '<div class="meta"><span><b>' + (a.questions != null ? a.questions : (a.items || []).length) + ' questions</b></span>' +
+        '<span>' + (a.minutes != null ? a.minutes + ' min' : 'untimed') + '</span></div>' +
+        '<p style="margin-top:0.8rem"><a class="btn btn-sm btn-gold" href="assess.html?a=' + IL.esc(a.id) + '">Run assessment</a></p>';
+      abox.appendChild(c);
+    });
+    if (!(p.assessments || []).length) {
+      abox.innerHTML = '<div class="empty-state"><h3>No assessments yet</h3><p>Timed assessments for this path are still being authored.</p></div>';
+    }
+  }
+  IL.renderPage = render;
+  IL.onCatalog(render);
+})();
+</script>
+</body>
+</html>

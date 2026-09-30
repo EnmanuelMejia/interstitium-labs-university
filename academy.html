@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Academy — Interstitium Labs</title>
+<meta name="description" content="Interstitium Labs academy detail: paths, hours, and the adaptive route through one academy.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block" aria-labelledby="acad-h">
+    <div class="wrap" data-catalog-slot id="acad-wrap">
+      <p class="eyebrow"><a href="index.html#academies">Academies</a> <span class="dot">·</span> <span id="acad-code-crumb"></span></p>
+      <h1 id="acad-h"></h1>
+      <p class="lede" id="acad-blurb"></p>
+      <dl class="kv" style="margin-top:1.2rem">
+        <dt>Hours</dt><dd id="acad-hours"></dd>
+        <dt>Paths</dt><dd id="acad-npaths"></dd>
+      </dl>
+      <h2 style="margin-top:2.2rem">Paths in this academy</h2>
+      <div class="grid grid-3" id="acad-paths" style="margin-top:1.2rem"></div>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  function render() {
+    var code = IL.qs('id');
+    var wrap = document.getElementById('acad-wrap');
+    var a = code && IL.academyByCode(code);
+    if (!a) {
+      document.title = 'Academy not found — Interstitium Labs';
+      wrap.innerHTML = '<div class="empty-state"><h3>Academy not found</h3>' +
+        '<p>No academy matches <span style="font-family:var(--mono)">' + IL.esc(code || '(none)') + '</span>. ' +
+        'The standing index is IL-01 through IL-10 — <a href="index.html#academies">browse the academies</a>.</p></div>';
+      return;
+    }
+    document.title = a.code + ' · ' + a.name + ' — Interstitium Labs';
+    document.getElementById('acad-code-crumb').textContent = a.code;
+    document.getElementById('acad-h').textContent = a.code + ' · ' + a.name;
+    document.getElementById('acad-blurb').textContent = a.blurb || a.tagline || '';
+    document.getElementById('acad-hours').textContent = IL.fmtHours(a.hours);
+    var paths = IL.pathsForAcademy(a.code);
+    document.getElementById('acad-npaths').textContent = String(paths.length);
+
+    var box = document.getElementById('acad-paths');
+    box.innerHTML = '';
+    if (!paths.length) {
+      box.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><h3>Paths incoming</h3>' +
+        '<p>Paths for ' + IL.esc(a.code) + ' are still being published — nothing here is placeholder. ' +
+        'Meanwhile, the adaptive engine below runs on any topic you name.</p>' +
+        '<p><a class="btn btn-ghost" href="learn.html">Open a free sitting</a></p></div>';
+    } else {
+      paths.forEach(function (p) {
+        var c = document.createElement('article');
+        c.className = 'card';
+        c.innerHTML =
+          '<div class="code">' + IL.esc(p.type || '') + '</div>' +
+          '<h3><a href="path.html?id=' + IL.esc(p.id) + '">' + IL.esc(p.title) + '</a></h3>' +
+          '<p>' + IL.esc(p.subtitle || '') + '</p>' +
+          '<div class="meta"><span><b>' + IL.esc(IL.fmtHours(p.hours)) + '</b></span>' +
+          '<span>' + IL.esc(p.difficulty || '') + '</span></div>';
+        box.appendChild(c);
+      });
+    }
+  }
+  IL.renderPage = render;
+  IL.onCatalog(render);
+})();
+</script>
+</body>
+</html>

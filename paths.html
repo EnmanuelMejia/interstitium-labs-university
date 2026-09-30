@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paths — Interstitium Labs</title>
+<meta name="description" content="Filterable catalog of Interstitium Labs learning paths — by role, skill, cert, and time. Adaptive gates, honest evidence.">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block" aria-labelledby="paths-h">
+    <div class="wrap" data-catalog-slot>
+      <p class="eyebrow">Curriculum OS <span class="dot">·</span> Paths</p>
+      <h1 id="paths-h">Paths that beat the catalog sites on architecture</h1>
+      <p class="lede">Filter by role, skill, cert, time. Every path carries adaptive gates and routes deepens to official portals — we do not fake a fleet.</p>
+
+      <form class="filters" id="filters" aria-label="Filter paths">
+        <div class="field">
+          <label for="f-q">Skill / role / keyword</label>
+          <input type="search" id="f-q" name="q" placeholder="e.g. soc, kubernetes, cpa" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-type">Track type</label>
+          <select id="f-type" name="type">
+            <option value="">All tracks</option>
+            <option value="career">Career</option>
+            <option value="certification">Certification</option>
+            <option value="foundations">Foundations</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-tag">Cert / skill tag</label>
+          <select id="f-tag" name="tag"><option value="">All tags</option></select>
+        </div>
+        <div class="field">
+          <label for="f-time">Time budget</label>
+          <select id="f-time" name="time">
+            <option value="">Any length</option>
+            <option value="40">Up to 40 h</option>
+            <option value="120">Up to 120 h</option>
+            <option value="300">Up to 300 h</option>
+            <option value="99999">300 h and beyond</option>
+          </select>
+        </div>
+      </form>
+      <p class="notice cyan" id="result-count" role="status" style="display:none"></p>
+      <div class="grid grid-3" id="path-grid" aria-live="polite"></div>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  var grid = document.getElementById('path-grid');
+  var count = document.getElementById('result-count');
+  var fq = document.getElementById('f-q');
+  var ftype = document.getElementById('f-type');
+  var ftag = document.getElementById('f-tag');
+  var ftime = document.getElementById('f-time');
+
+  function currentFilters() {
+    return {
+      q: fq.value,
+      type: ftype.value || null,
+      tag: ftag.value || null,
+      maxHours: ftime.value ? Number(ftime.value) : null
+    };
+  }
+
+  function pathCard(p) {
+    var c = document.createElement('article');
+    c.className = 'card';
+    var tags = (p.tags || []).map(function (t) {
+      return '<span class="tag skill">' + IL.esc(t) + '</span>';
+    }).join('');
+    var nModules = (p.modules || []).length;
+    var nAssess = (p.assessments || []).length;
+    c.innerHTML =
+      '<div class="code">' + IL.esc(p.academy || '') + ' · ' + IL.esc(p.type || '') + '</div>' +
+      '<h3><a href="path.html?id=' + IL.esc(p.id) + '">' + IL.esc(p.title) + '</a></h3>' +
+      '<p>' + IL.esc(p.subtitle || '') + '</p>' +
+      '<div>' + tags + '</div>' +
+      '<div class="meta"><span><b>' + IL.esc(IL.fmtHours(p.hours)) + '</b></span>' +
+      '<span>' + IL.esc(p.difficulty || '') + '</span>' +
+      '<span>' + nModules + ' modules</span>' +
+      (nAssess ? '<span>' + nAssess + ' assessments</span>' : '') + '</div>';
+    return c;
+  }
+
+  function render() {
+    // populate tag options once
+    if (!ftag.dataset.filled) {
+      ftag.dataset.filled = '1';
+      IL.allTags().forEach(function (t) {
+        var o = document.createElement('option');
+        o.value = t; o.textContent = t;
+        ftag.appendChild(o);
+      });
+    }
+    var paths = IL.filterPaths(IL.paths(), currentFilters());
+    grid.innerHTML = '';
+    if (!paths.length) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><h3>No paths match</h3>' +
+        '<p>' + (IL.paths().length
+          ? 'Loosen a filter — or clear the search to see the full catalog.'
+          : 'The path catalog is still being published. The academy index on the <a href="index.html#academies">home page</a> is current.') + '</p></div>';
+    } else {
+      paths.forEach(function (p) { grid.appendChild(pathCard(p)); });
+    }
+    count.style.display = '';
+    count.textContent = paths.length + ' of ' + IL.paths().length + ' paths shown.';
+  }
+
+  ['input', 'change'].forEach(function (ev) {
+    document.getElementById('filters').addEventListener(ev, render);
+  });
+
+  IL.renderPage = render;
+  IL.onCatalog(render);
+})();
+</script>
+</body>
+</html>
