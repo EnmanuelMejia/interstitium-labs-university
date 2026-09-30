@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Interstitium Labs sigil">
+  <title>Interstitium Labs sigil</title>
+  <!-- Original procedural mark: nucleus + concentric orbits, gold strokes on transparent -->
+  <g fill="none" stroke="#c9a227" stroke-width="2">
+    <!-- outer seal ring -->
+    <circle cx="60" cy="60" r="52" opacity="0.55" stroke-width="1.5"/>
+    <circle cx="60" cy="60" r="46" opacity="0.3" stroke-width="1"/>
+    <!-- orbit ellipses -->
+    <ellipse cx="60" cy="60" rx="40" ry="16" opacity="0.85" transform="rotate(-24 60 60)"/>
+    <ellipse cx="60" cy="60" rx="40" ry="16" opacity="0.55" transform="rotate(38 60 60)"/>
+    <!-- nucleus: hexagon -->
+    <polygon points="60,44 74,52 74,68 60,76 46,68 46,52" opacity="0.95"/>
+    <!-- core -->
+    <circle cx="60" cy="60" r="6" fill="#c9a227" stroke="none" opacity="0.9"/>
+  </g>
+  <g fill="#c9a227">
+    <!-- satellites on the orbits -->
+    <circle cx="97" cy="44" r="3.2"/>
+    <circle cx="28" cy="82" r="2.6" opacity="0.7"/>
+    <circle cx="60" cy="12" r="2.2" opacity="0.5"/>
+  </g>
+</svg>
