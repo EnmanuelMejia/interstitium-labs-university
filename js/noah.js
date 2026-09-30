@@ -153,14 +153,7 @@
     '#noah-launcher .noah-orb{position:absolute;inset:6px;border-radius:50%;overflow:hidden;',
     'background:radial-gradient(circle at 35% 30%,#1c2b3a,#0a0f16 70%);',
     'box-shadow:0 0 0 1px rgba(212,175,55,.45),0 0 22px rgba(34,211,238,.25),0 8px 28px rgba(0,0,0,.55);}',
-    '#noah-launcher .noah-orb img{width:100%;height:100%;object-fit:cover;display:block;}',
-    '#noah-launcher .noah-ring{position:absolute;inset:0;border-radius:50%;pointer-events:none;}',
-    '#noah-launcher .noah-ring.r1{border:1px solid rgba(34,211,238,.55);animation:noah-spin 9s linear infinite;}',
-    '#noah-launcher .noah-ring.r1::after{content:"";position:absolute;top:-3px;left:50%;width:6px;height:6px;',
-    'margin-left:-3px;border-radius:50%;background:#22d3ee;box-shadow:0 0 8px #22d3ee;}',
-    '#noah-launcher .noah-ring.r2{inset:3px;border:1px dashed rgba(212,175,55,.4);animation:noah-spin-rev 14s linear infinite;}',
-    '@keyframes noah-spin{to{transform:rotate(360deg);}}',
-    '@keyframes noah-spin-rev{to{transform:rotate(-360deg);}}',
+    '#noah-launcher .noah-orb canvas{width:100%;height:100%;display:block;border-radius:50%;}',
     '#noah-launcher:hover .noah-orb{box-shadow:0 0 0 1px rgba(212,175,55,.8),0 0 30px rgba(34,211,238,.45),0 8px 28px rgba(0,0,0,.55);}',
     '#noah-launcher .noah-ping{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(34,211,238,.7);',
     'opacity:0;pointer-events:none;}',
@@ -176,7 +169,7 @@
     'background:linear-gradient(120deg,rgba(212,175,55,.12),rgba(34,211,238,.08));border-bottom:1px solid rgba(212,175,55,.2);}',
     '#noah-head .noah-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;',
     'box-shadow:0 0 0 1px rgba(212,175,55,.5),0 0 14px rgba(34,211,238,.3);background:#0a0f16;}',
-    '#noah-head .noah-avatar img{width:100%;height:100%;object-fit:cover;display:block;}',
+    '#noah-head .noah-avatar canvas{width:100%;height:100%;display:block;border-radius:50%;}',
     '#noah-head .noah-title{flex:1;min-width:0;}',
     '#noah-head .noah-name{color:#f2e8c9;font-weight:650;font-size:15px;letter-spacing:.02em;}',
     '#noah-head .noah-status{color:#7d8ea3;font-size:12px;display:flex;align-items:center;gap:6px;}',
@@ -309,12 +302,15 @@
     if (!text || busy) return;
     busy = true;
     els.send.disabled = true;
+    setAvatarState('thinking');
     addMsg('user', esc(text));
     history.push({ role: 'user', content: text });
     saveHistory();
     showTyping();
     askRemote(text, history.slice(0, -1)).then(function (out) {
       hideTyping();
+      setAvatarState('speaking');
+      setTimeout(function () { if (!busy) setAvatarState('idle'); }, 2800);
       addMsg('noah', mdLite(out.reply), out.notice);
       if (out.nudges) renderNudges(out.nudges);
       history.push({ role: 'assistant', content: out.reply });
@@ -325,25 +321,244 @@
     });
   }
 
+  /* ============ NoahAvatar: living-portrait canvas engine ============
+     Layered render per frame: deep-space ground + drifting nebulae,
+     breathing portrait, three orbit rings (one with a satellite),
+     Hermetic glyphs riding the gold ring (Dee's planetary septet),
+     twinkling particle motes, speaking ripples, state glow rim.
+     States idle / thinking / speaking change tempo and glow.
+     One shared rAF drives every mounted instance; pauses when the
+     tab is hidden; renders a single static frame under
+     prefers-reduced-motion. Falls back to a static <img>. */
+  var NoahAvatar = (function () {
+    var GLYPHS = ['\u2609', '\u263D', '\u263F', '\u2640', '\u2641', '\u2642', '\u2643'];
+    var instances = [], rafId = 0, lastT = 0;
+    var img = null, imgOk = false;
+    var reduced = false;
+    try { reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+
+    function ensureImg() {
+      if (img || typeof Image === 'undefined') return;
+      img = new Image();
+      img.onload = function () { imgOk = true; };
+      img.onerror = function () { img = null; };
+      img.src = AVATAR_SRC;
+    }
+
+    function frame(now) {
+      rafId = 0;
+      var dt = Math.min(0.05, (now - lastT) / 1000 || 0.016);
+      lastT = now;
+      var any = false;
+      for (var i = 0; i < instances.length; i++) {
+        if (!instances[i].dead) { any = true; draw(instances[i], dt); }
+      }
+      if (any && !document.hidden) rafId = requestAnimationFrame(frame);
+    }
+    function kick() {
+      if (!rafId && !reduced && typeof requestAnimationFrame !== 'undefined') {
+        lastT = performance.now();
+        rafId = requestAnimationFrame(frame);
+      }
+    }
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
+    }
+
+    function neb(ctx, x, y, r, rgb, a) {
+      var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, 'rgba(' + rgb + ',' + a + ')');
+      g.addColorStop(1, 'rgba(' + rgb + ',0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+
+    function orbitRing(ctx, R, rx, ry, rot, color, w, satellite, st) {
+      ctx.save();
+      ctx.translate(R, R);
+      ctx.rotate(rot * 0.35);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      if (ctx.ellipse) ctx.ellipse(0, 0, rx, ry, 0, 0, 6.2832);
+      else ctx.arc(0, 0, (rx + ry) / 2, 0, 6.2832);
+      ctx.stroke();
+      if (satellite && st) {
+        var sa = rot * 2, sx = Math.cos(sa) * rx, sy = Math.sin(sa) * ry;
+        var sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, 5);
+        sg.addColorStop(0, 'rgba(170,242,255,1)');
+        sg.addColorStop(1, 'rgba(34,211,238,0)');
+        ctx.fillStyle = sg;
+        ctx.beginPath(); ctx.arc(sx, sy, 5, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = '#e2fbff';
+        ctx.beginPath(); ctx.arc(sx, sy, 1.7, 0, 6.2832); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function draw(st, dt) {
+      var speed = st.state === 'thinking' ? 2.8 : st.state === 'speaking' ? 1.7 : 1;
+      st.t += dt * speed;
+      if (st.state === 'speaking' && st.t - st.lastRipple > 0.55) {
+        st.lastRipple = st.t;
+        st.ripples.push({ r: 0.34, a: 0.5 });
+      }
+      st.px += (st.tx - st.px) * Math.min(1, dt * 6);
+      st.py += (st.ty - st.py) * Math.min(1, dt * 6);
+
+      var ctx = st.ctx, S = st.size, dpr = st.dpr, R = S / 2, i;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, S, S);
+      ctx.save();
+      ctx.beginPath(); ctx.arc(R, R, R - 1, 0, 6.2832); ctx.clip();
+
+      var g = ctx.createRadialGradient(R * 0.85, R * 0.75, R * 0.1, R, R, R);
+      g.addColorStop(0, '#16242f'); g.addColorStop(0.55, '#0a1119'); g.addColorStop(1, '#04070b');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+      neb(ctx, R + Math.sin(st.t * 0.21) * R * 0.18, R * 0.72 + Math.cos(st.t * 0.17) * R * 0.12, R * 0.55, '212,175,55', 0.07);
+      neb(ctx, R + Math.cos(st.t * 0.13) * R * 0.2, R * 0.4 + Math.sin(st.t * 0.19) * R * 0.14, R * 0.6, '34,211,238', 0.08);
+
+      var br = 1 + 0.028 * Math.sin(st.t * 1.1);
+      var pr = R * 0.62 * br;
+      var ox = st.px * 2.2, oy = st.py * 2.2;
+      if (imgOk) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(R + ox, R + oy, pr, 0, 6.2832); ctx.clip();
+        var iw = img.width, ih = img.height, sc = Math.max(pr * 2 / iw, pr * 2 / ih);
+        ctx.drawImage(img, R + ox - iw * sc / 2, R + oy - ih * sc / 2, iw * sc, ih * sc);
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(212,175,55,.5)'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.arc(R + ox, R + oy, pr, 0, 6.2832); ctx.stroke();
+      } else {
+        ctx.fillStyle = '#0d1620';
+        ctx.beginPath(); ctx.arc(R, R, pr, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = '#d4af37';
+        ctx.font = '700 ' + Math.round(pr * 1.1) + 'px Georgia,serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('N', R, R + pr * 0.06);
+      }
+      var vg = ctx.createRadialGradient(R, R, R * 0.45, R, R, R);
+      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.5)');
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, S, S);
+
+      orbitRing(ctx, R, R * 0.80, R * 0.34, st.t * 0.5, 'rgba(34,211,238,.6)', 1.1, true, st);
+      orbitRing(ctx, R, R * 0.70, R * 0.70, -st.t * 0.32, 'rgba(212,175,55,.45)', 1, false, null);
+      orbitRing(ctx, R, R * 0.88, R * 0.30, st.t * 0.22 + 1.3, 'rgba(255,255,255,.22)', 0.8, false, null);
+
+      ctx.fillStyle = 'rgba(212,175,55,.55)';
+      ctx.font = Math.max(5, Math.round(R * 0.2)) + 'px serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (i = 0; i < st.glyphs.length; i++) {
+        var ga = st.glyphs[i].a + st.t * 0.32;
+        ctx.fillText(st.glyphs[i].ch, R + Math.cos(ga) * R * 0.7, R + Math.sin(ga) * R * 0.7);
+      }
+
+      for (i = 0; i < st.parts.length; i++) {
+        var p = st.parts[i];
+        p.y -= p.s * dt * speed;
+        if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
+        var tw = 0.22 + 0.5 * Math.abs(Math.sin(st.t * 2 + p.tw));
+        ctx.fillStyle = p.gold ? 'rgba(212,175,55,' + tw.toFixed(2) + ')' : 'rgba(165,232,252,' + tw.toFixed(2) + ')';
+        ctx.beginPath(); ctx.arc(p.x * S, p.y * S, p.r, 0, 6.2832); ctx.fill();
+      }
+
+      for (i = st.ripples.length - 1; i >= 0; i--) {
+        var rp = st.ripples[i];
+        rp.r += dt * 0.9; rp.a -= dt * 0.8;
+        if (rp.a <= 0 || rp.r > 1.15) { st.ripples.splice(i, 1); continue; }
+        ctx.strokeStyle = 'rgba(212,175,55,' + rp.a.toFixed(2) + ')';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.arc(R, R, rp.r * R, 0, 6.2832); ctx.stroke();
+      }
+
+      ctx.restore();
+
+      var glowA = st.state === 'thinking' ? 0.5 + 0.3 * Math.sin(st.t * 6)
+        : st.state === 'speaking' ? 0.45 + 0.25 * Math.sin(st.t * 4) : 0.28;
+      var glowC = st.state === 'thinking' ? '34,211,238' : '212,175,55';
+      ctx.strokeStyle = 'rgba(' + glowC + ',' + glowA.toFixed(2) + ')';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(R, R, R - 1.5, 0, 6.2832); ctx.stroke();
+    }
+
+    function mount(host, size) {
+      ensureImg();
+      var api = { setState: function () {}, parallax: function () {}, destroy: function () {} };
+      try {
+        var cv = document.createElement('canvas');
+        var ctx = cv.getContext('2d');
+        if (!ctx) throw new Error('no2d');
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        cv.width = Math.round(size * dpr); cv.height = Math.round(size * dpr);
+        cv.style.width = '100%'; cv.style.height = '100%';
+        cv.style.display = 'block'; cv.style.borderRadius = '50%';
+        host.appendChild(cv);
+        var st = {
+          ctx: ctx, size: size, dpr: dpr, t: Math.random() * 40,
+          state: 'idle', tx: 0, ty: 0, px: 0, py: 0,
+          ripples: [], parts: [], glyphs: [], lastRipple: 0, dead: false
+        };
+        for (var k = 0; k < 44; k++) st.parts.push({
+          x: Math.random(), y: Math.random(), r: 0.7 + Math.random() * 1.5,
+          s: 0.02 + Math.random() * 0.05, tw: Math.random() * 6.28, gold: Math.random() < 0.32
+        });
+        for (var q = 0; q < GLYPHS.length; q++) st.glyphs.push({ ch: GLYPHS[q], a: q / GLYPHS.length * 6.2832 });
+        instances.push(st);
+        if (reduced) draw(st, 0.016); else kick();
+        api.setState = function (s) { st.state = s; if (reduced) draw(st, 0.016); else kick(); };
+        api.parallax = function (x, y) {
+          st.tx = Math.max(-1, Math.min(1, x));
+          st.ty = Math.max(-1, Math.min(1, y));
+        };
+        api.destroy = function () {
+          st.dead = true;
+          var ix = instances.indexOf(st);
+          if (ix >= 0) instances.splice(ix, 1);
+        };
+      } catch (e) {
+        var im = document.createElement('img');
+        im.alt = 'Noah AI'; im.src = AVATAR_SRC;
+        im.style.width = '100%'; im.style.height = '100%';
+        im.style.objectFit = 'cover'; im.style.display = 'block'; im.style.borderRadius = '50%';
+        host.appendChild(im);
+      }
+      return api;
+    }
+
+    return { mount: mount };
+  })();
+
+  var avatarCtl = { launcher: null, head: null };
+  function setAvatarState(s) {
+    try {
+      if (avatarCtl.launcher) avatarCtl.launcher.setState(s);
+      if (avatarCtl.head) avatarCtl.head.setState(s);
+    } catch (e) {}
+  }
+
   function buildWidget() {
     if (document.getElementById('noah-launcher')) return;
     var style = document.createElement('style');
     style.textContent = WIDGET_CSS;
     document.head.appendChild(style);
 
-    var launcher = el('button', '', '<span class="noah-ring r1"></span><span class="noah-ring r2"></span>' +
-      '<span class="noah-orb"><img alt="Noah AI"></span><span class="noah-ping"></span>');
+    var launcher = el('button', '', '<span class="noah-orb" aria-hidden="true"></span><span class="noah-ping"></span>');
     launcher.id = 'noah-launcher';
     launcher.setAttribute('aria-label', 'Chat with Noah AI');
-    launcher.querySelector('img').src = AVATAR_SRC;
     launcher.addEventListener('click', toggle);
+    avatarCtl.launcher = NoahAvatar.mount(launcher.querySelector('.noah-orb'), 52);
+    launcher.addEventListener('pointermove', function (e) {
+      var r = launcher.getBoundingClientRect();
+      avatarCtl.launcher.parallax(((e.clientX - r.left) / r.width - 0.5) * 2, ((e.clientY - r.top) / r.height - 0.5) * 2);
+    });
+    launcher.addEventListener('pointerleave', function () { avatarCtl.launcher.parallax(0, 0); });
 
     var panel = el('div', '');
     panel.id = 'noah-panel';
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-label', 'Noah AI chat');
     panel.innerHTML =
-      '<div id="noah-head"><span class="noah-avatar"><img alt="Noah AI"></span>' +
+      '<div id="noah-head"><span class="noah-avatar" aria-hidden="true"></span>' +
       '<span class="noah-title"><span class="noah-name">Noah AI</span><br>' +
       '<span class="noah-status"><span class="noah-dot"></span><span id="noah-status-text">Online — resident intelligence</span></span></span>' +
       '<button id="noah-close" aria-label="Close chat">×</button></div>' +
@@ -352,7 +567,7 @@
       '<form id="noah-form"><textarea id="noah-input" rows="1" placeholder="Ask Noah AI anything…" aria-label="Message Noah AI"></textarea>' +
       '<button id="noah-send" type="submit">Send</button></form>' +
       '<div id="noah-foot">Noah AI · Interstitium Labs · answers from Enmanuel\'s distilled work</div>';
-    panel.querySelector('#noah-head img').src = AVATAR_SRC;
+    avatarCtl.head = NoahAvatar.mount(panel.querySelector('.noah-avatar'), 40);
 
     document.body.appendChild(launcher);
     document.body.appendChild(panel);
