@@ -5,6 +5,9 @@
  *  - All non-API traffic -> static assets (existing site, unchanged).
  *  - POST /api/noah -> proxied chat completion via Workers AI.
  *    CORS-enabled for https://interstitiumlabs.dev (apex widget).
+ *  - POST /api/noah-stats -> privacy-respecting usage aggregates
+ *    (counters only, no message text, no PII) into KV (NOAH_STATS).
+ *    GET /api/noah-stats -> coarse public aggregates for iteration.
  * ===================================================================== */
 
 const NOAH_MODEL = '@cf/meta/llama-3.1-8b-instruct';
@@ -159,9 +162,99 @@ async function handleNoah(request, env) {
   }
 }
 
+/* ---- Noah stats: privacy-respecting usage aggregates ----
+   POST /api/noah-stats { v:1, sid, platform, agg:{ opens, asks, remotes,
+   fallbacks, nudges, chips, errors, byTopic } } -> 204.
+   Counters only; never message text, never PII. Stored per-day plus a
+   global rollup in KV (binding NOAH_STATS). GET returns coarse public
+   aggregates consumed by the weekly autonomous-iteration review. */
+const STAT_KEYS = ['opens', 'asks', 'remotes', 'fallbacks', 'nudges', 'chips', 'errors'];
+
+function freshAgg() {
+  return { opens: 0, asks: 0, remotes: 0, fallbacks: 0, nudges: 0, chips: 0, errors: 0, byTopic: {} };
+}
+
+function dayKey(d) { return 'stats:day:' + d.toISOString().slice(0, 10); }
+
+function sanitizeAgg(a) {
+  if (!a || typeof a !== 'object') return null;
+  const out = {};
+  for (const k of STAT_KEYS) {
+    const n = Number(a[k]);
+    out[k] = Number.isFinite(n) && n >= 0 ? Math.min(Math.floor(n), 10000) : 0;
+  }
+  out.byTopic = {};
+  if (a.byTopic && typeof a.byTopic === 'object') {
+    for (const t of Object.keys(a.byTopic).slice(0, 40)) {
+      if (/^[a-z-]{1,24}$/.test(t)) {
+        const n = Number(a.byTopic[t]);
+        if (Number.isFinite(n) && n > 0) out.byTopic[t] = Math.min(Math.floor(n), 10000);
+      }
+    }
+  }
+  return out;
+}
+
+function mergeAgg(base, d) {
+  const out = Object.assign(freshAgg(), base, { byTopic: {} });
+  for (const k of STAT_KEYS) out[k] = (Number(base[k]) || 0) + (d[k] || 0);
+  const bt = (base.byTopic && typeof base.byTopic === 'object') ? base.byTopic : {};
+  for (const t of Object.keys(bt)) out.byTopic[t] = bt[t];
+  for (const t of Object.keys(d.byTopic)) out.byTopic[t] = (out.byTopic[t] || 0) + d.byTopic[t];
+  return out;
+}
+
+async function handleStats(request, env) {
+  const origin = allowedOrigin(request);
+  if (request.method === 'OPTIONS') {
+    return cors(new Response(null, { status: 204 }), origin);
+  }
+  if (request.method === 'POST') {
+    let body = null;
+    try { body = await request.json(); } catch (e) { return json({ error: 'Bad JSON.' }, 400, origin); }
+    if (!body || body.v !== 1) return json({ error: 'Bad version.' }, 400, origin);
+    const d = sanitizeAgg(body.agg);
+    if (!d) return json({ error: 'Bad aggregate.' }, 400, origin);
+    const ip = request.headers.get('CF-Connecting-IP') || 'x';
+    if (rateLimited('stats:' + ip)) return cors(new Response(null, { status: 429 }), origin);
+    if (env.NOAH_STATS) {
+      try {
+        const day = dayKey(new Date());
+        const cur = (await env.NOAH_STATS.get(day, 'json')) || freshAgg();
+        await env.NOAH_STATS.put(day, JSON.stringify(mergeAgg(cur, d)));
+        const g = (await env.NOAH_STATS.get('stats:global', 'json')) || freshAgg();
+        await env.NOAH_STATS.put('stats:global', JSON.stringify(mergeAgg(g, d)));
+      } catch (e) {
+        console.log('noah-stats kv error: ' + (e && e.message));
+      }
+    } else {
+      console.log('noah-stats (no KV): ' + JSON.stringify(d));
+    }
+    return cors(new Response(null, { status: 204 }), origin);
+  }
+  if (request.method === 'GET') {
+    const out = { global: freshAgg(), days: [] };
+    if (env.NOAH_STATS) {
+      try {
+        out.global = (await env.NOAH_STATS.get('stats:global', 'json')) || freshAgg();
+        for (let i = 0; i < 7; i++) {
+          const k = dayKey(new Date(Date.now() - i * 864e5));
+          const v = await env.NOAH_STATS.get(k, 'json');
+          if (v) out.days.push(Object.assign({ day: k.slice(10) }, v));
+        }
+      } catch (e) { /* serve empty aggregates */ }
+    }
+    return json(out, 200, origin);
+  }
+  return json({ error: 'Use GET or POST.' }, 405, origin);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === '/api/noah-stats') {
+      return handleStats(request, env);
+    }
     if (url.pathname === '/api/noah') {
       if (request.method === 'OPTIONS') {
         return cors(new Response(null, { status: 204 }), allowedOrigin(request));

@@ -290,7 +290,7 @@
     nudges.forEach(function (n) {
       var b = el('button', 'noah-nudge', esc(n));
       b.type = 'button';
-      b.addEventListener('click', function () { sendText(n); });
+      b.addEventListener('click', function () { NoahStats.track('nudge'); sendText(n); });
       box.appendChild(b);
     });
     els.msgs.appendChild(box);
@@ -303,15 +303,22 @@
     busy = true;
     els.send.disabled = true;
     setAvatarState('thinking');
+    NoahStats.track('ask', detectTopic(text.toLowerCase()));
     addMsg('user', esc(text));
     history.push({ role: 'user', content: text });
     saveHistory();
     showTyping();
     askRemote(text, history.slice(0, -1)).then(function (out) {
       hideTyping();
+      NoahStats.track(out.remote ? 'remote' : 'fallback');
       setAvatarState('speaking');
       setTimeout(function () { if (!busy) setAvatarState('idle'); }, 2800);
-      addMsg('noah', mdLite(out.reply), out.notice);
+      var notice = out.notice;
+      if (!out.remote && !fallbackNoted && NoahStats.fallbackStreak() >= 3) {
+        fallbackNoted = true;
+        notice = (notice ? notice + ' ' : '') + 'Heads up: I have been answering from the on-device engine — check your connection for the full Noah.';
+      }
+      addMsg('noah', mdLite(out.reply), notice);
       if (out.nudges) renderNudges(out.nudges);
       history.push({ role: 'assistant', content: out.reply });
       saveHistory();
@@ -319,6 +326,128 @@
       els.send.disabled = false;
       els.input.focus();
     });
+  }
+
+  /* ================= NoahStats: privacy-respecting analytics ==========
+     Event counters only — never message text, never PII. Aggregates live
+     in localStorage; per-session deltas are beaconed to /api/noah-stats
+     (fire-and-forget, throttled to one beacon per 5 minutes). This powers
+     the in-widget autonomous iteration (adaptive chips, returning-user
+     greeting, fallback awareness) and the weekly fleet review. */
+  var NoahStats = (function () {
+    var KEY = 'noah-ai-stats-v1';
+    var agg = null, lastSent = null, lastBeacon = 0, fallbackStreak = 0;
+    function fresh() {
+      return { v: 1, opens: 0, asks: 0, remotes: 0, fallbacks: 0, nudges: 0,
+        chips: 0, errors: 0, sessions: 0, byTopic: {}, firstSeen: Date.now() };
+    }
+    function load() {
+      try {
+        var raw = localStorage.getItem(KEY);
+        agg = raw ? JSON.parse(raw) : fresh();
+        if (!agg || agg.v !== 1 || !agg.byTopic) agg = fresh();
+      } catch (e) { agg = fresh(); }
+      agg.sessions++;
+      save();
+      try {
+        lastSent = JSON.parse(JSON.stringify(agg));
+      } catch (e) { lastSent = fresh(); }
+    }
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(agg)); } catch (e) {}
+    }
+    function statsEndpoint() {
+      try {
+        var m = getEndpoint().match(/^(https:\/\/[^/]+)/);
+        return (m ? m[1] : '') + '/api/noah-stats';
+      } catch (e) { return null; }
+    }
+    function delta() {
+      var d = { opens: agg.opens - lastSent.opens, asks: agg.asks - lastSent.asks,
+        remotes: agg.remotes - lastSent.remotes, fallbacks: agg.fallbacks - lastSent.fallbacks,
+        nudges: agg.nudges - lastSent.nudges, chips: agg.chips - lastSent.chips,
+        errors: agg.errors - lastSent.errors, byTopic: {} };
+      for (var k in agg.byTopic) {
+        var dd = agg.byTopic[k] - (lastSent.byTopic[k] || 0);
+        if (dd > 0) d.byTopic[k] = dd;
+      }
+      return d;
+    }
+    function maybeBeacon() {
+      var now = Date.now();
+      if (now - lastBeacon < 5 * 60 * 1000) return;
+      var url = statsEndpoint();
+      if (!url) return;
+      var d = delta();
+      var total = d.opens + d.asks + d.remotes + d.fallbacks + d.nudges + d.chips + d.errors;
+      if (!total) return;
+      lastBeacon = now;
+      try { lastSent = JSON.parse(JSON.stringify(agg)); } catch (e) {}
+      try {
+        var payload = JSON.stringify({
+          v: 1,
+          sid: Math.random().toString(36).slice(2, 12),
+          platform: /Capacitor/i.test(navigator.userAgent || '') ? 'mobile' : 'web',
+          agg: d
+        });
+        if (navigator.sendBeacon) { navigator.sendBeacon(url, payload); }
+        else { fetch(url, { method: 'POST', body: payload, keepalive: true }).catch(function () {}); }
+      } catch (e) {}
+    }
+    function track(ev, topic) {
+      if (!agg) load();
+      if (ev === 'open') agg.opens++;
+      else if (ev === 'ask') { agg.asks++; if (topic && topic !== 'general') agg.byTopic[topic] = (agg.byTopic[topic] || 0) + 1; }
+      else if (ev === 'remote') { agg.remotes++; fallbackStreak = 0; }
+      else if (ev === 'fallback') { agg.fallbacks++; fallbackStreak++; }
+      else if (ev === 'nudge') agg.nudges++;
+      else if (ev === 'chip') agg.chips++;
+      else if (ev === 'error') agg.errors++;
+      save();
+      maybeBeacon();
+    }
+    function topTopic() {
+      if (!agg) load();
+      var best = null, n = 0;
+      for (var k in agg.byTopic) { if (agg.byTopic[k] > n) { n = agg.byTopic[k]; best = k; } }
+      return n >= 2 ? { topic: best, count: n } : null;
+    }
+    function getFallbackStreak() { return fallbackStreak; }
+    function getSessions() { if (!agg) load(); return agg.sessions; }
+    return { load: load, track: track, topTopic: topTopic,
+      fallbackStreak: getFallbackStreak, sessions: getSessions };
+  })();
+
+  /* ============ Autonomous in-widget iteration =====================
+     Noah adapts to the learner from their own usage — no server needed:
+     - adaptive chips: the learner's most-asked topic becomes the first chip
+     - returning greeting: sessions 2+ with a top topic get a welcome-back
+       that names the topic and offers to continue
+     - fallback awareness: 3+ consecutive local fallbacks surface one
+       gentle connectivity note (once per session) */
+  var TOPIC_LABEL = {
+    algebra: 'algebra', trigonometry: 'trigonometry', calculus: 'calculus',
+    networking: 'subnetting & networking', linux: 'Linux', security: 'security',
+    python: 'Python', sql: 'SQL', git: 'Git', containers: 'containers', cloud: 'cloud'
+  };
+  var fallbackNoted = false;
+  function adaptiveChips() {
+    var chips = CHIPS.slice();
+    var top = NoahStats.topTopic();
+    if (top && TOPIC_LABEL[top.topic]) {
+      var label = 'Keep going with ' + TOPIC_LABEL[top.topic];
+      chips = [label].concat(chips.filter(function (c) { return c !== label; }));
+    }
+    return chips;
+  }
+  function returningGreeting() {
+    var top = NoahStats.topTopic();
+    if (NoahStats.sessions() >= 2 && top && TOPIC_LABEL[top.topic] && !history.length) {
+      return 'Welcome back. Last time you were working through <b>' +
+        TOPIC_LABEL[top.topic] + '</b> — shall we continue where you left off, ' +
+        'or start something new?';
+    }
+    return null;
   }
 
   /* ============ NoahAvatar: living-portrait canvas engine ============
@@ -587,22 +716,25 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); els.form.dispatchEvent(new Event('submit', { cancelable: true })); }
     });
 
-    CHIPS.forEach(function (c) {
+    adaptiveChips().forEach(function (c) {
       var b = el('button', 'noah-chip', esc(c));
       b.type = 'button';
-      b.addEventListener('click', function () { sendText(c); });
+      b.addEventListener('click', function () { NoahStats.track('chip'); sendText(c); });
       els.chips.appendChild(b);
     });
 
     loadHistory();
+    NoahStats.load();
+    NoahStats.track('open');
     var greeted = false;
     try { greeted = sessionStorage.getItem('noah-ai-greeted') === '1'; } catch (e) {}
     history.forEach(function (m) {
       addMsg(m.role, m.role === 'user' ? esc(m.content) : mdLite(m.content));
     });
     if (!history.length && !greeted) {
-      addMsg('noah', 'I am <b>Noah AI</b> — the resident intelligence of Interstitium Labs. ' +
-        'Ask me about the curriculum, the projects, the code — or bring me a hypothesis and we will reason it through, Socratic-style.');
+      var rg = returningGreeting();
+      addMsg('noah', rg || ('I am <b>Noah AI</b> — the resident intelligence of Interstitium Labs. ' +
+        'Ask me about the curriculum, the projects, the code — or bring me a hypothesis and we will reason it through, Socratic-style.'));
       try { sessionStorage.setItem('noah-ai-greeted', '1'); } catch (e) {}
     }
     if (!greeted) {
