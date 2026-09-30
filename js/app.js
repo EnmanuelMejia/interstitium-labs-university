@@ -1,6 +1,6 @@
 /* Interstitium Labs — shared app shell.
    Renders header/nav + footer into #il-header / #il-footer on every page,
-   loads data/catalog.json with a graceful offline state, and provides
+   loads the sharded catalog (data/catalog/index.json + shards) with a graceful offline state, and provides
    DOM + catalog helpers. No frameworks. No network calls besides the
    catalog fetch and same-origin assets. */
 (function () {
@@ -61,29 +61,40 @@
     { code: 'IL-07', name: 'SQL, Data Engineering, Analytics & AI', hours: 720, tagline: 'Blueprints, not trivia.', blurb: 'Relational models, warehouses, analytics, and the statistical floor of machine learning.' },
     { code: 'IL-08', name: 'Algorithms, Compilers, Distributed & Formal', hours: 640, tagline: 'The proofs that keep systems honest.', blurb: 'Data structures, language implementation, consensus, and the proofs that keep systems honest.' },
     { code: 'IL-09', name: 'Adaptive Certification Command', hours: 1100, tagline: 'Blueprints, not trivia.', blurb: 'Computer-adaptive prep for CompTIA, Microsoft, Azure, Oracle Java, Red Hat, Python Institute, and vendor families.' },
-    { code: 'IL-10', name: 'Portfolio, Career & Professional Practice', hours: 280, tagline: 'The work is the record.', blurb: 'Inspectable evidence: labs, writeups, interviews, and the public work that outlives a badge.' }
+    { code: 'IL-10', name: 'Portfolio, Career & Professional Practice', hours: 280, tagline: 'The work is the record.', blurb: 'Inspectable evidence: labs, writeups, interviews, and the public work that outlives a badge.' },
+    { code: 'IL-11', name: 'Zero Trust & Endpoint Defense', hours: 360, tagline: 'Never trust, always verify.', blurb: 'Zero Trust doctrine, AD defense, allowlisting and ringfencing, red/blue operations — distilled from the public shape of ThreatLocker\u2019s bootcamp.' }
   ];
 
-  /* ---------- catalog loader (graceful: never throws into page code) ---------- */
+  /* ---------- catalog loader (sharded: data/catalog/index.json lists shards;
+       merged here; graceful: never throws into page code) ---------- */
   var catalogState = { data: null, error: null, offline: false };
 
   function emptyCatalog() {
     return { academies: [], paths: [], _empty: true };
   }
 
+  function fetchJson(url) {
+    return fetch(url, { credentials: 'same-origin' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+      return r.json();
+    });
+  }
+
   function loadCatalog() {
-    return fetch('data/catalog.json', { credentials: 'same-origin' })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
+    return fetchJson('data/catalog/index.json')
+      .then(function (manifest) {
+        var shards = (manifest && manifest.shards) || [];
+        if (!shards.length) throw new Error('empty catalog manifest');
+        return Promise.all(shards.map(function (s) { return fetchJson('data/catalog/' + s); }));
       })
-      .then(function (json) {
-        json = json || {};
-        catalogState.data = {
-          academies: Array.isArray(json.academies) ? json.academies : [],
-          paths: Array.isArray(json.paths) ? json.paths : [],
-          _empty: false
-        };
+      .then(function (parts) {
+        var academies = [], paths = [];
+        parts.forEach(function (json) {
+          json = json || {};
+          if (Array.isArray(json.academies)) academies = academies.concat(json.academies);
+          if (Array.isArray(json.paths)) paths = paths.concat(json.paths);
+        });
+        catalogState.data = { academies: academies, paths: paths, _empty: false };
         // Fall back to the verified academy index only if the catalog ships none.
         if (!catalogState.data.academies.length) {
           catalogState.data.academies = FALLBACK_ACADEMIES.slice();

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* Interstitium Labs learning university — build validator.
    Implements the "Validation" section of build/CONTRACT.md:
-     1. catalog.json schema check
+     1. catalog schema check (sharded)
      2. every path has >=1 module
      3. every module has >=1 source with an http(s) url
      4. every timed assessment has >=10 items, each with a valid answer
@@ -41,12 +41,22 @@ function isHttpUrl(v) { return typeof v === 'string' && /^https?:\/\//i.test(v.t
 
 function check(cond, msg) { if (!cond) fail(msg); }
 
-/* ---------- 1. catalog.json schema ---------- */
-const catalog = readJson('data/catalog.json');
+/* ---------- 1. catalog schema (sharded: data/catalog/index.json + shards) ---------- */
+const manifest = readJson('data/catalog/index.json');
+const catalog = { academies: [], paths: [] };
+if (manifest && Array.isArray(manifest.shards)) {
+  for (const s of manifest.shards) {
+    const part = readJson('data/catalog/' + s) || {};
+    if (Array.isArray(part.academies)) catalog.academies.push(...part.academies);
+    if (Array.isArray(part.paths)) catalog.paths.push(...part.paths);
+  }
+} else {
+  fail('FATAL: data/catalog/index.json missing or has no shards array');
+}
 if (catalog) {
-  check(catalog && typeof catalog === 'object', 'catalog.json is not an object');
-  check(Array.isArray(catalog.academies), 'catalog.json: "academies" must be an array');
-  check(Array.isArray(catalog.paths), 'catalog.json: "paths" must be an array');
+  check(catalog && typeof catalog === 'object', 'merged catalog is not an object');
+  check(Array.isArray(catalog.academies), 'merged catalog: "academies" must be an array');
+  check(Array.isArray(catalog.paths), 'merged catalog: "paths" must be an array');
 
   const academyCodes = new Set();
   (catalog.academies || []).forEach((a, i) => {

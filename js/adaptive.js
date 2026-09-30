@@ -31,7 +31,7 @@
  * State shape used by next/record/dueReviews/gate:
  *   { topics:[topicId], mastery:{topicId:0..1}, sm2:{topicId:rec},
  *     prereqs:{topicId:[prereqId]}, log:[...] }
- * Callers (learn.html) seed state.prereqs from data/catalog.json topic order;
+ * Callers (learn.html) seed state.prereqs from the sharded catalog topic order;
  * when absent, the built-in DEFAULT_PREREQS seed (the catalog math spine
  * order: arithmetic -> pre-algebra -> algebra -> trig -> stats) is used.
  * ===================================================================== */

@@ -27,7 +27,10 @@ build/
   js/hero.js                 # AI Pantheon terminal-storm canvas
   js/adaptive.js             # adaptive engine -> window.IL.adaptive
   js/noah.js                 # Noah tutor -> window.IL.noah
-  data/catalog.json          # academies + paths + modules + assessments + questions
+  data/catalog/index.json      # shard manifest {"shards":[...]}
+  data/catalog/shard-*.json    # academies + paths + modules + assessments + questions (sharded;
+                               # each shard <100KB so GitHub MCP file pushes stay under the arg limit;
+                               # app.js merges shards at load)
   data/dedupe-matrix.json    # dedupe artifact
   data/sources.json          # every direct source study resource, attributed
   assets/sigil.svg           # procedural IL sigil (original)
