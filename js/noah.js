@@ -763,18 +763,23 @@
     if (!document.body) return;
     buildWidget();
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
   }
 
-  if (typeof window === 'undefined') { var window = {}; }
-  window.IL = window.IL || {};
-  window.IL.noah = { ask: ask, configureLLM: configureLLM };
-  window.IL.noahAI = {
-    open: open, close: close, toggle: toggle,
-    ask: function (text, hist) { return askRemote(text, hist || []); },
-    endpoint: getEndpoint
-  };
+  /* Export onto the real global window (never a shadowed local). */
+  var __exportWin = (typeof window !== 'undefined') ? window : null;
+  if (__exportWin) {
+    __exportWin.IL = __exportWin.IL || {};
+    __exportWin.IL.noah = { ask: ask, configureLLM: configureLLM };
+    __exportWin.IL.noahAI = {
+      open: open, close: close, toggle: toggle,
+      ask: function (text, hist) { return askRemote(text, hist || []); },
+      endpoint: getEndpoint
+    };
+  }
 })();
