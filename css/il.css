@@ -200,6 +200,12 @@ section.block { padding: clamp(2.5rem, 6vw, 5rem) 0; }
   width: clamp(170px, 32vmin, 330px); height: auto;
   filter: drop-shadow(0 0 46px rgba(212,175,55,0.30)) drop-shadow(0 0 120px rgba(34,211,238,0.12));
 }
+/* Procedural sigil rotation — crisp vector spin, zero GIF banding/LCP cost */
+.pantheon-sigil .sigil-spin { animation: sigil-rotate 40s linear infinite; transform-origin: 50% 50%; }
+@keyframes sigil-rotate { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .pantheon-sigil .sigil-spin { animation: none; }
+}
 .pantheon-copy h1 { max-width: 20ch; text-shadow: 0 2px 24px rgba(0,0,0,0.8); }
 .pantheon-copy .lede { text-shadow: 0 1px 14px rgba(0,0,0,0.8); }
 .pantheon-ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.4rem; }
@@ -208,6 +214,25 @@ section.block { padding: clamp(2.5rem, 6vw, 5rem) 0; }
   position: absolute; z-index: 4; right: 1rem; bottom: 1rem;
   display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;
 }
+/* hero scroll cue — mono indicator, dismissed on first scroll */
+.scroll-cue { position: absolute; left: 50%; bottom: 1.1rem; transform: translateX(-50%); z-index: 3;
+  width: 22px; height: 36px; border: 1px solid var(--line); border-radius: 12px; opacity: 0.7;
+  transition: opacity 0.4s ease; pointer-events: none; }
+.scroll-cue span { display: block; width: 3px; height: 8px; margin: 6px auto 0; border-radius: 2px;
+  background: var(--gold); animation: cueDrop 1.8s ease-in-out infinite; }
+@keyframes cueDrop { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(12px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
+.scroll-cue.gone { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .scroll-cue span { animation: none; opacity: 0.6; } }
+
+/* resume-sitting banner */
+.resume-block { padding-bottom: 0; }
+.resume-banner { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap;
+  border: 1px solid rgba(201,162,39,0.35); border-radius: 14px; padding: 1.2rem 1.4rem;
+  background: linear-gradient(120deg, rgba(201,162,39,0.08), rgba(98,216,233,0.04));
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
+.resume-banner .eyebrow { margin: 0 0 0.3rem; }
+.resume-banner h2 { margin: 0 0 0.3rem; font-size: 1.3rem; }
+.resume-banner .lede { margin: 0; }
 .pantheon-summary {
   position: relative; z-index: 3;
   font-size: 0.95rem; color: var(--ink-dim);
@@ -251,9 +276,13 @@ section.block { padding: clamp(2.5rem, 6vw, 5rem) 0; }
   border-radius: var(--radius);
   padding: 1.35rem 1.4rem;
   position: relative;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.22s ease, transform 0.22s cubic-bezier(0.22, 0.9, 0.3, 1), box-shadow 0.22s ease;
 }
-.card:hover { border-color: var(--line); transform: translateY(-2px); }
+.card:hover {
+  border-color: rgba(201,162,39,0.55);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.45), 0 0 0 1px rgba(201,162,39,0.12), 0 2px 18px rgba(201,162,39,0.08);
+}
 .card .code {
   font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.2em;
   color: var(--gold-bright);
@@ -333,6 +362,8 @@ table.ledger th, table.ledger td {
 }
 table.ledger th { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); }
 table.ledger td.date { font-family: var(--mono); font-size: 0.8rem; white-space: nowrap; color: var(--ink-dim); }
+table.ledger strong.pass { color: var(--cyan); }
+table.ledger strong.fail { color: var(--gold-bright); }
 .pill { display: inline-block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid; white-space: nowrap; }
 .pill.live { color: var(--cyan); border-color: var(--cyan-dim); }
 .pill.off { color: var(--gold-bright); border-color: var(--gold-dim); }
@@ -582,9 +613,11 @@ body.il-leaving #il-veil { opacity: 1; }
 
 /* ============ recursive pass 2: assessment & sitting cinema ============ */
 
-/* question entrance */
-@keyframes qIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
-.question.q-enter { animation: qIn 0.28s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
+/* question entrance — direction-aware: forward slides in from the right, back from the left */
+@keyframes qInFwd { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes qInBack { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+.question.q-enter, .question.q-enter-fwd { animation: qInFwd 0.28s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
+.question.q-enter-back { animation: qInBack 0.28s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
 
 /* keyboard hints on choices */
 .choices kbd.key-hint {
@@ -646,7 +679,7 @@ body.il-leaving #il-veil { opacity: 1; }
   animation: dlgIn 0.3s ease both; cursor: pointer; text-align: center; padding: 1.5rem;
 }
 .celebrate-veil .inner { animation: dlgPop 0.4s cubic-bezier(0.22, 0.9, 0.3, 1.2) both; }
-.celebrate-veil .sigil { font-size: 3.2rem; display: block; margin-bottom: 0.8rem;
+.celebrate-veil .sigil-img { width: 84px; height: 84px; display: block; margin: 0 auto 0.8rem;
   animation: celebratePulse 1.6s ease-in-out infinite; }
 @keyframes celebratePulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(212,175,55,.5)); }
   50% { transform: scale(1.08); filter: drop-shadow(0 0 26px rgba(212,175,55,.9)); } }
@@ -654,7 +687,22 @@ body.il-leaving #il-veil { opacity: 1; }
 .celebrate-veil p { color: var(--ink-dim); margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .question.q-enter, .il-dialog-backdrop, .il-dialog, .celebrate-veil, .celebrate-veil .inner { animation: none; }
-  .celebrate-veil .sigil { animation: none; }
+  .question.q-enter, .question.q-enter-fwd, .question.q-enter-back, .il-dialog-backdrop, .il-dialog, .celebrate-veil, .celebrate-veil .inner { animation: none; }
+  .celebrate-veil .sigil, .celebrate-veil .sigil-img { animation: none; }
   .score-svg .ring-fg { transition: none; }
 }
+
+/* ---------- print: results you can hand someone ---------- */
+@media print {
+  body::after { display: none !important; }
+  .pantheon, .terminal-storm, .scroll-cue, .pantheon-controls,
+  #noah-launcher, #noah-panel, #il-veil, .il-pal-veil, .skip-link { display: none !important; }
+  body { background: #fff; color: #111; }
+  .card, .noah-panel, .il-dialog { background: #fff; color: #111; border-color: #ccc; box-shadow: none; }
+  a { color: #111; }
+}
+
+/* ---------- noscript fallback ---------- */
+.noscript-note { padding: 1rem 1.4rem; background: #141007; border-bottom: 1px solid rgba(201,162,39,0.5);
+  color: #f2e8c9; text-align: center; font-size: 0.95rem; }
+.noscript-note a { color: var(--gold-bright); }

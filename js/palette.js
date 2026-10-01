@@ -6,6 +6,24 @@
 
   var IL = window.IL || {};
   var open = false, items = [], sel = 0, input = null, listEl = null, veil = null;
+  var RECENTS_KEY = 'il_palette_recents_v1';
+  var motionReduced = false;
+  try { motionReduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+
+  function getRecents() {
+    try {
+      var r = JSON.parse(localStorage.getItem(RECENTS_KEY) || '[]');
+      return Array.isArray(r) ? r.filter(function (x) { return x && x.href && x.title; }).slice(0, 6) : [];
+    } catch (e) { return []; }
+  }
+  function recordRecent(it) {
+    try {
+      var r = getRecents().filter(function (x) { return x.href !== it.href; });
+      r.unshift({ kind: it.kind, title: it.title, sub: it.sub || '', href: it.href,
+        hay: (it.title + ' ' + (it.sub || '')).toLowerCase() });
+      localStorage.setItem(RECENTS_KEY, JSON.stringify(r.slice(0, 6)));
+    } catch (e) {}
+  }
 
   var ACTIONS = [
     { kind: 'go', title: 'Pantheon (home)', sub: 'Cinematic index', href: 'index.html' },
@@ -62,7 +80,13 @@
   function filter(q) {
     var idx = buildIndex();
     var toks = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    if (!toks.length) return idx.slice(0, 9);
+    if (!toks.length) {
+      var recents = getRecents();
+      var seen = {};
+      recents.forEach(function (r) { seen[r.href] = true; });
+      var rest = idx.filter(function (it) { return !seen[it.href]; });
+      return recents.concat(rest).slice(0, 9);
+    }
     return idx
       .map(function (it) { return { it: it, s: score(it, toks) }; })
       .filter(function (r) { return r.s > -1e8; })
@@ -102,8 +126,11 @@
   }
 
   function go(it) {
+    recordRecent(it);
     close();
-    window.location.href = it.href;
+    if (motionReduced) { window.location.href = it.href; return; }
+    document.body.classList.add('il-leaving');
+    setTimeout(function () { window.location.href = it.href; }, 170);
   }
 
   function openPal() {

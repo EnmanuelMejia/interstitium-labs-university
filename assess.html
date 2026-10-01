@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="css/il.css">
 </head>
 <body>
+<noscript><div class="noscript-note"><strong>Interstitium Labs</strong> renders its curriculum from local data and needs JavaScript for the full experience. Start here: <a href="paths.html">paths</a> · <a href="assess.html">assessments</a> · <a href="honesty.html">honesty ledger</a>.</div></noscript>
 <a class="skip-link" href="#il-main">Skip to main content</a>
 <div id="il-header"></div>
 
@@ -42,6 +43,7 @@
 
 <script src="js/app.js"></script>
 <script src="js/adaptive.js"></script>
+<script src="js/noah.js"></script>
 <script>
 (function () {
   'use strict';
@@ -182,15 +184,15 @@
         if (sel[i] !== null) b.classList.add('answered');
         if (i === idx) b.classList.add('current');
         if (flagged[i]) b.classList.add('flagged');
-        b.addEventListener('click', function () { idx = i; draw(); });
+        b.addEventListener('click', function () { var d = i < idx ? -1 : 1; idx = i; draw(d); });
         nav.appendChild(b);
       });
     }
 
-    function draw() {
+    function draw(dir) {
       var it = items[idx];
       qbox.innerHTML = '';
-      var qd = IL.el('div', { 'class': 'question q-enter' });
+      var qd = IL.el('div', { 'class': 'question ' + (dir < 0 ? 'q-enter-back' : 'q-enter-fwd') });
       var h = IL.el('h3', { text: 'Question ' + (idx + 1) + ' — ' + it.q, tabindex: '-1' });
       qd.appendChild(h);
       var ul = IL.el('ul', { 'class': 'choices', role: 'radiogroup', 'aria-label': 'Question ' + (idx + 1) });
@@ -232,16 +234,16 @@
       drawNav();
     }
 
-    prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(); } });
-    next.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(); } });
+    prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(-1); } });
+    next.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(1); } });
     flag.addEventListener('click', toggleFlag);
     // keyboard: [ and ] move between questions, 1-9 answer, f flags
     document.addEventListener('keydown', function onKey(e) {
       if (finished) { document.removeEventListener('keydown', onKey); return; }
       if (document.querySelector('.il-dialog-backdrop')) return; // modal open: keys belong to it
       if (e.target && e.target.matches && e.target.matches('input, textarea, select')) return;
-      if (e.key === '[' && idx > 0) { idx--; draw(); }
-      else if (e.key === ']' && idx < items.length - 1) { idx++; draw(); }
+      if (e.key === '[' && idx > 0) { idx--; draw(-1); }
+      else if (e.key === ']' && idx < items.length - 1) { idx++; draw(1); }
       else if (e.key === 'f' || e.key === 'F') { toggleFlag(); }
       else {
         var n = parseInt(e.key, 10);
@@ -291,6 +293,15 @@
           if (st.topics.indexOf(t) === -1) st.topics.push(t);
         });
         localStorage.setItem(key, JSON.stringify(st));
+      } catch (e) {}
+      // assessment-history ledger (surfaced on courses.html)
+      try {
+        var HK = 'il_assess_history_v1';
+        var hist = JSON.parse(localStorage.getItem(HK) || '[]');
+        hist.push({ id: a.id, title: a.title || a.id, kind: a.kind || 'assessment',
+          pct: Math.round(res.score * 100), passed: !!res.passed,
+          correct: res.correct, total: res.total, at: Date.now() });
+        localStorage.setItem(HK, JSON.stringify(hist.slice(-60)));
       } catch (e) {}
       showResult(res, auto);
     }
@@ -408,6 +419,5 @@
   IL.onCatalog(render);
 })();
 </script>
-<script src="js/noah.js"></script>
 </body>
 </html>

@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="css/il.css">
 </head>
 <body>
+<noscript><div class="noscript-note"><strong>Interstitium Labs</strong> renders its curriculum from local data and needs JavaScript for the full experience. Start here: <a href="paths.html">paths</a> · <a href="assess.html">assessments</a> · <a href="honesty.html">honesty ledger</a>.</div></noscript>
 <a class="skip-link" href="#il-main">Skip to main content</a>
 <div id="il-header"></div>
 
@@ -99,7 +100,7 @@
     return { topics: [], mastery: {}, sm2: {} };
   }
   function persist() {
-    try { localStorage.setItem(storeKey, JSON.stringify({ topics: state.topics, mastery: state.mastery, sm2: state.sm2 })); } catch (e) {}
+    try { localStorage.setItem(storeKey, JSON.stringify({ topics: state.topics, mastery: state.mastery, sm2: state.sm2, updatedAt: Date.now() })); } catch (e) {}
   }
 
   /* ---------- stage tabs ---------- */
@@ -535,7 +536,7 @@
     if (motionReduced) return;
     var veil = IL.el('div', { 'class': 'celebrate-veil', role: 'alert', 'aria-label': 'Gate passed' });
     var inner = IL.el('div', { 'class': 'inner' });
-    inner.innerHTML = '<span class="sigil" aria-hidden="true">◈</span>' +
+    inner.innerHTML = '<img class="sigil-img" src="assets/sigil.svg" alt="" aria-hidden="true" width="84" height="84">' +
       '<h2>Gate passed</h2>' +
       '<p>' + scorePct + '% — the fringe held. Deepen now.</p>';
     veil.appendChild(inner);

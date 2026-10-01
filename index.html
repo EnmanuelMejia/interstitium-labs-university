@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="css/il.css">
 </head>
 <body>
+<noscript><div class="noscript-note"><strong>Interstitium Labs</strong> renders its curriculum from local data and needs JavaScript for the full experience. Start here: <a href="paths.html">paths</a> · <a href="assess.html">assessments</a> · <a href="honesty.html">honesty ledger</a>.</div></noscript>
 <a class="skip-link" href="#il-main">Skip to main content</a>
 <div id="il-header"></div>
 
@@ -35,10 +36,7 @@
     <div class="pantheon-plate gold" aria-hidden="true">SENTINEL-9<span class="ops" id="plate-gold-ops">— OPS</span></div>
     <div class="pantheon-plate cyan" aria-hidden="true">NULLWEAVER<span class="ops" id="plate-cyan-ops">— OPS</span></div>
     <div class="pantheon-sigil" aria-hidden="true">
-      <picture>
-        <source srcset="assets/sigil-hero-static.png" media="(prefers-reduced-motion: reduce)">
-        <img src="assets/sigil-hero-rotate.gif" alt="" width="360" height="360" fetchpriority="high">
-      </picture>
+      <img src="assets/sigil.svg" alt="" width="360" height="360" fetchpriority="high" class="sigil-spin">
     </div>
     <div class="wrap pantheon-copy">
       <p class="eyebrow">Knowledge operating system <span class="dot">·</span> Adaptive OS</p>
@@ -54,6 +52,20 @@
       <button type="button" class="btn btn-sm btn-ghost" id="pantheon-skip">Skip cinematic</button>
       <button type="button" class="btn btn-sm btn-ghost" id="pantheon-motion" aria-pressed="false">Reduce motion</button>
       <button type="button" class="btn btn-sm btn-ghost" id="pantheon-sound" aria-pressed="false">Sound: off</button>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <section class="block resume-block" id="resume-block" hidden aria-labelledby="resume-h">
+    <div class="wrap">
+      <div class="resume-banner">
+        <div>
+          <p class="eyebrow">In progress</p>
+          <h2 id="resume-h">Continue your sitting</h2>
+          <p class="lede" id="resume-desc"></p>
+        </div>
+        <a class="btn" id="resume-link" href="learn.html">Resume</a>
+      </div>
     </div>
   </section>
 
@@ -132,6 +144,44 @@
   'use strict';
   IL.hero.init();
 
+  /* hero scroll cue: dismiss on first scroll */
+  (function () {
+    var cue = document.querySelector('.scroll-cue');
+    if (!cue) return;
+    var hide = function () { cue.classList.add('gone'); window.removeEventListener('scroll', hide); };
+    window.addEventListener('scroll', hide, { passive: true });
+  })();
+
+  /* resume: surface the most recently touched sitting with real progress */
+  function renderResume() {
+    var block = document.getElementById('resume-block');
+    if (!block) return;
+    var best = null;
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (!k || k.indexOf('il_sitting_') !== 0) continue;
+        var pid = k.slice('il_sitting_'.length);
+        if (pid === 'free') continue;
+        var st = JSON.parse(localStorage.getItem(k) || 'null');
+        if (!st || !st.topics || !st.topics.length) continue;
+        var done = Object.keys(st.mastery || {}).length;
+        if (!done) continue;
+        var upd = st.updatedAt || 0;
+        if (!best || upd > best.upd) best = { pid: pid, upd: upd, done: done, total: st.topics.length };
+      }
+    } catch (e) { best = null; }
+    if (!best) { block.hidden = true; return; }
+    var cat = IL.getCatalog() || {};
+    var path = null;
+    (cat.paths || []).forEach(function (x) { if (x.id === best.pid) path = x; });
+    var name = path ? (path.title || path.name || best.pid) : best.pid;
+    document.getElementById('resume-desc').textContent =
+      name + ' — ' + best.done + ' of ' + best.total + ' topics in motion.';
+    document.getElementById('resume-link').href = 'learn.html?id=' + encodeURIComponent(best.pid);
+    block.hidden = false;
+  }
+
   function counter(n, label) {
     var d = document.createElement('div');
     d.className = 'counter'; d.setAttribute('role', 'listitem');
@@ -168,6 +218,7 @@
   }
 
   function render() {
+    renderResume();
     var cat = IL.getCatalog();
     // counters: computed from catalog, or the standing verified figures
     var box = document.getElementById('counters');
@@ -181,7 +232,7 @@
     box.appendChild(counter(String(nAcad), 'academies'));
     box.appendChild(counter(hours.toLocaleString('en-US'), 'hours'));
     box.appendChild(counter(String(sittings), 'sittings'));
-    box.appendChild(counter('12', 'weeks'));
+    box.appendChild(counter(String(IL.assessments().length || 11), 'assessments'));
 
     // Keep the academies heading honest: it follows the catalog, not the copy.
     var acadH = document.getElementById('acad-h');
@@ -238,27 +289,11 @@
     log.scrollTop = log.scrollHeight;
     return d;
   }
-  var greetNode = addMsg('noah', '');
-  // typewriter greeting (cinematic, respects reduced motion)
-  (function typeGreeting() {
-    var full = 'I am Noah — Socratic, local, lab-aware. Bring me your hypothesis, not "just give me the answer." What are you working through?';
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      greetNode.textContent = full;
-      return;
-    }
-    var txt = document.createTextNode('');
-    greetNode.appendChild(txt);
-    var caret = document.createElement('span');
-    caret.className = 'noah-typing-caret';
-    caret.setAttribute('aria-hidden', 'true');
-    greetNode.appendChild(caret);
-    var i = 0;
-    var t = setInterval(function () {
-      i += 2;
-      txt.textContent = full.slice(0, i);
-      if (i >= full.length) { clearInterval(t); caret.remove(); }
-    }, 24);
-  })();
+  /* One greeting, rendered exactly once (no empty-bubble-then-type artifact). */
+  if (!log.dataset.greeted) {
+    log.dataset.greeted = '1';
+    addMsg('noah', 'I am Noah — Socratic, local, lab-aware. Bring me your hypothesis, not "just give me the answer." What are you working through?');
+  }
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var q = input.value.trim();

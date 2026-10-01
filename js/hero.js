@@ -27,7 +27,14 @@
     };
   }
 
+  /* An explicit user motion choice (il_motion_reduced: '1'/'0') wins over the
+     OS preference; with no saved choice the OS preference decides. */
   function reducedMotionWanted() {
+    try {
+      var saved = localStorage.getItem('il_motion_reduced');
+      if (saved === '1') return true;
+      if (saved === '0') return false;
+    } catch (e) {}
     return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
@@ -449,16 +456,37 @@
   }
   function fmtOps(n) { return Math.floor(n).toLocaleString('en-US'); }
 
-  /* ================= main loop ================= */
+  /* ================= main loop =================
+     Frame-time governor: if the rolling frame cost stays above ~26ms for a
+     sustained window, step the quality tier down (fewer particles/terms, no
+     glow, lower dpr) instead of janking. One-way ratchet per session. */
+  function govern(st, dtMs) {
+    if (st.governed === false) return;
+    st.govAcc = (st.govAcc || 0) + dtMs;
+    st.govN = (st.govN || 0) + 1;
+    if (st.govN < 90) return; // ~1.5s window
+    var avg = st.govAcc / st.govN;
+    st.govAcc = 0; st.govN = 0;
+    if (avg < 26 || !st.q) return;
+    var lvl = st.q.level;
+    if (lvl === 'high') {
+      st.q.level = 'mid'; st.q.maxTerms = 26; st.q.maxParts = 70; st.q.maxGlyphs = 44;
+    } else if (lvl === 'mid') {
+      st.q.level = 'low'; st.q.maxTerms = 14; st.q.maxParts = 34; st.q.maxGlyphs = 44; st.q.glow = false;
+      st.q.dpr = Math.min(st.q.dpr, 1);
+    } else { st.governed = false; } // already at floor: stop measuring
+  }
   function loop(st, now) {
     if (!st.running) return;
-    var dt = Math.min((now - st.last) / 1000, 0.05); // delta clamp
+    var rawDt = (now - st.last) / 1000;
+    var dt = Math.min(rawDt, 0.05); // delta clamp
     st.last = now;
     if (st.visible && !st.skipped) {
       step(st, dt);
       paint(st);
       st.frame = (st.frame || 0) + 1;
       if (st.frame % 15 === 0) updatePlates(st);
+      govern(st, rawDt * 1000);
     }
     st.raf = requestAnimationFrame(function (n) { loop(st, n); });
   }
@@ -607,6 +635,7 @@
     if (btnMotion) btnMotion.addEventListener('click', function () {
       motionReduced = !motionReduced;
       skipped = false;
+      try { localStorage.setItem('il_motion_reduced', motionReduced ? '1' : '0'); } catch (e) {}
       applyMotionState();
     });
 
@@ -643,7 +672,24 @@
   };
 
   /* ================= .terminal-storm subtle variant =================
-     Reuses the cascade motif at low density for section transitions. */
+     Reuses the cascade motif at low density for section transitions.
+     All storms share ONE rAF scheduler (no per-canvas loops). */
+  var stormRegistry = [];
+  var stormRaf = 0;
+  function stormTick(now) {
+    stormRaf = 0;
+    var any = false;
+    for (var i = stormRegistry.length - 1; i >= 0; i--) {
+      var sm = stormRegistry[i];
+      if (!sm.running) { stormRegistry.splice(i, 1); continue; }
+      any = true;
+      if (sm.vis) sm.frame(now);
+    }
+    if (any) stormRaf = requestAnimationFrame(stormTick);
+  }
+  function ensureStormLoop() {
+    if (!stormRaf && stormRegistry.length) stormRaf = requestAnimationFrame(stormTick);
+  }
   hero.attachStorm = function (root) {
     if (!root || reducedMotionWanted()) return;
     var canvas = root.querySelector('canvas');
@@ -662,16 +708,13 @@
     size();
     window.addEventListener('resize', size);
     var terms = [];
-    var t = 0, last = performance.now(), running = true, raf = 0;
-    var vis = true;
+    var sm = { running: true, vis: true, t: 0, last: performance.now() };
     if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (es) { vis = es[0].isIntersecting; }, { threshold: 0 }).observe(root);
+      new IntersectionObserver(function (es) { sm.vis = es[0].isIntersecting; }, { threshold: 0 }).observe(root);
     }
-    function frame(now) {
-      if (!running) return;
-      raf = requestAnimationFrame(frame);
-      if (!vis) return;
-      var dt = Math.min((now - last) / 1000, 0.05); last = now; t += dt;
+    sm.frame = function (now) {
+      var dt = Math.min((now - sm.last) / 1000, 0.05); sm.last = now; sm.t += dt;
+      var t = sm.t;
       if (r() < dt * 1.4 && terms.length < q.maxTerms) {
         var gold = r() < 0.5;
         terms.push({
@@ -707,9 +750,10 @@
         ctx.fillText(GLYPHS[(k + ((t * 3) | 0)) % GLYPHS.length], (k * 173) % W, gy);
       }
       ctx.globalAlpha = 1;
-    }
-    raf = requestAnimationFrame(frame);
-    return { stop: function () { running = false; cancelAnimationFrame(raf); } };
+    };
+    stormRegistry.push(sm);
+    ensureStormLoop();
+    return { stop: function () { sm.running = false; } };
   };
 
   // auto-attach to any .terminal-storm blocks present at load
