@@ -1,0 +1,8 @@
+# Files that must never be served publicly.
+# Local tooling (validate.mjs, bake-404.mjs) reads them from disk; the
+# deployed bundle must not include them. Misses fall through to the
+# worker's branded 404. (.assetsignore syntax: gitignore-style, relative
+# to the assets directory.)
+CONTRACT.md
+DEPLOY.md
+scripts/

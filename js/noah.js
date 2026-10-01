@@ -163,8 +163,13 @@
     'z-index:2147483001;display:flex;flex-direction:column;border-radius:18px;overflow:hidden;',
     'background:linear-gradient(165deg,#0d141d 0%,#0a0f16 60%,#0c1219 100%);',
     'border:1px solid rgba(201,162,39,.28);box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 40px rgba(98,216,233,.08);',
-    'opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .28s ease,transform .28s ease;}',
-    '#noah-panel.open{opacity:1;transform:none;pointer-events:auto;}',
+    'opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;visibility:hidden;',
+    'transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s;}',
+    '#noah-panel.open{opacity:1;transform:none;pointer-events:auto;visibility:visible;',
+    'transition:opacity .28s ease,transform .28s ease;}',
+    /* A closed dialog must leave the tab order entirely: visibility:hidden
+       removes it from sequential focus navigation; the inert attribute below
+       is belt-and-braces for assistive tech. */
     '#noah-head{display:flex;align-items:center;gap:12px;padding:14px 16px;',
     'background:linear-gradient(120deg,rgba(201,162,39,.12),rgba(98,216,233,.08));border-bottom:1px solid rgba(201,162,39,.2);}',
     '#noah-head .noah-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;',
@@ -175,6 +180,10 @@
     '#noah-head .noah-status{color:#7d8ea3;font-size:12px;display:flex;align-items:center;gap:6px;}',
     '#noah-head .noah-dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:noah-blink 2.4s ease-in-out infinite;}',
     '@keyframes noah-blink{0%,100%{opacity:1;}50%{opacity:.45;}}',
+    /* Persisted reduced-motion choice (html[data-motion="reduced"]): still the
+       decorative launcher ping and status-dot blink. */
+    'html[data-motion="reduced"] #noah-launcher .noah-ping{animation:none !important;}',
+    'html[data-motion="reduced"] #noah-panel .noah-dot{animation:none !important;}',
     '#noah-close{background:none;border:none;color:#7d8ea3;font-size:20px;cursor:pointer;line-height:1;padding:4px;}',
     '#noah-close:hover{color:#f2e8c9;}',
     '#noah-msgs{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;}',
@@ -464,7 +473,12 @@
     var instances = [], rafId = 0, lastT = 0;
     var img = null, imgOk = false;
     var reduced = false;
-    try { reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+    try {
+      var savedMotion = localStorage.getItem('il_motion_reduced');
+      if (savedMotion === '1') reduced = true;
+      else if (savedMotion === '0') reduced = false;
+      else reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    } catch (e) {}
 
     function ensureImg() {
       if (img || typeof Image === 'undefined') return;
@@ -687,6 +701,7 @@
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'true');
     panel.setAttribute('aria-label', 'Noah AI chat');
+    panel.setAttribute('inert', ''); // closed: out of the tab order until opened
     panel.innerHTML =
       '<div id="noah-head"><span class="noah-avatar" aria-hidden="true"></span>' +
       '<span class="noah-title"><span class="noah-name">Noah AI</span><br>' +
@@ -740,7 +755,6 @@
 
     loadHistory();
     NoahStats.load();
-    NoahStats.track('open');
     var greeted = false;
     try { greeted = sessionStorage.getItem('noah-ai-greeted') === '1'; } catch (e) {}
     history.forEach(function (m) {
@@ -762,11 +776,13 @@
   function open() {
     buildWidget();
     els.panel.classList.add('open');
+    els.panel.removeAttribute('inert');
     els.launcher.classList.remove('attn');
+    NoahStats.track('open'); // count real opens, not page views
     setTimeout(function () { els.input.focus(); }, 320);
   }
   function close() {
-    if (els.panel) els.panel.classList.remove('open');
+    if (els.panel) { els.panel.classList.remove('open'); els.panel.setAttribute('inert', ''); }
     if (els.launcher) { try { els.launcher.focus(); } catch (e) {} }
   }
   function toggle() {

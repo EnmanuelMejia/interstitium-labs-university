@@ -7,8 +7,17 @@
   var IL = window.IL || {};
   var open = false, items = [], sel = 0, input = null, listEl = null, veil = null;
   var RECENTS_KEY = 'il_palette_recents_v1';
-  var motionReduced = false;
-  try { motionReduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+  /* Explicit user motion choice (il_motion_reduced) wins over the OS
+     preference — read live, the hero toggle can change it mid-session. */
+  function motionReducedNow() {
+    try {
+      var saved = localStorage.getItem('il_motion_reduced');
+      if (saved === '1') return true;
+      if (saved === '0') return false;
+    } catch (e) {}
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+    return false;
+  }
 
   function getRecents() {
     try {
@@ -128,7 +137,7 @@
   function go(it) {
     recordRecent(it);
     close();
-    if (motionReduced) { window.location.href = it.href; return; }
+    if (motionReducedNow()) { window.location.href = it.href; return; }
     document.body.classList.add('il-leaving');
     setTimeout(function () { window.location.href = it.href; }, 170);
   }

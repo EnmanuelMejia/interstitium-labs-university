@@ -325,7 +325,9 @@
       grad.setAttribute('id', 'scoreGrad');
       grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
       grad.setAttribute('x2', '1'); grad.setAttribute('y2', '1');
-      [['0%', res.passed ? '#22d3ee' : '#d4af37'], ['100%', res.passed ? '#0e7490' : '#a67c1a']].forEach(function (st) {
+      /* Token-correct gradient endpoints: --cyan #62d8e9 / --gold #c9a227,
+         with darker 100% stops for ring depth. */
+      [['0%', res.passed ? '#62d8e9' : '#c9a227'], ['100%', res.passed ? '#0e7490' : '#a67c1a']].forEach(function (st) {
         var s = document.createElementNS(NS, 'stop');
         s.setAttribute('offset', st[0]); s.setAttribute('stop-color', st[1]);
         grad.appendChild(s);

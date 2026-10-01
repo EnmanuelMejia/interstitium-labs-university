@@ -256,6 +256,16 @@ const NOT_FOUND_HTML = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<base href=
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    /* Internal files must never be served publicly. `.assetsignore` normally
+       keeps them out of the asset bundle; `run_worker_first` (wrangler.jsonc)
+       routes these paths here so any leak still lands on the branded 404. */
+    if (url.pathname === '/CONTRACT.md' || url.pathname === '/DEPLOY.md' ||
+        url.pathname.startsWith('/scripts/')) {
+      return new Response(NOT_FOUND_HTML, {
+        status: 404,
+        headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' },
+      });
+    }
     if (url.pathname === '/api/noah-stats') {
       return handleStats(request, env);
     }

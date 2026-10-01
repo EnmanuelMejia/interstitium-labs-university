@@ -275,6 +275,7 @@
   function createScene(canvas, opts) {
     opts = opts || {};
     var q = detectQuality();
+    q.baseLevel = q.level; // governor recovery ceiling: never step above this
     var ctx = canvas.getContext('2d');
     var r = opts.rng || Math.random;
     var st = {
@@ -459,7 +460,23 @@
   /* ================= main loop =================
      Frame-time governor: if the rolling frame cost stays above ~26ms for a
      sustained window, step the quality tier down (fewer particles/terms, no
-     glow, lower dpr) instead of janking. One-way ratchet per session. */
+     glow, lower dpr) instead of janking. Recoverable: sustained fast windows
+     step back up toward the detected base tier. Samples use the CLAMPED
+     delta, so a tab-backgrounding spike can never false-downgrade. */
+  var QLEVELS = ['low', 'mid', 'high'];
+  var QPRESETS = {
+    high: { maxTerms: 42, maxParts: 120, maxGlyphs: 80, glow: true },
+    mid:  { maxTerms: 26, maxParts: 70,  maxGlyphs: 44, glow: true },
+    low:  { maxTerms: 14, maxParts: 34,  maxGlyphs: 44, glow: false }
+  };
+  function applyQualityLevel(st, lvl) {
+    var p = QPRESETS[lvl];
+    st.q.level = lvl; st.q.maxTerms = p.maxTerms; st.q.maxParts = p.maxParts;
+    st.q.maxGlyphs = p.maxGlyphs;
+    if (lvl === 'low') { st.q.glow = false; st.q.dpr = Math.min(st.q.dpr, 1); }
+    else if (p.glow) { st.q.glow = true; }
+    /* dpr only ever steps down within a session — never thrash the canvas. */
+  }
   function govern(st, dtMs) {
     if (st.governed === false) return;
     st.govAcc = (st.govAcc || 0) + dtMs;
@@ -467,14 +484,19 @@
     if (st.govN < 90) return; // ~1.5s window
     var avg = st.govAcc / st.govN;
     st.govAcc = 0; st.govN = 0;
-    if (avg < 26 || !st.q) return;
-    var lvl = st.q.level;
-    if (lvl === 'high') {
-      st.q.level = 'mid'; st.q.maxTerms = 26; st.q.maxParts = 70; st.q.maxGlyphs = 44;
-    } else if (lvl === 'mid') {
-      st.q.level = 'low'; st.q.maxTerms = 14; st.q.maxParts = 34; st.q.maxGlyphs = 44; st.q.glow = false;
-      st.q.dpr = Math.min(st.q.dpr, 1);
-    } else { st.governed = false; } // already at floor: stop measuring
+    if (!st.q) return;
+    var idx = QLEVELS.indexOf(st.q.level);
+    var baseIdx = QLEVELS.indexOf(st.q.baseLevel || st.q.level);
+    if (avg >= 26 && idx > 0) {
+      applyQualityLevel(st, QLEVELS[idx - 1]);
+      st.govGood = 0;
+    } else if (avg < 17 && idx >= 0 && idx < baseIdx) {
+      /* Two consecutive fast windows before stepping back up: no flapping. */
+      st.govGood = (st.govGood || 0) + 1;
+      if (st.govGood >= 2) { applyQualityLevel(st, QLEVELS[idx + 1]); st.govGood = 0; }
+    } else {
+      st.govGood = 0;
+    }
   }
   function loop(st, now) {
     if (!st.running) return;
@@ -486,7 +508,7 @@
       paint(st);
       st.frame = (st.frame || 0) + 1;
       if (st.frame % 15 === 0) updatePlates(st);
-      govern(st, rawDt * 1000);
+      govern(st, dt * 1000); // clamped delta: backgrounding spikes can't false-downgrade
     }
     st.raf = requestAnimationFrame(function (n) { loop(st, n); });
   }
@@ -598,6 +620,14 @@
     var skipped = false;
 
     function applyMotionState() {
+      /* Broadcast the effective choice site-wide: CSS hooks off
+         html[data-motion="reduced"], scripts listen for il:motionchange. */
+      try {
+        document.documentElement.dataset.motion = motionReduced ? 'reduced' : 'full';
+        if (typeof window.dispatchEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('il:motionchange', { detail: { reduced: motionReduced } }));
+        }
+      } catch (e) {}
       if (motionReduced || skipped) {
         renderKeyframe(st);
         if (btnMotion) { btnMotion.setAttribute('aria-pressed', 'true'); btnMotion.textContent = 'Motion: reduced'; }

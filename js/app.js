@@ -278,17 +278,31 @@
   }
 
   /* ---------- scroll reveal (Palantir pass) ---------- */
-  var motionReduced = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Explicit user motion choice (il_motion_reduced: '1'/'0') wins over the OS
+     preference; with no saved choice the OS preference decides. Read live —
+     the hero's motion toggle can change it mid-session. Mirrors hero.js. */
+  function userReducedMotion() {
+    try {
+      var saved = localStorage.getItem('il_motion_reduced');
+      if (saved === '1') return true;
+      if (saved === '0') return false;
+    } catch (e) {}
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+  function syncMotionDataset() {
+    try { document.documentElement.dataset.motion = userReducedMotion() ? 'reduced' : 'full'; } catch (e) {}
+  }
 
   function initReveals() {
     document.documentElement.classList.add('js');
-    if (motionReduced || !('IntersectionObserver' in window)) {
+    if (userReducedMotion() || !('IntersectionObserver' in window)) {
       document.querySelectorAll('.il-reveal').forEach(function (n) { n.classList.add('in'); });
       return;
     }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
+        // Live check: a mid-session "Reduce motion" choice stills new reveals.
+        if (userReducedMotion()) { e.target.classList.add('in'); io.unobserve(e.target); return; }
         if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
@@ -327,7 +341,7 @@
     function animate(n) {
       var raw = (n.getAttribute('data-countup') || n.textContent || '').replace(/[^0-9]/g, '');
       var target = parseInt(raw, 10);
-      if (!target || motionReduced) return;
+      if (!target || userReducedMotion()) return;
       var t0 = null, dur = 1100;
       function frame(t) {
         if (!t0) t0 = t;
@@ -355,7 +369,7 @@
     veil.id = 'il-veil';
     veil.setAttribute('aria-hidden', 'true');
     document.body.appendChild(veil);
-    if (motionReduced) return;
+    if (userReducedMotion()) return;
     document.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
@@ -372,8 +386,9 @@
   }
 
   /* ---------- hero parallax (subtle; pantheon cinematic) ---------- */
+  var parallaxOff = null;
   function initParallax() {
-    if (motionReduced) return;
+    if (userReducedMotion()) return;
     var sigil = document.querySelector('.pantheon-sigil');
     var copy = document.querySelector('.pantheon-copy');
     if (!sigil && !copy) return;
@@ -391,6 +406,7 @@
       });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
+    parallaxOff = function () { window.removeEventListener('scroll', onScroll); parallaxOff = null; };
   }
 
   /* ---------- command palette loader ---------- */
@@ -406,11 +422,17 @@
   function boot() {
     renderHeader();
     renderFooter();
+    syncMotionDataset(); // pages without hero.js still honor the persisted choice
     initReveals();
     initCountUp();
     initVeil();
     initParallax();
     loadPalette();
+    // A mid-session toggle from the hero stills the rest of the page too.
+    window.addEventListener('il:motionchange', function () {
+      syncMotionDataset();
+      if (userReducedMotion() && parallaxOff) parallaxOff();
+    });
     IL.ready.then(renderOfflineNotices);
     // Re-run page render hooks when the catalog arrives.
     document.addEventListener('il:catalog', function () {

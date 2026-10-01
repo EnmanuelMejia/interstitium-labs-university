@@ -223,6 +223,14 @@ section.block { padding: clamp(2.5rem, 6vw, 5rem) 0; }
 @keyframes cueDrop { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(12px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
 .scroll-cue.gone { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .scroll-cue span { animation: none; opacity: 0.6; } }
+/* Persisted motion choice (localStorage il_motion_reduced, mirrored to
+   html[data-motion] by hero.js/app.js) — the toggle's promise, kept
+   everywhere the OS-preference query is honored. */
+html[data-motion="reduced"] .scroll-cue span { animation: none; opacity: 0.6; }
+html[data-motion="reduced"] .js .il-reveal { transition: none; }
+html[data-motion="reduced"] #il-veil { transition: none; }
+html[data-motion="reduced"] .il-pal-veil { transition: none; }
+html[data-motion="reduced"] .il-pal-veil .il-pal { transition: none; }
 
 /* resume-sitting banner */
 .resume-block { padding-bottom: 0; }
