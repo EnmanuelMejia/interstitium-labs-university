@@ -1,733 +1,787 @@
 [
- {
-  "course": "Webucator Java + Python bundle",
-  "sources": [
-   "Webucator"
-  ],
-  "decision": "merged",
-  "reason": "Bundle duplicates the platform's canonical Java/Python programming nodes; merged into the programming backbone (canonical node il03-pearson-programming/python-foundations) instead of a second course.",
-  "canonical": "il03-pearson-programming/python-foundations"
- },
- {
-  "course": "Webucator Full Stack bundle (~20 courses)",
-  "sources": [
-   "Webucator"
-  ],
-  "decision": "merged",
-  "reason": "Bundle duplicates the platform's canonical web-fundamentals node; routed to the single node rather than rebuilt as a course.",
-  "canonical": "il03-pearson-systems/web-fundamentals"
- },
- {
-  "course": "Per Scholas Cloud DevOps (14-week program)",
-  "sources": [
-   "Per Scholas"
-  ],
-  "decision": "merged",
-  "reason": "Program duplicates the platform's canonical DevOps role map; routed to il05-kodekloud rather than rebuilt as a course.",
-  "canonical": "il05-kodekloud/devops-role-map"
- },
- {
-  "course": "Per Scholas Software Engineering: AI Native",
-  "sources": [
-   "Per Scholas"
-  ],
-  "decision": "merged",
-  "reason": "Program duplicates the platform's canonical full-stack capstone; routed to the single node rather than rebuilt as a course.",
-  "canonical": "il03-pearson-systems/capstone-build"
- },
- {
-  "course": "Stanford CS 106A / 106B",
-  "sources": [
-   "Stanford ExploreCourses"
-  ],
-  "decision": "merged",
-  "reason": "Sequence duplicates the platform's canonical Stanford cross-walk; routed to il08-stanford-cs rather than rebuilt as a course.",
-  "canonical": "il08-stanford-cs/programming-abstractions"
- },
- {
-  "course": "CMU 15-112 / 15-122",
-  "sources": [
-   "CMU SCS Course Catalog"
-  ],
-  "decision": "merged",
-  "reason": "Sequence duplicates the platform's canonical CMU cross-walk; routed to il08-cmu-cs rather than rebuilt as a course.",
-  "canonical": "il08-cmu-cs/imperative-functional-core"
- },
- {
-  "course": "MIT 6.100A / 6.100B",
-  "sources": [
-   "MIT OpenCourseWare"
-  ],
-  "decision": "merged",
-  "reason": "Sequence duplicates the platform's canonical MIT OCW Python node; routed to il03-mit-ocw rather than rebuilt as a course.",
-  "canonical": "il03-mit-ocw/python-6100ab"
- },
- {
-  "course": "Khan Academy / ALEKS math spine",
-  "sources": [
-   "Khan Academy",
-   "ALEKS"
-  ],
-  "decision": "kept",
-  "reason": "Kept as the canonical math-spine source layer; the platform's college-algebra node is built on these, not duplicated elsewhere.",
-  "canonical": "il02-math-spine/college-algebra"
- },
- {
-  "course": "Google Career Certificate search properties (google.com/104, 106, 369, 370)",
-  "sources": [],
-  "decision": "dropped",
-  "reason": "Scope boundary (Rev 2 section 6): these Google certificate properties are out of scope and must not be built.",
-  "canonical": null
- },
- {
-  "course": "Google property (google.com/25)",
-  "sources": [],
-  "decision": "dropped",
-  "reason": "Scope boundary (Rev 2 section 6): out of scope and must not be built.",
-  "canonical": null
- },
- {
-  "course": "NSA as a certification issuer",
-  "sources": [],
-  "decision": "dropped",
-  "reason": "Boundary record: the NSA issues no attainable public certifications; it appears in the NICE lineage only, never as a credential target.",
-  "canonical": null
- },
- {
-  "course": "MIT mathematics PhD qualifying examinations",
-  "sources": [],
-  "decision": "dropped",
-  "reason": "Boundary record: oral, department-internal qualifying exams with no public credential; out of scope for a self-study platform.",
-  "canonical": null
- },
- {
-  "course": "Hackers-Arise",
-  "sources": [
-   "Hackers-Arise"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-hackers-arise/linux-for-hackers.",
-  "canonical": "il06-hackers-arise/linux-for-hackers"
- },
- {
-  "course": "HackTheBox",
-  "sources": [
-   "HackTheBox"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-offensive/htb-thm-labs.",
-  "canonical": "il06-offensive/htb-thm-labs"
- },
- {
-  "course": "TryHackMe",
-  "sources": [
-   "TryHackMe"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-offensive/htb-thm-labs.",
-  "canonical": "il06-offensive/htb-thm-labs"
- },
- {
-  "course": "OffSec",
-  "sources": [
-   "OffSec"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-offensive/pen200-oscp-map.",
-  "canonical": "il06-offensive/pen200-oscp-map"
- },
- {
-  "course": "PortSwigger Web Security Academy",
-  "sources": [
-   "PortSwigger Web Security Academy"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-offensive/web-app-exploitation.",
-  "canonical": "il06-offensive/web-app-exploitation"
- },
- {
-  "course": "SANS Institute",
-  "sources": [
-   "SANS Institute"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-defensive/soc-operations.",
-  "canonical": "il06-defensive/soc-operations"
- },
- {
-  "course": "CompTIA",
-  "sources": [
-   "CompTIA"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-comptia-core/aplus-v15.",
-  "canonical": "il09-comptia-core/aplus-v15"
- },
- {
-  "course": "NIST NICE Framework (SP 800-181 Rev.1)",
-  "sources": [
-   "NIST NICE Framework (SP 800-181 Rev.1)"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-hackers-arise/nice-framework-map.",
-  "canonical": "il06-hackers-arise/nice-framework-map"
- },
- {
-  "course": "NIST Zero Trust Architecture (SP 800-207)",
-  "sources": [
-   "NIST Zero Trust Architecture (SP 800-207)"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-zero-trust/sp800-207-tenets.",
-  "canonical": "il05-zero-trust/sp800-207-tenets"
- },
- {
-  "course": "KodeKloud",
-  "sources": [
-   "KodeKloud"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/devops-role-map.",
-  "canonical": "il05-kodekloud/devops-role-map"
- },
- {
-  "course": "Kubernetes Documentation",
-  "sources": [
-   "Kubernetes Documentation"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-cloud-native/cka-prep.",
-  "canonical": "il05-cloud-native/cka-prep"
- },
- {
-  "course": "Terraform Documentation",
-  "sources": [
-   "Terraform Documentation"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-terraform/terraform-associate-prep.",
-  "canonical": "il05-terraform/terraform-associate-prep"
- },
- {
-  "course": "Docker",
-  "sources": [
-   "Docker"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/containers-docker.",
-  "canonical": "il05-kodekloud/containers-docker"
- },
- {
-  "course": "Jenkins",
-  "sources": [
-   "Jenkins"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/cicd-jenkins.",
-  "canonical": "il05-kodekloud/cicd-jenkins"
- },
- {
-  "course": "Ansible Documentation",
-  "sources": [
-   "Ansible Documentation"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il04-rhce/ex294-ansible-prep.",
-  "canonical": "il04-rhce/ex294-ansible-prep"
- },
- {
-  "course": "Git",
-  "sources": [
-   "Git"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/git-github.",
-  "canonical": "il05-kodekloud/git-github"
- },
- {
-  "course": "Prometheus",
-  "sources": [
-   "Prometheus"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/observability.",
-  "canonical": "il05-kodekloud/observability"
- },
- {
-  "course": "Grafana",
-  "sources": [
-   "Grafana"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/observability.",
-  "canonical": "il05-kodekloud/observability"
- },
- {
-  "course": "MongoDB University",
-  "sources": [
-   "MongoDB University"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-mongodb/atlas-foundations.",
-  "canonical": "il07-mongodb/atlas-foundations"
- },
- {
-  "course": "MongoDB Introduction Learning Path",
-  "sources": [
-   "MongoDB Introduction Learning Path"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-mongodb/atlas-foundations.",
-  "canonical": "il07-mongodb/atlas-foundations"
- },
- {
-  "course": "MIT OpenCourseWare",
-  "sources": [
-   "MIT OpenCourseWare"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il03-mit-ocw/python-6100ab.",
-  "canonical": "il03-mit-ocw/python-6100ab"
- },
- {
-  "course": "MIT xPRO",
-  "sources": [
-   "MIT xPRO"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-fde-interface/mitxpro-cybersecurity.",
-  "canonical": "il06-fde-interface/mitxpro-cybersecurity"
- },
- {
-  "course": "MIT xPRO Cybersecurity",
-  "sources": [
-   "MIT xPRO Cybersecurity"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-fde-interface/mitxpro-cybersecurity.",
-  "canonical": "il06-fde-interface/mitxpro-cybersecurity"
- },
- {
-  "course": "MIT xPRO Advanced Analytics",
-  "sources": [
-   "MIT xPRO Advanced Analytics"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-data-schools/mit-credentials.",
-  "canonical": "il07-data-schools/mit-credentials"
- },
- {
-  "course": "Interview Kickstart FDE",
-  "sources": [
-   "Interview Kickstart FDE"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-fde-interface/ik-fde-spine.",
-  "canonical": "il06-fde-interface/ik-fde-spine"
- },
- {
-  "course": "ELVTR",
-  "sources": [
-   "ELVTR"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il06-fde-interface/elvtr-ai-cybersecurity.",
-  "canonical": "il06-fde-interface/elvtr-ai-cybersecurity"
- },
- {
-  "course": "Palantir Learn",
-  "sources": [
-   "Palantir Learn"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-palantir/foundry-data-engineer.",
-  "canonical": "il09-palantir/foundry-data-engineer"
- },
- {
-  "course": "Humanmetrics",
-  "sources": [
-   "Humanmetrics"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il10-humanmetrics/typology-assessment.",
-  "canonical": "il10-humanmetrics/typology-assessment"
- },
- {
-  "course": "JobRight AI",
-  "sources": [
-   "JobRight AI"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il10-fde-career/jobright-outcome-layer.",
-  "canonical": "il10-fde-career/jobright-outcome-layer"
- },
- {
-  "course": "Babson College",
-  "sources": [
-   "Babson College"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il10-entrepreneurship/babson-curriculum-map.",
-  "canonical": "il10-entrepreneurship/babson-curriculum-map"
- },
- {
-  "course": "The Academy SF",
-  "sources": [
-   "The Academy SF"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il10-entrepreneurship/academy-sf-study.",
-  "canonical": "il10-entrepreneurship/academy-sf-study"
- },
- {
-  "course": "MIT MicroMasters Finance",
-  "sources": [
-   "MIT MicroMasters Finance"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il10-quant-finance/micromasters-finance.",
-  "canonical": "il10-quant-finance/micromasters-finance"
- },
- {
-  "course": "MIT MicroMasters Statistics & Data Science",
-  "sources": [
-   "MIT MicroMasters Statistics & Data Science"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-data-schools/mit-credentials.",
-  "canonical": "il07-data-schools/mit-credentials"
- },
- {
-  "course": "Stanford Online",
-  "sources": [
-   "Stanford Online"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-data-schools/stanford-credentials.",
-  "canonical": "il07-data-schools/stanford-credentials"
- },
- {
-  "course": "Khan Academy",
-  "sources": [
-   "Khan Academy"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-math-spine/college-algebra.",
-  "canonical": "il02-math-spine/college-algebra"
- },
- {
-  "course": "ALEKS",
-  "sources": [
-   "ALEKS"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-math-spine/college-algebra.",
-  "canonical": "il02-math-spine/college-algebra"
- },
- {
-  "course": "Brilliant",
-  "sources": [
-   "Brilliant"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-math-spine/discrete-mathematics.",
-  "canonical": "il02-math-spine/discrete-mathematics"
- },
- {
-  "course": "Pearson",
-  "sources": [
-   "Pearson"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il03-pearson-programming/python-foundations.",
-  "canonical": "il03-pearson-programming/python-foundations"
- },
- {
-  "course": "OpenStax",
-  "sources": [
-   "OpenStax"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-math-spine/college-algebra.",
-  "canonical": "il02-math-spine/college-algebra"
- },
- {
-  "course": "Princeton University Press",
-  "sources": [
-   "Princeton University Press"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-math-spine/discrete-mathematics.",
-  "canonical": "il02-math-spine/discrete-mathematics"
- },
- {
-  "course": "SkillsPrep",
-  "sources": [
-   "SkillsPrep"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-electrician/eta-interim-credentials.",
-  "canonical": "il02-electrician/eta-interim-credentials"
- },
- {
-  "course": "electrical training ALLIANCE",
-  "sources": [
-   "electrical training ALLIANCE"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il02-electrician/eta-interim-credentials.",
-  "canonical": "il02-electrician/eta-interim-credentials"
- },
- {
-  "course": "Red Hat Training",
-  "sources": [
-   "Red Hat Training"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il04-linux/rhcsa-ex200-prep.",
-  "canonical": "il04-linux/rhcsa-ex200-prep"
- },
- {
-  "course": "Linux Professional Institute",
-  "sources": [
-   "Linux Professional Institute"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il04-linux/lpic-track.",
-  "canonical": "il04-linux/lpic-track"
- },
- {
-  "course": "Oracle Education",
-  "sources": [
-   "Oracle Education"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-oracle/java-se21.",
-  "canonical": "il09-oracle/java-se21"
- },
- {
-  "course": "C++ Institute",
-  "sources": [
-   "C++ Institute"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-cpp-python/cpp-track.",
-  "canonical": "il09-cpp-python/cpp-track"
- },
- {
-  "course": "Python Institute",
-  "sources": [
-   "Python Institute"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-cpp-python/python-track.",
-  "canonical": "il09-cpp-python/python-track"
- },
- {
-  "course": "Linux Foundation Training",
-  "sources": [
-   "Linux Foundation Training"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-lf-blockchain/hfcp-prep.",
-  "canonical": "il09-lf-blockchain/hfcp-prep"
- },
- {
-  "course": "CNCF",
-  "sources": [
-   "CNCF"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-cloud-native/cka-prep.",
-  "canonical": "il05-cloud-native/cka-prep"
- },
- {
-  "course": "Webucator",
-  "sources": [
-   "Webucator"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il03-pearson-systems/web-fundamentals.",
-  "canonical": "il03-pearson-systems/web-fundamentals"
- },
- {
-  "course": "Per Scholas",
-  "sources": [
-   "Per Scholas"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il05-kodekloud/devops-role-map.",
-  "canonical": "il05-kodekloud/devops-role-map"
- },
- {
-  "course": "Neuronal Dynamics (EPFL)",
-  "sources": [
-   "Neuronal Dynamics (EPFL)"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-neuroai/comp-neuro-foundations.",
-  "canonical": "il07-neuroai/comp-neuro-foundations"
- },
- {
-  "course": "MIT Press",
-  "sources": [
-   "MIT Press"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-neuroai/comp-neuro-foundations.",
-  "canonical": "il07-neuroai/comp-neuro-foundations"
- },
- {
-  "course": "Internet Sacred Text Archive",
-  "sources": [
-   "Internet Sacred Text Archive"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il01-hermetic-foundations/hermetic-corpus.",
-  "canonical": "il01-hermetic-foundations/hermetic-corpus"
- },
- {
-  "course": "Project Gutenberg",
-  "sources": [
-   "Project Gutenberg"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il01-hermetic-foundations/hermetic-corpus.",
-  "canonical": "il01-hermetic-foundations/hermetic-corpus"
- },
- {
-  "course": "CCRU Archive",
-  "sources": [
-   "CCRU Archive"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il01-ccru-seminar/land-ccru-corpus.",
-  "canonical": "il01-ccru-seminar/land-ccru-corpus"
- },
- {
-  "course": "Principia Cybernetica",
-  "sources": [
-   "Principia Cybernetica"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il01-ccru-seminar/cybernetics-arc.",
-  "canonical": "il01-ccru-seminar/cybernetics-arc"
- },
- {
-  "course": "Hugging Face LLM Course",
-  "sources": [
-   "Hugging Face LLM Course"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-ai-ml/llm-engineering.",
-  "canonical": "il07-ai-ml/llm-engineering"
- },
- {
-  "course": "PyTorch",
-  "sources": [
-   "PyTorch"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-ai-ml/deep-learning-cs230.",
-  "canonical": "il07-ai-ml/deep-learning-cs230"
- },
- {
-  "course": "CMU SCS Course Catalog",
-  "sources": [
-   "CMU SCS Course Catalog"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il08-cmu-cs/imperative-functional-core.",
-  "canonical": "il08-cmu-cs/imperative-functional-core"
- },
- {
-  "course": "Stanford ExploreCourses",
-  "sources": [
-   "Stanford ExploreCourses"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il08-stanford-cs/programming-abstractions.",
-  "canonical": "il08-stanford-cs/programming-abstractions"
- },
- {
-  "course": "NEURON Simulator",
-  "sources": [
-   "NEURON Simulator"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-neuroai/neural-modeling-simulation.",
-  "canonical": "il07-neuroai/neural-modeling-simulation"
- },
- {
-  "course": "Brian2",
-  "sources": [
-   "Brian2"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il07-neuroai/neural-modeling-simulation.",
-  "canonical": "il07-neuroai/neural-modeling-simulation"
- },
- {
-  "course": "Anthropic",
-  "sources": [
-   "Anthropic"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/anthropic-claude-certs.",
-  "canonical": "il09-vendor-ai/anthropic-claude-certs"
- },
- {
-  "course": "OpenAI",
-  "sources": [
-   "OpenAI"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/openai-program-track.",
-  "canonical": "il09-vendor-ai/openai-program-track"
- },
- {
-  "course": "NVIDIA",
-  "sources": [
-   "NVIDIA"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/nvidia-databricks.",
-  "canonical": "il09-vendor-ai/nvidia-databricks"
- },
- {
-  "course": "Databricks",
-  "sources": [
-   "Databricks"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/nvidia-databricks.",
-  "canonical": "il09-vendor-ai/nvidia-databricks"
- },
- {
-  "course": "Microsoft Learn",
-  "sources": [
-   "Microsoft Learn"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/microsoft-azure-ai.",
-  "canonical": "il09-vendor-ai/microsoft-azure-ai"
- },
- {
-  "course": "Google Cloud",
-  "sources": [
-   "Google Cloud"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/google-cloud-ai.",
-  "canonical": "il09-vendor-ai/google-cloud-ai"
- },
- {
-  "course": "AWS Training",
-  "sources": [
-   "AWS Training"
-  ],
-  "decision": "kept",
-  "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/aws-ai-ml.",
-  "canonical": "il09-vendor-ai/aws-ai-ml"
- }
+  {
+    "course": "Webucator Java + Python bundle",
+    "sources": [
+      "Webucator"
+    ],
+    "decision": "merged",
+    "reason": "Bundle duplicates the platform's canonical Java/Python programming nodes; merged into the programming backbone (canonical node il03-pearson-programming/python-foundations) instead of a second course.",
+    "canonical": "il03-pearson-programming/python-foundations"
+  },
+  {
+    "course": "Webucator Full Stack bundle (~20 courses)",
+    "sources": [
+      "Webucator"
+    ],
+    "decision": "merged",
+    "reason": "Bundle duplicates the platform's canonical web-fundamentals node; routed to the single node rather than rebuilt as a course.",
+    "canonical": "il03-pearson-systems/web-fundamentals"
+  },
+  {
+    "course": "Per Scholas Cloud DevOps (14-week program)",
+    "sources": [
+      "Per Scholas"
+    ],
+    "decision": "merged",
+    "reason": "Program duplicates the platform's canonical DevOps role map; routed to il05-kodekloud rather than rebuilt as a course.",
+    "canonical": "il05-kodekloud/devops-role-map"
+  },
+  {
+    "course": "Per Scholas Software Engineering: AI Native",
+    "sources": [
+      "Per Scholas"
+    ],
+    "decision": "merged",
+    "reason": "Program duplicates the platform's canonical full-stack capstone; routed to the single node rather than rebuilt as a course.",
+    "canonical": "il03-pearson-systems/capstone-build"
+  },
+  {
+    "course": "Stanford CS 106A / 106B",
+    "sources": [
+      "Stanford ExploreCourses"
+    ],
+    "decision": "merged",
+    "reason": "Sequence duplicates the platform's canonical Stanford cross-walk; routed to il08-stanford-cs rather than rebuilt as a course.",
+    "canonical": "il08-stanford-cs/programming-abstractions"
+  },
+  {
+    "course": "CMU 15-112 / 15-122",
+    "sources": [
+      "CMU SCS Course Catalog"
+    ],
+    "decision": "merged",
+    "reason": "Sequence duplicates the platform's canonical CMU cross-walk; routed to il08-cmu-cs rather than rebuilt as a course.",
+    "canonical": "il08-cmu-cs/imperative-functional-core"
+  },
+  {
+    "course": "MIT 6.100A / 6.100B",
+    "sources": [
+      "MIT OpenCourseWare"
+    ],
+    "decision": "merged",
+    "reason": "Sequence duplicates the platform's canonical MIT OCW Python node; routed to il03-mit-ocw rather than rebuilt as a course.",
+    "canonical": "il03-mit-ocw/python-6100ab"
+  },
+  {
+    "course": "Khan Academy / ALEKS math spine",
+    "sources": [
+      "Khan Academy",
+      "ALEKS"
+    ],
+    "decision": "kept",
+    "reason": "Kept as the canonical math-spine source layer; the platform's college-algebra node is built on these, not duplicated elsewhere.",
+    "canonical": "il02-math-spine/college-algebra"
+  },
+  {
+    "course": "Google Career Certificate search properties (google.com/104, 106, 369, 370)",
+    "sources": [],
+    "decision": "dropped",
+    "reason": "Scope boundary (Rev 2 section 6): these Google certificate properties are out of scope and must not be built.",
+    "canonical": null
+  },
+  {
+    "course": "Google property (google.com/25)",
+    "sources": [],
+    "decision": "dropped",
+    "reason": "Scope boundary (Rev 2 section 6): out of scope and must not be built.",
+    "canonical": null
+  },
+  {
+    "course": "NSA as a certification issuer",
+    "sources": [],
+    "decision": "dropped",
+    "reason": "Boundary record: the NSA issues no attainable public certifications; it appears in the NICE lineage only, never as a credential target.",
+    "canonical": null
+  },
+  {
+    "course": "MIT mathematics PhD qualifying examinations",
+    "sources": [],
+    "decision": "dropped",
+    "reason": "Boundary record: oral, department-internal qualifying exams with no public credential; out of scope for a self-study platform.",
+    "canonical": null
+  },
+  {
+    "course": "Hackers-Arise",
+    "sources": [
+      "Hackers-Arise"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-hackers-arise/linux-for-hackers.",
+    "canonical": "il06-hackers-arise/linux-for-hackers"
+  },
+  {
+    "course": "HackTheBox",
+    "sources": [
+      "HackTheBox"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-offensive/htb-thm-labs.",
+    "canonical": "il06-offensive/htb-thm-labs"
+  },
+  {
+    "course": "TryHackMe",
+    "sources": [
+      "TryHackMe"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-offensive/htb-thm-labs.",
+    "canonical": "il06-offensive/htb-thm-labs"
+  },
+  {
+    "course": "OffSec",
+    "sources": [
+      "OffSec"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-offensive/pen200-oscp-map.",
+    "canonical": "il06-offensive/pen200-oscp-map"
+  },
+  {
+    "course": "PortSwigger Web Security Academy",
+    "sources": [
+      "PortSwigger Web Security Academy"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-offensive/web-app-exploitation.",
+    "canonical": "il06-offensive/web-app-exploitation"
+  },
+  {
+    "course": "SANS Institute",
+    "sources": [
+      "SANS Institute"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-defensive/soc-operations.",
+    "canonical": "il06-defensive/soc-operations"
+  },
+  {
+    "course": "CompTIA",
+    "sources": [
+      "CompTIA"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-comptia-core/aplus-v15.",
+    "canonical": "il09-comptia-core/aplus-v15"
+  },
+  {
+    "course": "NIST NICE Framework (SP 800-181 Rev.1)",
+    "sources": [
+      "NIST NICE Framework (SP 800-181 Rev.1)"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-hackers-arise/nice-framework-map.",
+    "canonical": "il06-hackers-arise/nice-framework-map"
+  },
+  {
+    "course": "NIST Zero Trust Architecture (SP 800-207)",
+    "sources": [
+      "NIST Zero Trust Architecture (SP 800-207)"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-zero-trust/sp800-207-tenets.",
+    "canonical": "il05-zero-trust/sp800-207-tenets"
+  },
+  {
+    "course": "KodeKloud",
+    "sources": [
+      "KodeKloud"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/devops-role-map.",
+    "canonical": "il05-kodekloud/devops-role-map"
+  },
+  {
+    "course": "Kubernetes Documentation",
+    "sources": [
+      "Kubernetes Documentation"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-cloud-native/cka-prep.",
+    "canonical": "il05-cloud-native/cka-prep"
+  },
+  {
+    "course": "Terraform Documentation",
+    "sources": [
+      "Terraform Documentation"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-terraform/terraform-associate-prep.",
+    "canonical": "il05-terraform/terraform-associate-prep"
+  },
+  {
+    "course": "Docker",
+    "sources": [
+      "Docker"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/containers-docker.",
+    "canonical": "il05-kodekloud/containers-docker"
+  },
+  {
+    "course": "Jenkins",
+    "sources": [
+      "Jenkins"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/cicd-jenkins.",
+    "canonical": "il05-kodekloud/cicd-jenkins"
+  },
+  {
+    "course": "Ansible Documentation",
+    "sources": [
+      "Ansible Documentation"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il04-rhce/ex294-ansible-prep.",
+    "canonical": "il04-rhce/ex294-ansible-prep"
+  },
+  {
+    "course": "Git",
+    "sources": [
+      "Git"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/git-github.",
+    "canonical": "il05-kodekloud/git-github"
+  },
+  {
+    "course": "Prometheus",
+    "sources": [
+      "Prometheus"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/observability.",
+    "canonical": "il05-kodekloud/observability"
+  },
+  {
+    "course": "Grafana",
+    "sources": [
+      "Grafana"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/observability.",
+    "canonical": "il05-kodekloud/observability"
+  },
+  {
+    "course": "MongoDB University",
+    "sources": [
+      "MongoDB University"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-mongodb/atlas-foundations.",
+    "canonical": "il07-mongodb/atlas-foundations"
+  },
+  {
+    "course": "MongoDB Introduction Learning Path",
+    "sources": [
+      "MongoDB Introduction Learning Path"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-mongodb/atlas-foundations.",
+    "canonical": "il07-mongodb/atlas-foundations"
+  },
+  {
+    "course": "MIT OpenCourseWare",
+    "sources": [
+      "MIT OpenCourseWare"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il03-mit-ocw/python-6100ab.",
+    "canonical": "il03-mit-ocw/python-6100ab"
+  },
+  {
+    "course": "MIT xPRO",
+    "sources": [
+      "MIT xPRO"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-fde-interface/mitxpro-cybersecurity.",
+    "canonical": "il06-fde-interface/mitxpro-cybersecurity"
+  },
+  {
+    "course": "MIT xPRO Cybersecurity",
+    "sources": [
+      "MIT xPRO Cybersecurity"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-fde-interface/mitxpro-cybersecurity.",
+    "canonical": "il06-fde-interface/mitxpro-cybersecurity"
+  },
+  {
+    "course": "MIT xPRO Advanced Analytics",
+    "sources": [
+      "MIT xPRO Advanced Analytics"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-data-schools/mit-credentials.",
+    "canonical": "il07-data-schools/mit-credentials"
+  },
+  {
+    "course": "Interview Kickstart FDE",
+    "sources": [
+      "Interview Kickstart FDE"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-fde-interface/ik-fde-spine.",
+    "canonical": "il06-fde-interface/ik-fde-spine"
+  },
+  {
+    "course": "ELVTR",
+    "sources": [
+      "ELVTR"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il06-fde-interface/elvtr-ai-cybersecurity.",
+    "canonical": "il06-fde-interface/elvtr-ai-cybersecurity"
+  },
+  {
+    "course": "Palantir Learn",
+    "sources": [
+      "Palantir Learn"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-palantir/foundry-data-engineer.",
+    "canonical": "il09-palantir/foundry-data-engineer"
+  },
+  {
+    "course": "Humanmetrics",
+    "sources": [
+      "Humanmetrics"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il10-humanmetrics/typology-assessment.",
+    "canonical": "il10-humanmetrics/typology-assessment"
+  },
+  {
+    "course": "JobRight AI",
+    "sources": [
+      "JobRight AI"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il10-fde-career/jobright-outcome-layer.",
+    "canonical": "il10-fde-career/jobright-outcome-layer"
+  },
+  {
+    "course": "Babson College",
+    "sources": [
+      "Babson College"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il10-entrepreneurship/babson-curriculum-map.",
+    "canonical": "il10-entrepreneurship/babson-curriculum-map"
+  },
+  {
+    "course": "The Academy SF",
+    "sources": [
+      "The Academy SF"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il10-entrepreneurship/academy-sf-study.",
+    "canonical": "il10-entrepreneurship/academy-sf-study"
+  },
+  {
+    "course": "MIT MicroMasters Finance",
+    "sources": [
+      "MIT MicroMasters Finance"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il10-quant-finance/micromasters-finance.",
+    "canonical": "il10-quant-finance/micromasters-finance"
+  },
+  {
+    "course": "MIT MicroMasters Statistics & Data Science",
+    "sources": [
+      "MIT MicroMasters Statistics & Data Science"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-data-schools/mit-credentials.",
+    "canonical": "il07-data-schools/mit-credentials"
+  },
+  {
+    "course": "Stanford Online",
+    "sources": [
+      "Stanford Online"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-data-schools/stanford-credentials.",
+    "canonical": "il07-data-schools/stanford-credentials"
+  },
+  {
+    "course": "Khan Academy",
+    "sources": [
+      "Khan Academy"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-math-spine/college-algebra.",
+    "canonical": "il02-math-spine/college-algebra"
+  },
+  {
+    "course": "ALEKS",
+    "sources": [
+      "ALEKS"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-math-spine/college-algebra.",
+    "canonical": "il02-math-spine/college-algebra"
+  },
+  {
+    "course": "Brilliant",
+    "sources": [
+      "Brilliant"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-math-spine/discrete-mathematics.",
+    "canonical": "il02-math-spine/discrete-mathematics"
+  },
+  {
+    "course": "Pearson",
+    "sources": [
+      "Pearson"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il03-pearson-programming/python-foundations.",
+    "canonical": "il03-pearson-programming/python-foundations"
+  },
+  {
+    "course": "OpenStax",
+    "sources": [
+      "OpenStax"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-math-spine/college-algebra.",
+    "canonical": "il02-math-spine/college-algebra"
+  },
+  {
+    "course": "Princeton University Press",
+    "sources": [
+      "Princeton University Press"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-math-spine/discrete-mathematics.",
+    "canonical": "il02-math-spine/discrete-mathematics"
+  },
+  {
+    "course": "SkillsPrep",
+    "sources": [
+      "SkillsPrep"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-electrician/eta-interim-credentials.",
+    "canonical": "il02-electrician/eta-interim-credentials"
+  },
+  {
+    "course": "electrical training ALLIANCE",
+    "sources": [
+      "electrical training ALLIANCE"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il02-electrician/eta-interim-credentials.",
+    "canonical": "il02-electrician/eta-interim-credentials"
+  },
+  {
+    "course": "Red Hat Training",
+    "sources": [
+      "Red Hat Training"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il04-linux/rhcsa-ex200-prep.",
+    "canonical": "il04-linux/rhcsa-ex200-prep"
+  },
+  {
+    "course": "Linux Professional Institute",
+    "sources": [
+      "Linux Professional Institute"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il04-linux/lpic-track.",
+    "canonical": "il04-linux/lpic-track"
+  },
+  {
+    "course": "Oracle Education",
+    "sources": [
+      "Oracle Education"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-oracle/java-se21.",
+    "canonical": "il09-oracle/java-se21"
+  },
+  {
+    "course": "C++ Institute",
+    "sources": [
+      "C++ Institute"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-cpp-python/cpp-track.",
+    "canonical": "il09-cpp-python/cpp-track"
+  },
+  {
+    "course": "Python Institute",
+    "sources": [
+      "Python Institute"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-cpp-python/python-track.",
+    "canonical": "il09-cpp-python/python-track"
+  },
+  {
+    "course": "Linux Foundation Training",
+    "sources": [
+      "Linux Foundation Training"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-lf-blockchain/hfcp-prep.",
+    "canonical": "il09-lf-blockchain/hfcp-prep"
+  },
+  {
+    "course": "CNCF",
+    "sources": [
+      "CNCF"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-cloud-native/cka-prep.",
+    "canonical": "il05-cloud-native/cka-prep"
+  },
+  {
+    "course": "Webucator",
+    "sources": [
+      "Webucator"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il03-pearson-systems/web-fundamentals.",
+    "canonical": "il03-pearson-systems/web-fundamentals"
+  },
+  {
+    "course": "Per Scholas",
+    "sources": [
+      "Per Scholas"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il05-kodekloud/devops-role-map.",
+    "canonical": "il05-kodekloud/devops-role-map"
+  },
+  {
+    "course": "Neuronal Dynamics (EPFL)",
+    "sources": [
+      "Neuronal Dynamics (EPFL)"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-neuroai/comp-neuro-foundations.",
+    "canonical": "il07-neuroai/comp-neuro-foundations"
+  },
+  {
+    "course": "MIT Press",
+    "sources": [
+      "MIT Press"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-neuroai/comp-neuro-foundations.",
+    "canonical": "il07-neuroai/comp-neuro-foundations"
+  },
+  {
+    "course": "Internet Sacred Text Archive",
+    "sources": [
+      "Internet Sacred Text Archive"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il01-hermetic-foundations/hermetic-corpus.",
+    "canonical": "il01-hermetic-foundations/hermetic-corpus"
+  },
+  {
+    "course": "Project Gutenberg",
+    "sources": [
+      "Project Gutenberg"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il01-hermetic-foundations/hermetic-corpus.",
+    "canonical": "il01-hermetic-foundations/hermetic-corpus"
+  },
+  {
+    "course": "CCRU Archive",
+    "sources": [
+      "CCRU Archive"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il01-ccru-seminar/land-ccru-corpus.",
+    "canonical": "il01-ccru-seminar/land-ccru-corpus"
+  },
+  {
+    "course": "Principia Cybernetica",
+    "sources": [
+      "Principia Cybernetica"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il01-ccru-seminar/cybernetics-arc.",
+    "canonical": "il01-ccru-seminar/cybernetics-arc"
+  },
+  {
+    "course": "Hugging Face LLM Course",
+    "sources": [
+      "Hugging Face LLM Course"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-ai-ml/llm-engineering.",
+    "canonical": "il07-ai-ml/llm-engineering"
+  },
+  {
+    "course": "PyTorch",
+    "sources": [
+      "PyTorch"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-ai-ml/deep-learning-cs230.",
+    "canonical": "il07-ai-ml/deep-learning-cs230"
+  },
+  {
+    "course": "CMU SCS Course Catalog",
+    "sources": [
+      "CMU SCS Course Catalog"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il08-cmu-cs/imperative-functional-core.",
+    "canonical": "il08-cmu-cs/imperative-functional-core"
+  },
+  {
+    "course": "Stanford ExploreCourses",
+    "sources": [
+      "Stanford ExploreCourses"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il08-stanford-cs/programming-abstractions.",
+    "canonical": "il08-stanford-cs/programming-abstractions"
+  },
+  {
+    "course": "NEURON Simulator",
+    "sources": [
+      "NEURON Simulator"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-neuroai/neural-modeling-simulation.",
+    "canonical": "il07-neuroai/neural-modeling-simulation"
+  },
+  {
+    "course": "Brian2",
+    "sources": [
+      "Brian2"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il07-neuroai/neural-modeling-simulation.",
+    "canonical": "il07-neuroai/neural-modeling-simulation"
+  },
+  {
+    "course": "Anthropic",
+    "sources": [
+      "Anthropic"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/anthropic-claude-certs.",
+    "canonical": "il09-vendor-ai/anthropic-claude-certs"
+  },
+  {
+    "course": "OpenAI",
+    "sources": [
+      "OpenAI"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/openai-program-track.",
+    "canonical": "il09-vendor-ai/openai-program-track"
+  },
+  {
+    "course": "NVIDIA",
+    "sources": [
+      "NVIDIA"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/nvidia-databricks.",
+    "canonical": "il09-vendor-ai/nvidia-databricks"
+  },
+  {
+    "course": "Databricks",
+    "sources": [
+      "Databricks"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/nvidia-databricks.",
+    "canonical": "il09-vendor-ai/nvidia-databricks"
+  },
+  {
+    "course": "Microsoft Learn",
+    "sources": [
+      "Microsoft Learn"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/microsoft-azure-ai.",
+    "canonical": "il09-vendor-ai/microsoft-azure-ai"
+  },
+  {
+    "course": "Google Cloud",
+    "sources": [
+      "Google Cloud"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/google-cloud-ai.",
+    "canonical": "il09-vendor-ai/google-cloud-ai"
+  },
+  {
+    "course": "AWS Training",
+    "sources": [
+      "AWS Training"
+    ],
+    "decision": "kept",
+    "reason": "Official or primary source retained at its canonical node: il09-vendor-ai/aws-ai-ml.",
+    "canonical": "il09-vendor-ai/aws-ai-ml"
+  },
+  {
+    "course": "CISA Zero Trust Maturity Model",
+    "sources": [
+      "CISA Zero Trust Maturity Model"
+    ],
+    "decision": "kept",
+    "reason": "CISA's five-pillar maturity model is the assessment spine of the Zero Trust foundations path; kept as the canonical reference for the dedicated CISA module.",
+    "canonical": "il11-zero-trust-foundations/zt-cisa-maturity"
+  },
+  {
+    "course": "Microsoft Learn — Active Directory Domain Services overview",
+    "sources": [
+      "Microsoft Learn — Active Directory Domain Services overview"
+    ],
+    "decision": "kept",
+    "reason": "Microsoft's AD DS reference is the authoritative structural baseline for the AD defense path; kept as the canonical reference for the AD structure module.",
+    "canonical": "il11-active-directory-defense/zt-ad-structure"
+  },
+  {
+    "course": "NIST SP 800-207 — Zero Trust Architecture",
+    "sources": [
+      "NIST SP 800-207 — Zero Trust Architecture"
+    ],
+    "decision": "kept",
+    "reason": "The canonical Zero Trust reference (tenets, logical components, deployment models); kept as the canonical reference for the NIST tenets module.",
+    "canonical": "il11-zero-trust-foundations/zt-nist-tenets"
+  },
+  {
+    "course": "OWASP Top 10",
+    "sources": [
+      "OWASP Top 10"
+    ],
+    "decision": "kept",
+    "reason": "The industry-standard web risk catalog; kept as the canonical reference for the web-attacks module in red/blue operations.",
+    "canonical": "il11-red-blue-operations/zt-web-attacks"
+  },
+  {
+    "course": "ThreatLocker — Zero Trust Cybersecurity Bootcamp announcement",
+    "sources": [
+      "ThreatLocker — Zero Trust Cybersecurity Bootcamp announcement"
+    ],
+    "decision": "kept",
+    "reason": "The bootcamp announcement that motivated the IL-11 academy; kept as the canonical reference for the Cyber Hero prep review module.",
+    "canonical": "il11-cyber-hero-prep/zt-hero-review"
+  },
+  {
+    "course": "ThreatLocker — product documentation",
+    "sources": [
+      "ThreatLocker — product documentation"
+    ],
+    "decision": "kept",
+    "reason": "Vendor documentation for allowlisting/ringfencing mechanics; kept as the canonical reference for the allowlisting module.",
+    "canonical": "il11-allowlisting-ringfencing/zt-allowlist"
+  }
 ]
