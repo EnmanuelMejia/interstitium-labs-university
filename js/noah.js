@@ -761,6 +761,9 @@
   /* ================= Boot ========================================== */
   function boot() {
     if (!document.body) return;
+    /* If the page hosts its own embedded Noah panel (e.g. learn.html),
+       the floating widget stands down — one Noah per page. */
+    if (document.getElementById('noah-form')) return;
     buildWidget();
   }
   if (typeof document !== 'undefined') {
