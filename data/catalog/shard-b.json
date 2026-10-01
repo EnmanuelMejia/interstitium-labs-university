@@ -540,7 +540,8 @@
    "tags": [
     "terraform",
     "iac",
-    "hashicorp"
+    "hashicorp",
+    "terraform-associate"
    ],
    "modules": [
     {
@@ -586,6 +587,7 @@
      "title": "Terraform Associate Exam Prep",
      "kind": "exam_prep",
      "topics": [
+      "HashiCorp Certified: Terraform Associate (003) exam domains",
       "IaC concepts",
       "Terraform basics and workflow",
       "Advanced features",

@@ -1,0 +1,3317 @@
+{
+ "academies": [],
+ "paths": [
+  {
+   "id": "il05-azure-admin",
+   "academy": "IL-05",
+   "title": "Azure Administration: The AZ-104 Spine",
+   "subtitle": "Run Azure like a production tenant, not a demo — Entra ID and RBAC, storage, compute, virtual networking, and monitoring, distilled from the AZ-104 study guide into labs on a real subscription.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 220,
+   "status": "published",
+   "tags": [
+    "azure",
+    "az-104",
+    "entra-id",
+    "cloud-admin"
+   ],
+   "modules": [
+    {
+     "id": "az104-entra-governance",
+     "title": "Entra ID, RBAC, and Governance",
+     "kind": "core",
+     "topics": [
+      "Entra ID: users, groups, devices, licenses",
+      "RBAC: roles, scopes, least privilege, PIM",
+      "Management groups, subscriptions, policy, locks",
+      "Exam weight 20–25%: identity is the control plane"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Administrator Associate (AZ-104)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+       "note": "Official AZ-104 certification page: exam domains and study resources."
+      },
+      {
+       "name": "Microsoft Learn",
+       "url": "https://learn.microsoft.com/",
+       "note": "Free Microsoft Learn modules: the hands-on sandbox behind every Azure path here."
+      }
+     ],
+     "il_provides": "A governance lab: build a three-tier management-group hierarchy with policy assignments and PIM-eligible roles — then try to break it and read the audit log."
+    },
+    {
+     "id": "az104-storage",
+     "title": "Storage Accounts and Lifecycle",
+     "kind": "core",
+     "topics": [
+      "Storage account types, redundancy, and tiers",
+      "Blob lifecycle management and versioning",
+      "Azure Files, secure transfer, SAS vs keys",
+      "Exam weight 15–20%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Administrator Associate (AZ-104)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+       "note": "Official AZ-104 certification page: exam domains and study resources."
+      }
+     ],
+     "il_provides": "A storage lab: lifecycle policies that actually tier blobs, private endpoints on a storage account, and a cost readout of getting the tier wrong."
+    },
+    {
+     "id": "az104-compute",
+     "title": "Compute: VMs, VMSS, and Containers",
+     "kind": "core",
+     "topics": [
+      "VM sizing, availability sets/zones, VMSS",
+      "Azure Container Instances and Container Apps",
+      "App Service plans and deployment slots",
+      "Exam weight 20–25%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Administrator Associate (AZ-104)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+       "note": "Official AZ-104 certification page: exam domains and study resources."
+      }
+     ],
+     "il_provides": "Compute drills: deploy the same workload three ways (VMSS, Container Apps, App Service) and compare cold start, scale behavior, and cost per request."
+    },
+    {
+     "id": "az104-networking",
+     "title": "Virtual Networking",
+     "kind": "core",
+     "topics": [
+      "VNets, subnets, peering, and routing",
+      "VPN Gateway and ExpressRoute concepts",
+      "NSGs, Azure Firewall, NAT gateway",
+      "Exam weight 15–20%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Administrator Associate (AZ-104)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+       "note": "Official AZ-104 certification page: exam domains and study resources."
+      },
+      {
+       "name": "KodeKloud — Azure Certification Learning Path",
+       "url": "https://kodekloud.com/learning-path/azure/",
+       "note": "KodeKloud's Azure path (AZ-900 → AZ-104 → AZ-305). Caveat: their catalog copy still lists retired exams (AZ-204, AI-102, AZ-500, AI-900) — trust Microsoft's retirement dates, not the catalog copy."
+      }
+     ],
+     "il_provides": "A networking lab: hub-and-spoke with peering, forced tunneling through a firewall, and packet captures proving the path. KodeKloud's Azure path is a style reference only — their catalog copy still lists retired exams."
+    },
+    {
+     "id": "az104-monitor",
+     "title": "Monitor, Backup, and Recovery",
+     "kind": "core",
+     "topics": [
+      "Azure Monitor: metrics, logs, KQL basics",
+      "Log Analytics workspaces and alerts",
+      "Backup vaults, Site Recovery, update management",
+      "Exam weight 10–15%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Administrator Associate (AZ-104)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+       "note": "Official AZ-104 certification page: exam domains and study resources."
+      }
+     ],
+     "il_provides": "An observability lab: write the KQL that pages you before the customer notices, then trigger the alert on purpose."
+    },
+    {
+     "id": "az104-exam-prep",
+     "title": "AZ-104 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Case-study and drag-drop question tactics",
+      "The 20–25% identity domain: deepest drill",
+      "Sandbox vs exam-day environment differences",
+      "Booking through Pearson VUE; what to bring"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Administrator Associate (AZ-104)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+       "note": "Official AZ-104 certification page: exam domains and study resources."
+      }
+     ],
+     "il_provides": "Readiness gates per exam domain with scenario questions; you sit the exam when every gate is green, not before."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-azure-admin-diagnostic",
+     "title": "Azure Admin Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A developer needs to deploy to one resource group but must not see other groups in the subscription. What is the correct approach?",
+       "choices": [
+        "Make them Subscription Owner",
+        "Assign Contributor at the resource-group scope",
+        "Assign Reader at the subscription scope",
+        "Give them the storage account key"
+       ],
+       "answer": 1,
+       "explain": "RBAC is scoped: Contributor on the single resource group gives deploy rights there and nowhere else — least privilege."
+      },
+      {
+       "q": "Which storage redundancy keeps three synchronous copies in one region plus asynchronous copies in a paired region?",
+       "choices": [
+        "LRS",
+        "ZRS",
+        "GRS",
+        "Premium SSD"
+       ],
+       "answer": 2,
+       "explain": "GRS = 3 sync copies in the primary region + async copies in the paired region. ZRS is zonal within one region."
+      },
+      {
+       "q": "You need private connectivity from on-premises to Azure with consistent bandwidth. What do you choose?",
+       "choices": [
+        "Site-to-Site VPN",
+        "ExpressRoute",
+        "VNet peering",
+        "Point-to-Site VPN"
+       ],
+       "answer": 1,
+       "explain": "ExpressRoute is the private dedicated circuit; VPN runs over the public internet."
+      },
+      {
+       "q": "An NSG rule allows port 443 from the internet to a VM, but traffic is blocked. What should you check first?",
+       "choices": [
+        "The VM's public IP SKU",
+        "Whether a route table or Azure Firewall overrides the path",
+        "The storage account firewall",
+        "The Entra ID tenant"
+       ],
+       "answer": 1,
+       "explain": "NSGs are one layer — effective security rules combine NSGs, route tables, and firewalls. Check the whole path."
+      },
+      {
+       "q": "Which KQL operator filters rows in Azure Monitor logs?",
+       "choices": [
+        "summarize",
+        "where",
+        "project",
+        "join"
+       ],
+       "answer": 1,
+       "explain": "where filters rows; project selects columns; summarize aggregates."
+      },
+      {
+       "q": "A VMSS must survive a zone failure in a region with availability zones. What is the minimum zone spread?",
+       "choices": [
+        "Single zone is fine",
+        "Span at least two zones",
+        "Span all zones in the region",
+        "Zones don't matter for VMSS"
+       ],
+       "answer": 2,
+       "explain": "Zone-redundant VMSS spreads instances across zones — spanning all zones in the region is the resilient pattern."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-azure-architect",
+   "academy": "IL-05",
+   "title": "Azure Solutions Architecture: AZ-305",
+   "subtitle": "Design it before you build it — identity/governance/monitoring, data storage, business continuity, and infrastructure design as architecture decision records with costed reference designs. Requires AZ-104 first.",
+   "type": "certification",
+   "difficulty": "advanced",
+   "hours": 200,
+   "status": "published",
+   "tags": [
+    "azure",
+    "az-305",
+    "solutions-architect",
+    "architecture"
+   ],
+   "modules": [
+    {
+     "id": "az305-identity-design",
+     "title": "Design Identity, Governance, and Monitoring",
+     "kind": "core",
+     "topics": [
+      "Entra ID design: tenants, B2B, hybrid patterns",
+      "Governance at scale: landing zones, policy-as-code",
+      "Monitoring design: workspaces, data collection rules",
+      "One of the four AZ-305 design domains"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Solutions Architect Expert (AZ-104 + AZ-305)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+       "note": "Official AZ-305 exam page. Domain weights below are omitted — confirm against the live study guide before exam day."
+      },
+      {
+       "name": "Microsoft Learn",
+       "url": "https://learn.microsoft.com/",
+       "note": "Free Microsoft Learn modules: the hands-on sandbox behind every Azure path here."
+      }
+     ],
+     "il_provides": "ADRs: you write the decision record for a multi-tenant identity design and defend it in review, costed."
+    },
+    {
+     "id": "az305-data-design",
+     "title": "Design Data Storage",
+     "kind": "core",
+     "topics": [
+      "Relational vs NoSQL vs lake: the decision tree",
+      "Cosmos DB consistency levels and partitioning",
+      "Data lake zones and lifecycle at scale",
+      "One of the four AZ-305 design domains"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Solutions Architect Expert (AZ-104 + AZ-305)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+       "note": "Official AZ-305 exam page. Domain weights below are omitted — confirm against the live study guide before exam day."
+      }
+     ],
+     "il_provides": "A data-design studio: three workloads, three storage architectures, with the partitioning and consistency trade-offs made explicit."
+    },
+    {
+     "id": "az305-continuity-design",
+     "title": "Design Business Continuity",
+     "kind": "core",
+     "topics": [
+      "RTO/RPO as design inputs, not afterthoughts",
+      "Backup vs Site Recovery vs active-active",
+      "Region pairs and data-residency constraints",
+      "One of the four AZ-305 design domains"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Solutions Architect Expert (AZ-104 + AZ-305)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+       "note": "Official AZ-305 exam page. Domain weights below are omitted — confirm against the live study guide before exam day."
+      }
+     ],
+     "il_provides": "Continuity drills: given an RTO/RPO pair and a budget, produce the recovery design — then a fault-injection review attacks it."
+    },
+    {
+     "id": "az305-infra-design",
+     "title": "Design Infrastructure",
+     "kind": "core",
+     "topics": [
+      "Compute selection: the real decision matrix",
+      "Network topology at enterprise scale",
+      "Migration: the 6 Rs applied to real estates",
+      "One of the four AZ-305 design domains"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Solutions Architect Expert (AZ-104 + AZ-305)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+       "note": "Official AZ-305 exam page. Domain weights below are omitted — confirm against the live study guide before exam day."
+      }
+     ],
+     "il_provides": "Reference architectures you can price: every design ships with a monthly cost estimate and the assumptions behind it."
+    },
+    {
+     "id": "az305-capstone",
+     "title": "Architecture Capstone: The Full Design",
+     "kind": "capstone",
+     "topics": [
+      "End-to-end design for a composite scenario",
+      "ADR set, cost model, risk register",
+      "Design review against the Well-Architected Framework",
+      "No new services — synthesis only"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Solutions Architect Expert (AZ-104 + AZ-305)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+       "note": "Official AZ-305 exam page. Domain weights below are omitted — confirm against the live study guide before exam day."
+      }
+     ],
+     "il_provides": "A full design package reviewed the way an architecture board reviews it: decisions, costs, risks, and the ones you rejected."
+    },
+    {
+     "id": "az305-exam-prep",
+     "title": "AZ-305 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Case-study reading under time pressure",
+      "Design-tradeoff questions: spotting the distractor",
+      "Prerequisite check: AZ-104 must be held",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Solutions Architect Expert (AZ-104 + AZ-305)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/",
+       "note": "Official AZ-305 exam page. Domain weights below are omitted — confirm against the live study guide before exam day."
+      }
+     ],
+     "il_provides": "Case-study drills with timed reads; readiness measured per design domain."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-azure-architect-diagnostic",
+     "title": "Azure Architecture Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A workload needs strong consistency for financial transactions with global distribution. Which Cosmos DB consistency level fits?",
+       "choices": [
+        "Eventual",
+        "Session",
+        "Strong",
+        "Bounded staleness"
+       ],
+       "answer": 2,
+       "explain": "Strong consistency is the financial-transactions answer; it costs latency and availability — the trade-off is the point."
+      },
+      {
+       "q": "RTO is 4 hours and RPO is 1 hour. Which statement is true?",
+       "choices": [
+        "RTO is about data loss, RPO about downtime",
+        "RTO is the downtime target, RPO the data-loss target",
+        "Both measure downtime",
+        "Both measure data loss"
+       ],
+       "answer": 1,
+       "explain": "RTO = how fast you're back; RPO = how much data you can lose. Confusing them is the classic exam trap."
+      },
+      {
+       "q": "In a hub-and-spoke topology, where does Azure Firewall belong?",
+       "choices": [
+        "In every spoke",
+        "In the hub, with user-defined routes from spokes",
+        "On-premises only",
+        "In the same subnet as the VMs"
+       ],
+       "answer": 1,
+       "explain": "Firewall in the hub, spokes route through it — the canonical forced-tunneling pattern."
+      },
+      {
+       "q": "Which migration 'R' means moving a VM as-is to Azure?",
+       "choices": [
+        "Refactor",
+        "Replatform",
+        "Rehost",
+        "Repurchase"
+       ],
+       "answer": 2,
+       "explain": "Rehost = lift and shift. Refactor/rearchitect changes code; replatform tweaks the platform."
+      },
+      {
+       "q": "An ADR should record decisions. What else must it record to be useful?",
+       "choices": [
+        "The vendor's marketing claims",
+        "The options considered and why they were rejected",
+        "The project manager's name",
+        "The exact CLI commands"
+       ],
+       "answer": 1,
+       "explain": "An ADR's value is the rejected alternatives and their reasons — that's what future-you needs."
+      },
+      {
+       "q": "Active-active across regions primarily buys you what?",
+       "choices": [
+        "Lower cost",
+        "Near-zero RTO at higher complexity and cost",
+        "Simpler networking",
+        "Data residency compliance"
+       ],
+       "answer": 1,
+       "explain": "Active-active minimizes RTO/RPO but doubles operational complexity and cost — the exam tests that trade-off."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-azure-network",
+   "academy": "IL-05",
+   "title": "Azure Network Engineering: AZ-700",
+   "subtitle": "Packets don't lie; configs do — core networking infrastructure, connectivity services, application delivery, private access, and securing network connectivity, on live VNets.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 160,
+   "status": "published",
+   "tags": [
+    "azure",
+    "az-700",
+    "networking",
+    "vpn",
+    "expressroute"
+   ],
+   "modules": [
+    {
+     "id": "az700-core-infra",
+     "title": "Core Networking Infrastructure",
+     "kind": "core",
+     "topics": [
+      "VNet design: address space, subnets, delegation",
+      "Routing: system routes, UDRs, BGP",
+      "Name resolution: private DNS zones",
+      "NSGs and effective security rules"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Network Engineer Associate (AZ-700)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/",
+       "note": "Official AZ-700 certification page: exam topics and learning paths."
+      }
+     ],
+     "il_provides": "A VNet lab where you break routing on purpose and read the effective routes to find it."
+    },
+    {
+     "id": "az700-connectivity",
+     "title": "Connectivity Services",
+     "kind": "core",
+     "topics": [
+      "VPN Gateway: S2S, P2S, VNet-to-VNet",
+      "ExpressRoute circuits, peering, Global Reach",
+      "VNet peering: gateway transit, address overlap",
+      "Virtual WAN as the managed hub"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Network Engineer Associate (AZ-700)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/",
+       "note": "Official AZ-700 certification page: exam topics and learning paths."
+      }
+     ],
+     "il_provides": "Connectivity drills: build S2S VPN and peering side by side, then compare latency, throughput, and failure modes."
+    },
+    {
+     "id": "az700-app-delivery",
+     "title": "Application Delivery Services",
+     "kind": "core",
+     "topics": [
+      "Load Balancer: SKU, backend pools, health probes",
+      "Application Gateway: WAF, listeners, rules",
+      "Front Door vs Traffic Manager vs Front Door",
+      "Choosing the right delivery tier"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Network Engineer Associate (AZ-700)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/",
+       "note": "Official AZ-700 certification page: exam topics and learning paths."
+      }
+     ],
+     "il_provides": "A delivery lab: the same app behind LB, App Gateway, and Front Door — observe what each layer actually terminates."
+    },
+    {
+     "id": "az700-private-access",
+     "title": "Private Access to Azure Services",
+     "kind": "core",
+     "topics": [
+      "Private Link and private endpoints",
+      "Service endpoints vs private endpoints",
+      "Private DNS integration patterns",
+      "Eliminating public endpoints"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Network Engineer Associate (AZ-700)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/",
+       "note": "Official AZ-700 certification page: exam topics and learning paths."
+      }
+     ],
+     "il_provides": "A private-everything lab: storage, SQL, and Key Vault with no public endpoint, DNS resolving correctly."
+    },
+    {
+     "id": "az700-secure-network",
+     "title": "Secure Network Connectivity",
+     "kind": "core",
+     "topics": [
+      "Azure Firewall: rules, DNAT, IDPS",
+      "DDoS Protection and WAF policies",
+      "Network Watcher: capture, topology, diagnostics",
+      "Zero-trust network segmentation"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Network Engineer Associate (AZ-700)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/",
+       "note": "Official AZ-700 certification page: exam topics and learning paths."
+      }
+     ],
+     "il_provides": "A security lab: attack your own VNet from a jump box and watch Network Watcher and Firewall logs tell the story."
+    },
+    {
+     "id": "az700-exam-prep",
+     "title": "AZ-700 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Scenario questions: reading the topology first",
+      "Service-selection questions: the decision cues",
+      "Hands-on familiarity as the real prep",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Azure Network Engineer Associate (AZ-700)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/",
+       "note": "Official AZ-700 certification page: exam topics and learning paths."
+      }
+     ],
+     "il_provides": "Topology-reading drills: every question starts from a diagram, because the exam does too."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-azure-network-diagnostic",
+     "title": "Azure Network Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "Two VNets with overlapping address spaces need connectivity. What works?",
+       "choices": [
+        "VNet peering directly",
+        "VPN Gateway with NAT",
+        "Nothing — redesign the address space",
+        "Service endpoints"
+       ],
+       "answer": 1,
+       "explain": "Peering requires non-overlapping space. VPN with NAT (or redesign) is the answer — the exam loves this trap."
+      },
+      {
+       "q": "You need a web app protected against SQL injection at the edge. Which service?",
+       "choices": [
+        "Standard Load Balancer",
+        "Application Gateway with WAF",
+        "Traffic Manager",
+        "NAT gateway"
+       ],
+       "answer": 1,
+       "explain": "Application Gateway's WAF tier inspects HTTP for OWASP patterns; LB is layer 4 and can't."
+      },
+      {
+       "q": "A private endpoint is created for a storage account but the VM resolves the public IP. What's wrong?",
+       "choices": [
+        "The private endpoint is in the wrong region",
+        "Private DNS zone missing or not linked to the VNet",
+        "The storage firewall",
+        "The VM needs a public IP"
+       ],
+       "answer": 1,
+       "explain": "Private endpoints need the privatelink DNS zone linked to the VNet — without it, resolution falls back to public."
+      },
+      {
+       "q": "ExpressRoute Global Reach connects what?",
+       "choices": [
+        "Two ExpressRoute circuits to each other",
+        "On-premises to Office 365",
+        "Two VNets in different regions",
+        "VPN to ExpressRoute"
+       ],
+       "answer": 0,
+       "explain": "Global Reach links two ExpressRoute circuits (typically across regions) over Microsoft's backbone."
+      },
+      {
+       "q": "Which tool captures packets on an Azure VM without installing anything on it?",
+       "choices": [
+        "Network Watcher packet capture via VM extension",
+        "Azure Firewall",
+        "Traffic Analytics",
+        "Service Map"
+       ],
+       "answer": 0,
+       "explain": "Network Watcher's packet capture runs through the VM agent/extension — no manual install on the workload."
+      },
+      {
+       "q": "Front Door differs from Traffic Manager primarily in that it is…",
+       "choices": [
+        "DNS-based only",
+        "An anycast layer-7 reverse proxy with WAF",
+        "Cheaper",
+        "Region-locked"
+       ],
+       "answer": 1,
+       "explain": "Front Door is anycast L7 with routing rules and WAF; Traffic Manager is DNS-based global load balancing."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-aws-architect",
+   "academy": "IL-05",
+   "title": "AWS Solutions Architecture: SAA-C03",
+   "subtitle": "Well-Architected, by construction — resilient, high-performing, secure, and cost-optimized architectures built as Terraform-defined reference stacks with failure-injection drills.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 200,
+   "status": "published",
+   "tags": [
+    "aws",
+    "saa-c03",
+    "solutions-architect",
+    "well-architected"
+   ],
+   "modules": [
+    {
+     "id": "saa-resilient",
+     "title": "Resilient Architectures",
+     "kind": "core",
+     "topics": [
+      "Multi-AZ and multi-region patterns",
+      "Decoupling with SQS/SNS/EventBridge",
+      "Auto Scaling, ALB, Route 53 failover",
+      "Exam weight 30%: the largest domain"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      },
+      {
+       "name": "KodeKloud — AWS Learning Path",
+       "url": "https://kodekloud.com/learning-path/aws",
+       "note": "KodeKloud's AWS path toward SAA-C03: lab style reference."
+      }
+     ],
+     "il_provides": "A resilience lab: kill an AZ in your own stack and watch the architecture absorb it — then prove it with the bill."
+    },
+    {
+     "id": "saa-performant",
+     "title": "High-Performing Architectures",
+     "kind": "core",
+     "topics": [
+      "Compute selection: EC2 families, Graviton, Lambda",
+      "Storage performance: EBS types, S3 classes, EFS/FSx",
+      "Caching: CloudFront, ElastiCache, DAX",
+      "Exam weight 26%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "Performance drills: right-size a workload across three compute options and defend the choice with numbers."
+    },
+    {
+     "id": "saa-secure",
+     "title": "Secure Applications and Architectures",
+     "kind": "core",
+     "topics": [
+      "IAM: policies, roles, permission boundaries",
+      "KMS, Secrets Manager, ACM",
+      "VPC security: SGs, NACLs, endpoints",
+      "Exam weight 24%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A security review lab: audit a deliberately misconfigured account and write the findings like an auditor."
+    },
+    {
+     "id": "saa-cost",
+     "title": "Cost-Optimized Architectures",
+     "kind": "core",
+     "topics": [
+      "Pricing models: on-demand, RI, Savings Plans, Spot",
+      "S3 lifecycle and intelligent tiering",
+      "Cost Explorer, Budgets, anomaly detection",
+      "Exam weight 20%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A cost lab: take a $500/month stack to $150 without losing resilience — document every trade."
+    },
+    {
+     "id": "saa-terraform-stacks",
+     "title": "Terraform Reference Stacks",
+     "kind": "lab",
+     "topics": [
+      "VPC module: the reusable foundation",
+      "Three-tier stack as code",
+      "State, workspaces, and team workflow",
+      "Failure injection as a habit"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "Reference stacks in Terraform you keep: the VPC module, the three-tier app, and the chaos script that tests them."
+    },
+    {
+     "id": "saa-exam-prep",
+     "title": "SAA-C03 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Scenario stems: finding the deciding constraint",
+      "'Most cost-effective' vs 'most resilient' cues",
+      "Practice under the real time budget",
+      "Extension path: SAP-C02, then SAP-C03 after 2026-11-16"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "Scenario drills keyed to the four domains; SAP-C02 noted as the professional extension with its 2026-11-16 transition to SAP-C03."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-aws-architect-diagnostic",
+     "title": "AWS Architecture Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A web tier must survive an AZ failure with no data loss on sessions. What pattern?",
+       "choices": [
+        "Single AZ with larger instances",
+        "Multi-AZ ALB + Auto Scaling + ElastiCache for sessions",
+        "S3 static hosting only",
+        "Bigger EBS volumes"
+       ],
+       "answer": 1,
+       "explain": "Stateless web tier across AZs behind an ALB, sessions in ElastiCache — the canonical resilient pattern."
+      },
+      {
+       "q": "Which S3 storage class is cheapest for data accessed once a year with millisecond retrieval when needed?",
+       "choices": [
+        "S3 Standard",
+        "S3 Intelligent-Tiering",
+        "S3 Glacier Instant Retrieval",
+        "S3 Glacier Deep Archive"
+       ],
+       "answer": 2,
+       "explain": "Glacier Instant Retrieval: archival pricing with millisecond access. Deep Archive is hours to retrieve."
+      },
+      {
+       "q": "An EC2 instance needs S3 access. Best practice?",
+       "choices": [
+        "Embed access keys in the app",
+        "Attach an IAM role to the instance",
+        "Open the bucket publicly",
+        "Use the root credentials"
+       ],
+       "answer": 1,
+       "explain": "IAM roles for EC2 — temporary credentials, no keys to leak."
+      },
+      {
+       "q": "Spot Instances are best suited for…",
+       "choices": [
+        "Databases requiring 24/7 uptime",
+        "Fault-tolerant batch jobs with flexible timing",
+        "Single-instance production web servers",
+        "KMS key storage"
+       ],
+       "answer": 1,
+       "explain": "Spot = interruptible discount compute. Batch, CI, and stateless workers — never the database."
+      },
+      {
+       "q": "A company wants to cut EC2 cost for a steady-state workload by ~40% with no architecture change. What first?",
+       "choices": [
+        "Move to Spot",
+        "Buy Compute Savings Plans",
+        "Switch to Fargate",
+        "Delete CloudTrail"
+       ],
+       "answer": 1,
+       "explain": "Savings Plans discount steady-state usage with zero architecture change; Spot needs interruption tolerance."
+      },
+      {
+       "q": "Which service decouples microservices with event routing and filtering?",
+       "choices": [
+        "SQS FIFO only",
+        "EventBridge",
+        "Route 53",
+        "CloudFront"
+       ],
+       "answer": 1,
+       "explain": "EventBridge routes events with rules and filtering; SQS is queueing without routing logic."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-aws-cloudops",
+   "academy": "IL-05",
+   "title": "AWS CloudOps: SOA-C03",
+   "subtitle": "Operate it like it's 3 AM — deployment and provisioning, reliability and business continuity, security and compliance, networking and content delivery, cost and performance optimization, against a live account with alarms you trigger yourself.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 180,
+   "status": "published",
+   "tags": [
+    "aws",
+    "soa-c03",
+    "cloudops",
+    "sysops",
+    "operations"
+   ],
+   "modules": [
+    {
+     "id": "soa-deploy",
+     "title": "Deployment and Provisioning",
+     "kind": "core",
+     "topics": [
+      "CloudFormation and CDK deployment patterns",
+      "Systems Manager: automation, patching, runbooks",
+      "Elastic Beanstalk and blue/green deployments",
+      "Exam weight 22%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "A deployment lab: ship the same app three ways and roll one back under a simulated failed deploy."
+    },
+    {
+     "id": "soa-reliability",
+     "title": "Reliability and Business Continuity",
+     "kind": "core",
+     "topics": [
+      "CloudWatch alarms, composite alarms, dashboards",
+      "Backup plans, cross-region replication",
+      "RTO/RPO design with AWS services",
+      "Exam weight 22%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A reliability lab: trigger your own alarms, execute the runbook, and measure detection-to-recovery time."
+    },
+    {
+     "id": "soa-security",
+     "title": "Security and Compliance",
+     "kind": "core",
+     "topics": [
+      "Config rules and conformance packs",
+      "GuardDuty, Security Hub, Inspector",
+      "IAM Access Analyzer and credential hygiene",
+      "Exam weight 22%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A compliance lab: a deliberately drifted account, Config rules catching it, and the remediation runbook."
+    },
+    {
+     "id": "soa-networking",
+     "title": "Networking and Content Delivery",
+     "kind": "core",
+     "topics": [
+      "VPC design: subnets, NAT, endpoints, peering",
+      "CloudFront distributions and caching behavior",
+      "Route 53 routing policies and health checks",
+      "Exam weight 16%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A networking lab: private subnets with no internet route reaching S3 and DynamoDB through endpoints."
+    },
+    {
+     "id": "soa-cost-perf",
+     "title": "Cost and Performance Optimization",
+     "kind": "core",
+     "topics": [
+      "Compute Optimizer and rightsizing",
+      "S3 lifecycle, EBS gp3 migration",
+      "Cost allocation tags and anomaly alerts",
+      "Exam weight 18%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An optimization lab: a wasteful account, a fixed budget, and a before/after cost report you defend."
+    },
+    {
+     "id": "soa-exam-prep",
+     "title": "SOA-C03 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Operations scenario questions: the runbook cue",
+      "CloudWatch/KMS/Config as answer magnets",
+      "Hands-on familiarity beats memorization",
+      "Note: SOA-C02 retired 2025-09-29 — study SOA-C03"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "Ops-scenario drills; the retired SOA-C02 is named only so you never study the wrong exam."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-aws-cloudops-diagnostic",
+     "title": "AWS CloudOps Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "Instances in private subnets need patching but have no internet route. What do you use?",
+       "choices": [
+        "Open 0.0.0.0/0 in the security group",
+        "Systems Manager Patch Manager with VPC endpoints",
+        "Give each instance a public IP",
+        "SSH in and run yum manually"
+       ],
+       "answer": 1,
+       "explain": "SSM Patch Manager works through VPC endpoints — no internet, no bastion, no SSH keys."
+      },
+      {
+       "q": "You need an alarm that fires only when two metrics breach together. What do you build?",
+       "choices": [
+        "Two separate alarms",
+        "A composite alarm",
+        "An EventBridge rule",
+        "A Config rule"
+       ],
+       "answer": 1,
+       "explain": "Composite alarms combine metric alarms with AND/OR logic — fewer pages, better signal."
+      },
+      {
+       "q": "Which service continuously records configuration changes for compliance auditing?",
+       "choices": [
+        "CloudTrail",
+        "AWS Config",
+        "GuardDuty",
+        "Inspector"
+       ],
+       "answer": 1,
+       "explain": "Config records resource configuration history and evaluates rules; CloudTrail records API calls."
+      },
+      {
+       "q": "A company needs automated daily backups of EBS and RDS with cross-region copy. What service?",
+       "choices": [
+        "AWS Backup with a backup plan",
+        "Manual snapshots",
+        "S3 versioning",
+        "CloudFormation"
+       ],
+       "answer": 0,
+       "explain": "AWS Backup centralizes backup plans with lifecycle and cross-region copy for EBS, RDS, and more."
+      },
+      {
+       "q": "Traffic must fail over to a secondary region only when health checks fail. Which Route 53 policy?",
+       "choices": [
+        "Simple",
+        "Weighted",
+        "Failover",
+        "Geolocation"
+       ],
+       "answer": 2,
+       "explain": "Failover routing with health checks is the active-passive DR pattern."
+      },
+      {
+       "q": "To find idle EC2 instances for rightsizing, what do you check first?",
+       "choices": [
+        "Compute Optimizer recommendations",
+        "The instance console output",
+        "VPC Flow Logs",
+        "AWS WAF logs"
+       ],
+       "answer": 0,
+       "explain": "Compute Optimizer analyzes utilization and recommends rightsizing — the exam's answer magnet for cost questions."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-aws-devops",
+   "academy": "IL-05",
+   "title": "AWS DevOps Professional: DOP-C02",
+   "subtitle": "Ship it safely, prove it shipped — SDLC automation, IaC and configuration management, resilient cloud solutions, monitoring and logging, incident and event response, security and compliance, as a full delivery system you operate.",
+   "type": "certification",
+   "difficulty": "advanced",
+   "hours": 180,
+   "status": "published",
+   "tags": [
+    "aws",
+    "dop-c02",
+    "devops",
+    "cicd",
+    "sre"
+   ],
+   "modules": [
+    {
+     "id": "dop-sdlc",
+     "title": "SDLC Automation",
+     "kind": "core",
+     "topics": [
+      "CodePipeline/CodeBuild/CodeDeploy patterns",
+      "Artifact promotion across environments",
+      "Manual approval gates and canary deploys",
+      "Exam weight 22%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "A pipeline lab: commit to production with gates, canary, and automatic rollback — then break the canary on purpose."
+    },
+    {
+     "id": "dop-iac",
+     "title": "IaC and Configuration Management",
+     "kind": "core",
+     "topics": [
+      "CloudFormation: stacks, change sets, drift",
+      "CDK as the developer's IaC",
+      "Systems Manager State Manager and Ansible",
+      "Exam weight 17%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An IaC lab: detect drift in a live stack, then decide — update the stack or the code?"
+    },
+    {
+     "id": "dop-resilient",
+     "title": "Resilient Cloud Solutions",
+     "kind": "core",
+     "topics": [
+      "High availability patterns across AZs",
+      "Disaster recovery strategies: backup to active-active",
+      "Caching and decoupling for resilience",
+      "Exam weight 15%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A resilience review: grade three architectures against RTO/RPO targets and price the gaps."
+    },
+    {
+     "id": "dop-monitor",
+     "title": "Monitoring and Logging",
+     "kind": "core",
+     "topics": [
+      "CloudWatch Logs Insights and Contributor Insights",
+      "X-Ray tracing across services",
+      "Centralized logging with OpenSearch",
+      "Exam weight 15%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An observability lab: trace one request across Lambda, SQS, and DynamoDB and find the slow span."
+    },
+    {
+     "id": "dop-incident",
+     "title": "Incident and Event Response",
+     "kind": "core",
+     "topics": [
+      "EventBridge rules and automated remediation",
+      "SSM Automation runbooks for incidents",
+      "Post-incident review culture",
+      "Exam weight 14%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An incident lab: an automated runbook that detects, mitigates, and pages — you trigger the incident."
+    },
+    {
+     "id": "dop-security",
+     "title": "Security and Compliance in Pipelines",
+     "kind": "core",
+     "topics": [
+      "Secrets in pipelines: the right way",
+      "Image scanning and policy gates",
+      "Compliance as code with Config",
+      "Exam weight 17%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A pipeline-security lab: a secret committed to git, the scanner catching it, and the rotation that follows."
+    },
+    {
+     "id": "dop-exam-prep",
+     "title": "DOP-C02 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Long scenario stems: finding the real constraint",
+      "'Fully automated' and 'least operational overhead' cues",
+      "Professional-level depth vs associate",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "Long-stem drills: the professional exam hides the deciding detail in paragraph three."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-aws-devops-diagnostic",
+     "title": "AWS DevOps Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A deployment must shift 10% of traffic to the new version, monitor errors, then proceed. What pattern?",
+       "choices": [
+        "Blue/green with instant cutover",
+        "Canary deployment",
+        "Rolling update to all at once",
+        "Recreate"
+       ],
+       "answer": 1,
+       "explain": "Canary shifts a small percentage first and validates before proceeding — the exam's safe-deploy answer."
+      },
+      {
+       "q": "CloudFormation shows drift on a stack. What does that mean?",
+       "choices": [
+        "The template has a syntax error",
+        "Live resources differ from the template",
+        "The stack failed to create",
+        "Drift is normal and safe"
+       ],
+       "answer": 1,
+       "explain": "Drift = real resources changed outside the template. Decide whether to import, update, or revert."
+      },
+      {
+       "q": "You need infrastructure defined in a familiar programming language with loops and conditionals. What do you choose?",
+       "choices": [
+        "Raw CloudFormation JSON",
+        "AWS CDK",
+        "The console click-through",
+        "Systems Manager documents"
+       ],
+       "answer": 1,
+       "explain": "CDK lets you define infrastructure in TypeScript/Python/etc. and synthesizes CloudFormation."
+      },
+      {
+       "q": "Which service traces a request across Lambda, API Gateway, and DynamoDB?",
+       "choices": [
+        "CloudTrail",
+        "X-Ray",
+        "Config",
+        "GuardDuty"
+       ],
+       "answer": 1,
+       "explain": "X-Ray is distributed tracing; CloudTrail is API auditing — the classic confusion pair."
+      },
+      {
+       "q": "An automated response to a GuardDuty finding should trigger a Lambda that isolates an instance. What wires them together?",
+       "choices": [
+        "An S3 bucket notification",
+        "An EventBridge rule",
+        "A CloudWatch dashboard",
+        "A VPC peering connection"
+       ],
+       "answer": 1,
+       "explain": "EventBridge routes the GuardDuty finding event to the Lambda — the event-driven response pattern."
+      },
+      {
+       "q": "The pipeline must block deploys when a container image has critical CVEs. Where does the gate go?",
+       "choices": [
+        "After production deploy",
+        "As a pipeline stage after image build, before deploy",
+        "In the DNS zone",
+        "In the billing console"
+       ],
+       "answer": 1,
+       "explain": "Scan at build, gate before deploy — shifting security left is the whole point."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-aws-security",
+   "academy": "IL-05",
+   "title": "AWS Security Specialty: SCS-C03",
+   "subtitle": "Assume breach, prove control — threat detection and incident response, security logging and monitoring, infrastructure security, identity and access management, and data protection, mapped onto a hardened multi-account landing zone. Also filed under IL-06.",
+   "type": "certification",
+   "difficulty": "advanced",
+   "hours": 200,
+   "status": "published",
+   "tags": [
+    "aws",
+    "scs-c03",
+    "security",
+    "il06-crossref",
+    "landing-zone"
+   ],
+   "modules": [
+    {
+     "id": "scs-detect",
+     "title": "Threat Detection and Incident Response",
+     "kind": "core",
+     "topics": [
+      "GuardDuty findings: triage and response",
+      "Security Hub as the aggregation point",
+      "Detective controls with EventBridge automation",
+      "Exam weight 16%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "A detection lab: generate real findings in a sandbox account and run the triage playbook on them."
+    },
+    {
+     "id": "scs-logging",
+     "title": "Security Logging and Monitoring",
+     "kind": "core",
+     "topics": [
+      "CloudTrail organization trails and log integrity",
+      "VPC Flow Logs and DNS query logging",
+      "Centralized logging architecture",
+      "Exam weight 14%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A logging lab: prove log integrity with digest files, then show what an attacker would try to delete first."
+    },
+    {
+     "id": "scs-infra",
+     "title": "Infrastructure Security",
+     "kind": "core",
+     "topics": [
+      "WAF, Shield, and edge protection",
+      "Inspector for vulnerability assessment",
+      "Network segmentation and endpoints",
+      "Exam weight 18%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An infrastructure lab: attack your own WAF-protected app and tune the rules from the blocked requests."
+    },
+    {
+     "id": "scs-iam",
+     "title": "Identity and Access Management",
+     "kind": "core",
+     "topics": [
+      "Cross-account roles and permission boundaries",
+      "Identity Center (SSO) at organization scale",
+      "Access Analyzer and least-privilege reviews",
+      "Exam weight 20%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An IAM lab: a multi-account role chain with permission boundaries — then an access review that finds the excess."
+    },
+    {
+     "id": "scs-data",
+     "title": "Data Protection",
+     "kind": "core",
+     "topics": [
+      "KMS: keys, grants, cross-account use",
+      "S3 encryption, Object Lock, Macie",
+      "RDS and EBS encryption patterns",
+      "Exam weight 18%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A data-protection lab: envelope encryption by hand, then the managed version — understand both."
+    },
+    {
+     "id": "scs-landing-zone",
+     "title": "The Hardened Landing Zone",
+     "kind": "lab",
+     "topics": [
+      "Control Tower and Organizations structure",
+      "SCPs as guardrails, not gates",
+      "Detective controls deployed everywhere",
+      "The remaining 14%: synthesis"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "Build the landing zone: organization, SCPs, centralized logging, and detective controls — the capstone environment."
+    },
+    {
+     "id": "scs-exam-prep",
+     "title": "SCS-C03 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Security scenario questions: the 'most secure' cue",
+      "KMS and IAM as the two answer magnets",
+      "Note: SCS-C02 is retired — study SCS-C03",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "Security-scenario drills with the retired SCS-C02 named once so you never study it."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-aws-security-diagnostic",
+     "title": "AWS Security Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "An application in Account A needs read access to a KMS key in Account B. What is required?",
+       "choices": [
+        "Only an IAM role in Account A",
+        "A key policy in Account B granting Account A plus an IAM policy in Account A",
+        "Make the key public",
+        "Share the root credentials"
+       ],
+       "answer": 1,
+       "explain": "KMS cross-account needs BOTH: the key policy must trust Account A, and Account A's IAM must allow the use."
+      },
+      {
+       "q": "Which S3 feature makes objects immutable for a retention period, even against the root user?",
+       "choices": [
+        "Versioning",
+        "Object Lock in Compliance mode",
+        "Bucket policies",
+        "MFA Delete"
+       ],
+       "answer": 1,
+       "explain": "Object Lock Compliance mode blocks deletion by anyone, including root, until retention expires."
+      },
+      {
+       "q": "GuardDuty reports an EC2 instance mining cryptocurrency. What is the fastest automated containment?",
+       "choices": [
+        "Delete the VPC",
+        "EventBridge rule triggering a Lambda that attaches a quarantine security group",
+        "Email the team",
+        "Wait for the next sprint"
+       ],
+       "answer": 1,
+       "explain": "Automated quarantine via EventBridge → Lambda is the incident-response pattern the exam expects."
+      },
+      {
+       "q": "CloudTrail log file validation primarily protects against what?",
+       "choices": [
+        "High S3 costs",
+        "Tampering with log files",
+        "Slow API calls",
+        "Duplicate log entries"
+       ],
+       "answer": 1,
+       "explain": "Digest files let you detect tampered or deleted log files — integrity, not performance."
+      },
+      {
+       "q": "A developer's access key was committed to a public repo. What is the FIRST step?",
+       "choices": [
+        "Delete the repo",
+        "Deactivate/delete the access key, then investigate CloudTrail",
+        "Rotate the KMS key",
+        "Ignore it; keys expire"
+       ],
+       "answer": 1,
+       "explain": "Kill the credential first, then investigate what it touched in CloudTrail. Order matters."
+      },
+      {
+       "q": "SCPs in AWS Organizations are best described as…",
+       "choices": [
+        "Granting permissions to users",
+        "Guardrails that set maximum permissions",
+        "Firewall rules",
+        "Encryption policies"
+       ],
+       "answer": 1,
+       "explain": "SCPs filter the maximum allowed — they never grant. Identity policies still grant within the boundary."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-openshift-admin",
+   "academy": "IL-05",
+   "title": "OpenShift Administration: EX280/EX380",
+   "subtitle": "Kubernetes with an opinion — learn the opinion. Containers and Kubernetes foundations, OpenShift cluster administration (projects, networking, storage, operators), automation and multi-cluster management — the Red Hat OpenShift administrator track with the 2026 renamed titles.",
+   "type": "certification",
+   "difficulty": "advanced",
+   "hours": 240,
+   "status": "published",
+   "tags": [
+    "openshift",
+    "kubernetes",
+    "ex180",
+    "ex280",
+    "ex380",
+    "red-hat"
+   ],
+   "modules": [
+    {
+     "id": "ocp-foundations",
+     "title": "Containers and Kubernetes Foundations",
+     "kind": "core",
+     "topics": [
+      "Containers, images, registries (DO180)",
+      "Kubernetes resources: pods to ingress",
+      "EX180: Technologist in OpenShift (L1)",
+      "From kubectl thinking to oc thinking"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      },
+      {
+       "name": "Red Hat training and certification FAQ",
+       "url": "https://www.redhat.com/en/services/training-and-certification/faq",
+       "note": "Official FAQ: the 2026-05-11 framework change, 3-year validity, EX294 standalone credential."
+      }
+     ],
+     "il_provides": "A foundations lab: the same app deployed with plain manifests, then the OpenShift way — note every difference."
+    },
+    {
+     "id": "ocp-admin-core",
+     "title": "OpenShift Cluster Administration",
+     "kind": "core",
+     "topics": [
+      "Projects, quotas, limit ranges",
+      "Operators and the Operator Lifecycle Manager",
+      "Cluster networking: SDN, routes, network policies",
+      "EX280: System Administrator in OpenShift (L2)"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "An admin lab: a multi-project cluster with quotas, network policies, and operators installed declaratively."
+    },
+    {
+     "id": "ocp-storage-day2",
+     "title": "Storage and Day-2 Operations",
+     "kind": "core",
+     "topics": [
+      "Persistent storage: classes, claims, ODF concepts",
+      "Upgrades, node maintenance, etcd care",
+      "Monitoring the cluster itself",
+      "The day-2 skills exams assume"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "Day-2 drills: drain and upgrade a node, recover from a bad storage class, read etcd health."
+    },
+    {
+     "id": "ocp-automation",
+     "title": "Automation and Multi-Cluster Management",
+     "kind": "core",
+     "topics": [
+      "Automating OpenShift with Ansible (DO380)",
+      "Advanced cluster management (DO480/EX480)",
+      "GitOps patterns for cluster config",
+      "EX380: Advanced System Administrator in OpenShift (L3)"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      },
+      {
+       "name": "Red Hat EX294 — Advanced System Administrator in Ansible",
+       "url": "https://www.redhat.com/en/services/training/ex294-red-hat-certified-engineer-rhce-exam-red-hat-enterprise-linux-9",
+       "note": "Official EX294 page. Note: no longer titled 'RHCE' — Engineer is now per-track (EX200+EX294 = Engineer in Ansible)."
+      }
+     ],
+     "il_provides": "An automation lab: cluster configuration as Ansible playbooks and GitOps — no click-ops survives review."
+    },
+    {
+     "id": "ocp-exam-prep",
+     "title": "EX180/EX280/EX380 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Hands-on exam format: speed and accuracy",
+      "The 2026 title renames: know both names",
+      "Documentation strategy during the exam",
+      "Booking through Red Hat's portal"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      },
+      {
+       "name": "Red Hat training and certification FAQ",
+       "url": "https://www.redhat.com/en/services/training-and-certification/faq",
+       "note": "Official FAQ: the 2026-05-11 framework change, 3-year validity, EX294 standalone credential."
+      }
+     ],
+     "il_provides": "Timed task drills in the hands-on format; the old vs new titles mapped so no question surprises you."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-openshift-admin-diagnostic",
+     "title": "OpenShift Admin Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "In OpenShift, what is a 'project'?",
+       "choices": [
+        "A billing account",
+        "A Kubernetes namespace with additional annotations and policy",
+        "A git repository",
+        "A container image"
+       ],
+       "answer": 1,
+       "explain": "Projects are namespaces plus OpenShift policy (quotas, network isolation defaults, SCC linkage)."
+      },
+      {
+       "q": "Which component manages the lifecycle of packaged applications on OpenShift?",
+       "choices": [
+        "etcd",
+        "The Operator Lifecycle Manager (OLM)",
+        "kube-proxy",
+        "The router"
+       ],
+       "answer": 1,
+       "explain": "OLM installs and updates Operators — the OpenShift-native packaging story."
+      },
+      {
+       "q": "To expose an application externally on OpenShift, you typically create a…",
+       "choices": [
+        "LoadBalancer service only",
+        "Route",
+        "IngressRoute from Traefik",
+        "NodePort and pray"
+       ],
+       "answer": 1,
+       "explain": "Routes are OpenShift's opinionated ingress — the exam expects the OpenShift-native answer."
+      },
+      {
+       "q": "A pod needs storage that survives pod restarts. What do you create?",
+       "choices": [
+        "An emptyDir volume",
+        "A PersistentVolumeClaim bound to a StorageClass",
+        "A config map",
+        "A bigger node"
+       ],
+       "answer": 1,
+       "explain": "PVCs backed by a StorageClass survive pod churn; emptyDir dies with the pod."
+      },
+      {
+       "q": "Before upgrading worker nodes, what must you do first?",
+       "choices": [
+        "Delete all pods",
+        "Cordon and drain the node",
+        "Reboot etcd",
+        "Nothing — upgrades are instant"
+       ],
+       "answer": 1,
+       "explain": "Cordon stops scheduling, drain evicts safely — the day-2 sequence the exam drills."
+      },
+      {
+       "q": "EX280 in the 2026 framework is titled…",
+       "choices": [
+        "Red Hat Certified OpenShift Administrator (unchanged)",
+        "System Administrator in OpenShift",
+        "Engineer in OpenShift",
+        "Technologist in OpenShift"
+       ],
+       "answer": 1,
+       "explain": "2026 rename: EX280 = System Administrator in OpenShift (L2). Know both old and new titles."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-openshift-dev",
+   "academy": "IL-05",
+   "title": "Cloud-Native Development: EX188/EX288",
+   "subtitle": "Ship twelve-factor apps on the platform teams actually run — containerizing applications, resilient microservices with service mesh, and Quarkus cloud-native development, on the Cloud-native Applications developer track.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 200,
+   "status": "published",
+   "tags": [
+    "openshift",
+    "containers",
+    "ex188",
+    "ex288",
+    "microservices",
+    "quarkus"
+   ],
+   "modules": [
+    {
+     "id": "ocd-containerize",
+     "title": "Containerizing Applications",
+     "kind": "core",
+     "topics": [
+      "Containerfile best practices: layers, caching, users",
+      "Multi-stage builds for small images",
+      "Health probes: liveness, readiness, startup",
+      "EX188: Developer in Cloud-native Applications (L2)"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "A container lab: shrink a 1GB image to 100MB without breaking the probes."
+    },
+    {
+     "id": "ocd-deploy-patterns",
+     "title": "Deploying to OpenShift",
+     "kind": "core",
+     "topics": [
+      "DeploymentConfigs vs Deployments",
+      "ConfigMaps, Secrets, and environment strategy",
+      "Routes, services, and service discovery",
+      "EX288: Advanced Developer in OpenShift (L3)"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "A deployment lab: the same app with blue/green and canary strategies on Routes."
+    },
+    {
+     "id": "ocd-resilience",
+     "title": "Resilient Microservices",
+     "kind": "core",
+     "topics": [
+      "Service mesh concepts (DO328)",
+      "Retries, timeouts, circuit breakers",
+      "Distributed tracing for developers",
+      "EX328: Building Resilient Microservices (L4)"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "A resilience lab: inject latency between services and watch the circuit breakers earn their keep."
+    },
+    {
+     "id": "ocd-quarkus",
+     "title": "Quarkus Cloud-Native Development",
+     "kind": "core",
+     "topics": [
+      "Quarkus: supersonic subatomic Java",
+      "Native compilation concepts",
+      "Dev Services and continuous testing",
+      "EX378: Cloud-native Development (L4)"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "A Quarkus lab: a REST service with Dev Services, tested continuously, built native."
+    },
+    {
+     "id": "ocd-twelve-factor",
+     "title": "Twelve-Factor Capstone",
+     "kind": "capstone",
+     "topics": [
+      "The twelve factors audited against your app",
+      "Config, backing services, disposability",
+      "Build/release/run separation",
+      "No new tech — discipline only"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      }
+     ],
+     "il_provides": "A capstone review: your app graded against all twelve factors, with the fixes as the deliverable."
+    },
+    {
+     "id": "ocd-exam-prep",
+     "title": "EX188/EX288 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Hands-on format: build and fix under time",
+      "Old vs new titles: Specialist in Containers → Developer",
+      "Reading the task: what 'running' really means",
+      "Booking through Red Hat's portal"
+     ],
+     "sources": [
+      {
+       "name": "Red Hat — all certifications and exams",
+       "url": "https://www.redhat.com/en/services/all-certifications-exams",
+       "note": "Red Hat's official certification map, including the 2026 five-tier framework (Technologist → Architect)."
+      },
+      {
+       "name": "Red Hat training and certification FAQ",
+       "url": "https://www.redhat.com/en/services/training-and-certification/faq",
+       "note": "Official FAQ: the 2026-05-11 framework change, 3-year validity, EX294 standalone credential."
+      }
+     ],
+     "il_provides": "Task drills in exam format; title renames mapped so nothing surprises you."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-openshift-dev-diagnostic",
+     "title": "Cloud-Native Dev Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A container runs as root by default. What is the twelve-factor-aligned fix?",
+       "choices": [
+        "Nothing — root is fine in containers",
+        "Run as a non-root USER in the Containerfile and drop capabilities",
+        "Use a bigger base image",
+        "Disable SELinux"
+       ],
+       "answer": 1,
+       "explain": "Non-root users and minimal capabilities — disposability and least privilege apply to containers too."
+      },
+      {
+       "q": "Your app reads config from a file baked into the image. What's wrong per twelve-factor?",
+       "choices": [
+        "Nothing",
+        "Config should come from the environment, not the image",
+        "Files are faster",
+        "Environment variables are insecure"
+       ],
+       "answer": 1,
+       "explain": "Factor III: store config in the environment — the same image must run in dev, staging, and prod."
+      },
+      {
+       "q": "A readiness probe fails while liveness passes. What does OpenShift do?",
+       "choices": [
+        "Restarts the pod",
+        "Removes the pod from service endpoints but keeps it running",
+        "Deletes the deployment",
+        "Scales to zero"
+       ],
+       "answer": 1,
+       "explain": "Readiness gates traffic; liveness gates restarts. Failing readiness = no traffic, no restart."
+      },
+      {
+       "q": "Which pattern lets a new version receive 5% of traffic for validation?",
+       "choices": [
+        "Recreate",
+        "Canary via Route weights",
+        "Blue/green with instant switch",
+        "Rolling with maxUnavailable 100%"
+       ],
+       "answer": 1,
+       "explain": "Route weight splitting is OpenShift's canary mechanism — the exam expects the native answer."
+      },
+      {
+       "q": "A circuit breaker trips between two services. What should the caller do?",
+       "choices": [
+        "Retry forever",
+        "Fail fast and fall back gracefully",
+        "Restart the callee",
+        "Increase the timeout to infinity"
+       ],
+       "answer": 1,
+       "explain": "Fail fast with a fallback — retry storms are how outages cascade."
+      },
+      {
+       "q": "EX188's 2026-framework title is…",
+       "choices": [
+        "Specialist in Containers",
+        "Developer in Cloud-native Applications",
+        "Engineer in OpenShift",
+        "Technologist in OpenShift"
+       ],
+       "answer": 1,
+       "explain": "Renamed from Specialist in Containers to Developer in Cloud-native Applications (L2)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il06-azure-soc",
+   "academy": "IL-06",
+   "title": "Security Operations on Microsoft Sentinel: SC-200",
+   "subtitle": "Hunt in KQL, respond in minutes — security operations environment management, incident response across Defender and M365, and threat hunting in KQL and notebooks, as live-hunt exercises.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 200,
+   "status": "published",
+   "tags": [
+    "azure",
+    "sc-200",
+    "sentinel",
+    "soc",
+    "kql",
+    "incident-response"
+   ],
+   "modules": [
+    {
+     "id": "sc200-soc-env",
+     "title": "Managing the Security Operations Environment",
+     "kind": "core",
+     "topics": [
+      "Defender XDR: the unified portal",
+      "Sentinel: workspaces, data connectors, ingestion",
+      "Analytics rules and automation playbooks",
+      "MITRE ATT&CK mapping; exam weight 40–45%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Security Operations Analyst Associate (SC-200)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
+       "note": "Official SC-200 certification page (study guide 2026-07-28)."
+      },
+      {
+       "name": "Microsoft Learn",
+       "url": "https://learn.microsoft.com/",
+       "note": "Free Microsoft Learn modules: the hands-on sandbox behind every Azure path here."
+      }
+     ],
+     "il_provides": "A SOC lab: connect data sources, write analytics rules, and map every alert to ATT&CK — the environment you'd actually work in."
+    },
+    {
+     "id": "sc200-ir",
+     "title": "Responding to Security Incidents",
+     "kind": "core",
+     "topics": [
+      "Incidents across Defender XDR and Endpoint",
+      "M365 and Purview investigation",
+      "Microsoft Graph for enrichment",
+      "Security Copilot as an assistant; exam weight 35–40%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Security Operations Analyst Associate (SC-200)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
+       "note": "Official SC-200 certification page (study guide 2026-07-28)."
+      }
+     ],
+     "il_provides": "An IR lab: a simulated compromise, the investigation timeline you build, and the containment actions you take."
+    },
+    {
+     "id": "sc200-hunt",
+     "title": "Threat Hunting in KQL and Notebooks",
+     "kind": "core",
+     "topics": [
+      "KQL: the hunting language, deeply",
+      "Hunting queries: hypotheses first",
+      "Notebooks for repeatable hunts",
+      "Exam weight 20–25%"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Security Operations Analyst Associate (SC-200)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
+       "note": "Official SC-200 certification page (study guide 2026-07-28)."
+      }
+     ],
+     "il_provides": "Hunting drills: given a hypothesis and a dataset, write the KQL that proves or kills it."
+    },
+    {
+     "id": "sc200-live-hunt",
+     "title": "Live-Hunt Capstone",
+     "kind": "capstone",
+     "topics": [
+      "A multi-stage attack scenario",
+      "Detect, investigate, contain, report",
+      "The incident report as the deliverable",
+      "No new tools — synthesis only"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Security Operations Analyst Associate (SC-200)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
+       "note": "Official SC-200 certification page (study guide 2026-07-28)."
+      }
+     ],
+     "il_provides": "A full hunt: detect the intrusion, scope it, contain it, and write the report a CISO would read."
+    },
+    {
+     "id": "sc200-exam-prep",
+     "title": "SC-200 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "KQL questions: reading the query first",
+      "Portal-navigation familiarity",
+      "Incident-triage prioritization",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Security Operations Analyst Associate (SC-200)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
+       "note": "Official SC-200 certification page (study guide 2026-07-28)."
+      }
+     ],
+     "il_provides": "KQL-reading drills and triage scenarios; readiness per the three exam domains."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il06-azure-soc-diagnostic",
+     "title": "SOC Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A Sentinel analytics rule fires on impossible travel. What is the FIRST triage step?",
+       "choices": [
+        "Disable the user account immediately",
+        "Check the sign-in logs for context: IPs, devices, MFA result",
+        "Delete the alert",
+        "Reimage the device"
+       ],
+       "answer": 1,
+       "explain": "Triage before action: sign-in context tells you whether it's travel or token theft. Acting blind causes damage."
+      },
+      {
+       "q": "Which KQL operator would you use to find sign-ins NOT using MFA?",
+       "choices": [
+        "where ResultType == 0",
+        "where AuthenticationRequirement != 'multiFactorAuthentication'",
+        "summarize count()",
+        "take 10"
+       ],
+       "answer": 1,
+       "explain": "Filter on the authentication requirement field — hunting is precise filtering on the right field."
+      },
+      {
+       "q": "In MITRE ATT&CK, credential dumping (OS Credential Dumping) belongs to which tactic?",
+       "choices": [
+        "Initial Access",
+        "Credential Access",
+        "Exfiltration",
+        "Impact"
+       ],
+       "answer": 1,
+       "explain": "Credential Access — the tactic of stealing credentials. Mapping alerts to tactics is an SC-200 staple."
+      },
+      {
+       "q": "Defender XDR's main value over the individual Defender products is…",
+       "choices": [
+        "It's cheaper",
+        "Correlated incidents across endpoints, identity, email, and apps in one portal",
+        "It replaces firewalls",
+        "It needs no agents"
+       ],
+       "answer": 1,
+       "explain": "XDR correlates signals across domains into single incidents — that's the analyst's force multiplier."
+      },
+      {
+       "q": "A playbook in Sentinel is built on…",
+       "choices": [
+        "Logic Apps",
+        "Virtual machines",
+        "Excel macros",
+        "DNS zones"
+       ],
+       "answer": 0,
+       "explain": "Sentinel playbooks are Logic Apps workflows — automated response triggered by alerts."
+      },
+      {
+       "q": "The most important property of a hunting hypothesis is that it is…",
+       "choices": [
+        "Complicated",
+        "Falsifiable — the data can prove it wrong",
+        "Secret",
+        "Expensive to test"
+       ],
+       "answer": 1,
+       "explain": "A hypothesis you can't disprove isn't hunting, it's storytelling. KQL is the falsification tool."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il11-entra-identity",
+   "academy": "IL-11",
+   "title": "Entra Identity Administration: SC-300",
+   "subtitle": "Identity is the perimeter — Entra ID lifecycle, Zero Trust conditional access, authentication and authorization, hybrid identity, identity governance, and troubleshooting with PowerShell and KQL. Bridges the existing il11-active-directory-defense path into the cloud.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 160,
+   "status": "published",
+   "tags": [
+    "entra-id",
+    "sc-300",
+    "identity",
+    "zero-trust",
+    "conditional-access"
+   ],
+   "modules": [
+    {
+     "id": "sc300-lifecycle",
+     "title": "Entra ID Identity Lifecycle",
+     "kind": "core",
+     "topics": [
+      "Users, groups, devices, applications, resources",
+      "Provisioning: HR-driven and API-driven",
+      "B2B collaboration and access packages",
+      "The lifecycle as a security boundary"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      },
+      {
+       "name": "Microsoft Learn",
+       "url": "https://learn.microsoft.com/",
+       "note": "Free Microsoft Learn modules: the hands-on sandbox behind every Azure path here."
+      }
+     ],
+     "il_provides": "A lifecycle lab: joiner-mover-leaver automation with access packages — the audit trail writes itself."
+    },
+    {
+     "id": "sc300-zerotrust-ca",
+     "title": "Zero Trust and Conditional Access",
+     "kind": "core",
+     "topics": [
+      "The Zero Trust principles applied",
+      "Conditional Access policies: signals and controls",
+      "Named locations, device compliance, risk",
+      "What breaks when CA is misconfigured"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      }
+     ],
+     "il_provides": "A CA lab: build the policy set for a real org, then attack it from a non-compliant device and watch it hold."
+    },
+    {
+     "id": "sc300-auth",
+     "title": "Authentication and Authorization",
+     "kind": "core",
+     "topics": [
+      "MFA methods and phishing-resistant auth",
+      "Passwordless: FIDO2, Windows Hello, Authenticator",
+      "OAuth2/OIDC/SAML: the protocols underneath",
+      "App registrations and enterprise apps"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      }
+     ],
+     "il_provides": "An auth lab: register an app, configure OIDC, and trace the token flow — protocols demystified by doing."
+    },
+    {
+     "id": "sc300-hybrid",
+     "title": "Hybrid Identity",
+     "kind": "core",
+     "topics": [
+      "Entra Connect Sync vs Cloud Sync",
+      "Pass-through vs hash sync vs federation",
+      "Seamless SSO and writeback",
+      "Bridging il11-active-directory-defense"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      }
+     ],
+     "il_provides": "A hybrid lab: the on-prem AD from il11-active-directory-defense extended to Entra — the bridge between the two paths."
+    },
+    {
+     "id": "sc300-governance",
+     "title": "Identity Governance",
+     "kind": "core",
+     "topics": [
+      "Access reviews and entitlement management",
+      "Privileged Identity Management (PIM)",
+      "Terms of use and identity protection",
+      "Governance as continuous hygiene"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      }
+     ],
+     "il_provides": "A governance lab: run an access review that actually revokes, and activate a PIM role with justification."
+    },
+    {
+     "id": "sc300-troubleshoot",
+     "title": "Troubleshooting with PowerShell and KQL",
+     "kind": "core",
+     "topics": [
+      "Sign-in logs: reading failures",
+      "PowerShell/Graph for identity operations",
+      "KQL against Entra sign-in data",
+      "The troubleshooting methodology"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      }
+     ],
+     "il_provides": "Troubleshooting drills: broken sign-ins with real logs — diagnose from evidence, not guesses."
+    },
+    {
+     "id": "sc300-exam-prep",
+     "title": "SC-300 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Scenario questions: the identity lifecycle cue",
+      "Conditional Access policy-reading drills",
+      "PowerShell vs portal: knowing both",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "Microsoft Learn — Identity and Access Administrator Associate (SC-300)",
+       "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+       "note": "Official SC-300 certification page: Entra ID lifecycle, Zero Trust, hybrid identity."
+      }
+     ],
+     "il_provides": "Policy-reading and scenario drills; readiness across the SC-300 topics."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il11-entra-identity-diagnostic",
+     "title": "Entra Identity Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A user signs in from an unusual location on a compliant device with MFA. The risk-based policy should…",
+       "choices": [
+        "Block unconditionally",
+        "Allow — compliant device plus MFA satisfies the policy",
+        "Require password reset always",
+        "Disable the account"
+       ],
+       "answer": 1,
+       "explain": "Conditional Access evaluates combined signals; compliant + MFA is the strong posture the policy was built for."
+      },
+      {
+       "q": "Which authentication method is phishing-resistant?",
+       "choices": [
+        "SMS codes",
+        "FIDO2 security keys",
+        "Voice calls",
+        "Email OTP"
+       ],
+       "answer": 1,
+       "explain": "FIDO2 binds the credential to the origin — phishing sites can't replay it. SMS/voice/email can be intercepted."
+      },
+      {
+       "q": "In OAuth2/OIDC, the ID token primarily tells the app…",
+       "choices": [
+        "How to call the API",
+        "Who the user is (authentication)",
+        "The user's password",
+        "The refresh schedule"
+       ],
+       "answer": 1,
+       "explain": "ID token = identity (OIDC); access token = authorization to call APIs. Mixing them is the classic confusion."
+      },
+      {
+       "q": "An on-prem AD user needs SSO to cloud apps without password hash sync. What do you deploy?",
+       "choices": [
+        "Entra Connect with pass-through authentication",
+        "Nothing — it's automatic",
+        "A second forest",
+        "Manual account creation"
+       ],
+       "answer": 0,
+       "explain": "Pass-through authentication validates against on-prem AD without syncing hashes — the no-hash-sync SSO option."
+      },
+      {
+       "q": "PIM's core value for Global Administrators is…",
+       "choices": [
+        "Permanent admin rights",
+        "Just-in-time elevation with approval and audit",
+        "Faster logins",
+        "More licenses"
+       ],
+       "answer": 1,
+       "explain": "PIM makes privilege temporary, approved, and audited — standing admin is the risk it eliminates."
+      },
+      {
+       "q": "An access review finds a contractor with access 6 months after project end. The root cause is…",
+       "choices": [
+        "The contractor is malicious",
+        "Missing lifecycle/offboarding automation",
+        "Too many licenses",
+        "Bad password policy"
+       ],
+       "answer": 1,
+       "explain": "Orphaned access is a lifecycle failure — joiner-mover-leaver automation is the fix, not blame."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il07-aws-data",
+   "academy": "IL-07",
+   "title": "AWS Data Engineering: DEA-C01",
+   "subtitle": "Pipelines you can audit — data ingestion and transformation, data store management, data operations and support, data security and governance, built on S3/Glue/Kinesis/Redshift with lineage you can trace.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 160,
+   "status": "published",
+   "tags": [
+    "aws",
+    "dea-c01",
+    "data-engineering",
+    "glue",
+    "redshift",
+    "kinesis"
+   ],
+   "modules": [
+    {
+     "id": "dea-ingest",
+     "title": "Data Ingestion and Transformation",
+     "kind": "core",
+     "topics": [
+      "Kinesis: streams, Firehose, analytics",
+      "Glue: crawlers, jobs, DataBrew",
+      "Batch vs streaming: the real decision",
+      "Exam weight 34%: the largest domain"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "A pipeline lab: the same dataset ingested batch and streaming — compare latency, cost, and complexity honestly."
+    },
+    {
+     "id": "dea-stores",
+     "title": "Data Store Management",
+     "kind": "core",
+     "topics": [
+      "S3 as the lake: layout, partitioning, formats",
+      "Redshift: distribution and sort keys",
+      "DynamoDB and RDS for operational data",
+      "Exam weight 26%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A storage lab: partition a dataset three ways and measure what each costs to query."
+    },
+    {
+     "id": "dea-ops",
+     "title": "Data Operations and Support",
+     "kind": "core",
+     "topics": [
+      "Orchestration: Step Functions, MWAA, EventBridge",
+      "Monitoring pipelines: what to alert on",
+      "Schema evolution without breaking consumers",
+      "Exam weight 22%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "An ops lab: break a pipeline's schema on purpose and watch the contract tests catch it."
+    },
+    {
+     "id": "dea-security",
+     "title": "Data Security and Governance",
+     "kind": "core",
+     "topics": [
+      "Lake Formation: fine-grained access",
+      "Encryption: KMS across the pipeline",
+      "PII handling and data classification",
+      "Exam weight 18%"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A governance lab: column-level access in Lake Formation — prove the analyst can't see the PII."
+    },
+    {
+     "id": "dea-lineage",
+     "title": "Lineage Capstone",
+     "kind": "capstone",
+     "topics": [
+      "End-to-end lineage: source to dashboard",
+      "Data quality checks as gates",
+      "The audit: trace one record's journey",
+      "No new services — synthesis only"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "The audit: pick one dashboard number and trace it to the source record, documenting every transform."
+    },
+    {
+     "id": "dea-exam-prep",
+     "title": "DEA-C01 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Service-selection questions: the workload cue",
+      "The 34% ingestion domain: deepest drill",
+      "Hands-on familiarity with the console",
+      "Booking and exam-day logistics"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "Workload-cue drills: every question starts from the data's shape and velocity."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il07-aws-data-diagnostic",
+     "title": "AWS Data Engineering Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "Clickstream data arrives at 50K events/sec and must be queryable within a minute. What do you choose?",
+       "choices": [
+        "Nightly batch ETL",
+        "Kinesis Data Streams + Firehose to S3",
+        "Manual CSV uploads",
+        "A single RDS instance"
+       ],
+       "answer": 1,
+       "explain": "Streaming ingestion for sub-minute latency at scale; batch can't meet the freshness requirement."
+      },
+      {
+       "q": "A Redshift query is slow despite a large cluster. What do you check first?",
+       "choices": [
+        "The VPC CIDR range",
+        "Distribution and sort keys vs the query pattern",
+        "The IAM password policy",
+        "The S3 bucket name"
+       ],
+       "answer": 1,
+       "explain": "Wrong distribution/sort keys cause data movement and slow scans — the first suspect in Redshift tuning."
+      },
+      {
+       "q": "Which format gives the best query cost/performance for analytics on S3?",
+       "choices": [
+        "CSV",
+        "JSON lines",
+        "Parquet (columnar, compressed)",
+        "XML"
+       ],
+       "answer": 2,
+       "explain": "Parquet's columnar layout means Athena/Redshift Spectrum scan less data — directly lower cost."
+      },
+      {
+       "q": "Two teams need different columns of the same table, one including PII. What enforces this?",
+       "choices": [
+        "Two separate S3 buckets with duplicated data",
+        "Lake Formation fine-grained (column-level) permissions",
+        "Trust and a wiki page",
+        "Encrypt everything with one key"
+       ],
+       "answer": 1,
+       "explain": "Lake Formation grants column-level access on one governed table — no duplication, no trust-me security."
+      },
+      {
+       "q": "A Glue job's schema changes upstream. What prevents silent breakage downstream?",
+       "choices": [
+        "Nothing — schemas never change",
+        "Schema registry / contract tests that fail the pipeline",
+        "Bigger worker nodes",
+        "More logging"
+       ],
+       "answer": 1,
+       "explain": "Schema contracts fail fast on breaking change — silent corruption is the alternative."
+      },
+      {
+       "q": "For exactly-once processing semantics in a streaming pipeline, you need…",
+       "choices": [
+        "At-least-once plus idempotent sinks",
+        "Hope",
+        "A bigger stream",
+        "Faster disks"
+       ],
+       "answer": 0,
+       "explain": "True exactly-once is rare; the production pattern is at-least-once delivery with idempotent processing."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il07-aws-ml",
+   "academy": "IL-07",
+   "title": "AWS Machine Learning: MLA-C02 + AIF-C01",
+   "subtitle": "Models with a bill attached — ML problem framing, data preparation, model development and tuning, deployment and operationalization, with cost-per-inference tracked per lab. AIF-C01 foundations first, then the MLA-C02 associate depth.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 200,
+   "status": "published",
+   "tags": [
+    "aws",
+    "mla-c02",
+    "aif-c01",
+    "machine-learning",
+    "sagemaker",
+    "bedrock"
+   ],
+   "modules": [
+    {
+     "id": "mla-foundations",
+     "title": "AIF-C01: AI Practitioner Foundations",
+     "kind": "core",
+     "topics": [
+      "AI/ML/GenAI: the vocabulary, precisely",
+      "AWS AI services: the managed landscape",
+      "Responsible AI: the exam's ethics layer",
+      "The foundations layer before associate depth"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "A foundations lab: classify ten workloads as ML vs GenAI vs rules — precision with the vocabulary first."
+    },
+    {
+     "id": "mla-framing",
+     "title": "ML Problem Framing",
+     "kind": "core",
+     "topics": [
+      "Business problem → ML problem translation",
+      "Choosing the problem type: classification, regression, forecasting",
+      "Success metrics before modeling",
+      "The framing mistakes that waste months"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A framing workshop: three business problems translated to ML formulations, with the metric chosen first."
+    },
+    {
+     "id": "mla-data",
+     "title": "Data Preparation for ML",
+     "kind": "core",
+     "topics": [
+      "Feature engineering and selection",
+      "Training/validation/test splits done right",
+      "Data Wrangler and Feature Store",
+      "Leakage: the silent killer"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A data lab: build a feature pipeline, then find the leakage planted in it — the skill that matters."
+    },
+    {
+     "id": "mla-model",
+     "title": "Model Development and Tuning",
+     "kind": "core",
+     "topics": [
+      "SageMaker training jobs and algorithms",
+      "Hyperparameter tuning: the disciplined way",
+      "Bedrock for foundation-model tasks",
+      "Experiment tracking that survives audit"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A modeling lab: tune a model with a budget — every experiment logged, every dollar accounted."
+    },
+    {
+     "id": "mla-deploy",
+     "title": "Deployment and Operationalization",
+     "kind": "core",
+     "topics": [
+      "SageMaker endpoints: real-time vs batch vs serverless",
+      "Model Monitor: drift detection",
+      "CI/CD for ML: the pipeline differences",
+      "Rollback when the model degrades"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A deployment lab: ship an endpoint, detect drift with Model Monitor, and roll back — the full loop."
+    },
+    {
+     "id": "mla-cost",
+     "title": "Cost-per-Inference Lab",
+     "kind": "lab",
+     "topics": [
+      "Pricing the inference path end to end",
+      "Instance selection for serving",
+      "Batch vs real-time: the cost cliff",
+      "The bill as a design constraint"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      }
+     ],
+     "il_provides": "A cost lab: serve 1M inferences three ways and price each — the cheapest correct answer wins."
+    },
+    {
+     "id": "mla-exam-prep",
+     "title": "AIF-C01 + MLA-C02 Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Foundations first: AIF-C01 as the base",
+      "Scenario questions: the SageMaker service cue",
+      "Note: MLA-C01 retired 2026-09-28 — study MLA-C02",
+      "Domain weights: confirm against the live exam guide"
+     ],
+     "sources": [
+      {
+       "name": "AWS Certification exam guides",
+       "url": "https://docs.aws.amazon.com/aws-certification",
+       "note": "Official AWS exam guides: the only authoritative domain list."
+      },
+      {
+       "name": "AWS Skill Builder",
+       "url": "https://skillbuilder.aws",
+       "note": "Official AWS Skill Builder: SimuLearn role plans and practice material."
+      }
+     ],
+     "il_provides": "Two-tier prep: foundations exam first, then associate depth. MLA-C02 domain weights are confirmed against the live exam guide at study time, not memorized here."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il07-aws-ml-diagnostic",
+     "title": "AWS ML Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "A model performs well in training but poorly in production a month later. What do you suspect first?",
+       "choices": [
+        "The instance type",
+        "Data/concept drift",
+        "The region",
+        "The IAM policy"
+       ],
+       "answer": 1,
+       "explain": "Production degradation over time is the drift signature — Model Monitor exists for exactly this."
+      },
+      {
+       "q": "You split data randomly for a time-series forecasting problem. What's wrong?",
+       "choices": [
+        "Nothing",
+        "Random splits leak the future into training — use time-based splits",
+        "Time series don't need splits",
+        "Random is always fine"
+       ],
+       "answer": 1,
+       "explain": "Temporal leakage: the model 'learns' from future data it will never have at inference. Time-based splits only."
+      },
+      {
+       "q": "For a chatbot needing a foundation model with minimal ML ops, what do you choose?",
+       "choices": [
+        "Train from scratch on EC2",
+        "Bedrock managed foundation models",
+        "A spreadsheet",
+        "K-means clustering"
+       ],
+       "answer": 1,
+       "explain": "Bedrock serves foundation models without training infrastructure — the managed answer for GenAI apps."
+      },
+      {
+       "q": "Which SageMaker inference option fits unpredictable traffic with long idle periods?",
+       "choices": [
+        "Real-time endpoint always on",
+        "Serverless inference",
+        "A dedicated training cluster",
+        "Batch transform hourly"
+       ],
+       "answer": 1,
+       "explain": "Serverless inference scales to zero — you pay per invocation, not per idle hour."
+      },
+      {
+       "q": "Hyperparameter tuning with a fixed budget should use…",
+       "choices": [
+        "Grid search over everything",
+        "Random or Bayesian search within the budget",
+        "Default values always",
+        "Manual guessing"
+       ],
+       "answer": 1,
+       "explain": "Random/Bayesian search finds good configurations far more efficiently than exhaustive grids."
+      },
+      {
+       "q": "The single most important artifact for reproducing an ML experiment is…",
+       "choices": [
+        "The slide deck",
+        "Versioned code + data + hyperparameters + environment",
+        "The model name",
+        "The AWS region"
+       ],
+       "answer": 1,
+       "explain": "Reproducibility needs all four versioned. Anything less is folklore, not engineering."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-hashicorp-vault",
+   "academy": "IL-05",
+   "title": "Vault and Consul: Secrets and Service Networking",
+   "subtitle": "Never hardcode a secret again — Vault Associate domains (secrets engines, auth methods, policies, dynamic secrets) and Consul Associate domains (service discovery, service mesh, KV). Completes the KodeKloud HashiCorp track alongside il05-terraform.",
+   "type": "certification",
+   "difficulty": "intermediate",
+   "hours": 120,
+   "status": "published",
+   "tags": [
+    "hashicorp",
+    "vault",
+    "consul",
+    "secrets",
+    "service-mesh"
+   ],
+   "modules": [
+    {
+     "id": "vault-engines",
+     "title": "Vault Secrets Engines",
+     "kind": "core",
+     "topics": [
+      "KV v2: versioned static secrets",
+      "Dynamic secrets: databases, AWS, PKI",
+      "Transit engine: encryption as a service",
+      "Leases and revocation"
+     ],
+     "sources": [
+      {
+       "name": "HashiCorp Developer docs",
+       "url": "https://developer.hashicorp.com/",
+       "note": "Official Vault and Consul documentation: the exam's reference library."
+      },
+      {
+       "name": "KodeKloud — HashiCorp Learning Path",
+       "url": "https://kodekloud.com/learning-path/hashicorp/",
+       "note": "KodeKloud's HashiCorp path: Terraform Associate, Vault Associate, Consul Associate, Vault Operations Professional."
+      }
+     ],
+     "il_provides": "A secrets lab: dynamic database credentials with 5-minute TTLs — watch static secrets become indefensible."
+    },
+    {
+     "id": "vault-auth",
+     "title": "Vault Auth Methods and Policies",
+     "kind": "core",
+     "topics": [
+      "Auth methods: userpass, LDAP, OIDC, AppRole, K8s",
+      "Policies: paths, capabilities, least privilege",
+      "Entities, groups, and identity",
+      "The auth-method selection matrix"
+     ],
+     "sources": [
+      {
+       "name": "HashiCorp Developer docs",
+       "url": "https://developer.hashicorp.com/",
+       "note": "Official Vault and Consul documentation: the exam's reference library."
+      }
+     ],
+     "il_provides": "An auth lab: three services authenticating three different ways, each with a minimal policy."
+    },
+    {
+     "id": "vault-ops",
+     "title": "Vault Operations Reality",
+     "kind": "core",
+     "topics": [
+      "Init, unseal, and the root token ceremony",
+      "HA: Raft integrated storage",
+      "Seal/unseal and rekey workflows",
+      "What the Associate exam assumes you know"
+     ],
+     "sources": [
+      {
+       "name": "HashiCorp Developer docs",
+       "url": "https://developer.hashicorp.com/",
+       "note": "Official Vault and Consul documentation: the exam's reference library."
+      }
+     ],
+     "il_provides": "An ops lab: unseal a cluster, lose a key share (simulated), and rekey — the ceremony done for real."
+    },
+    {
+     "id": "consul-discovery",
+     "title": "Consul Service Discovery",
+     "kind": "core",
+     "topics": [
+      "Agents, catalog, and health checking",
+      "DNS and HTTP interfaces",
+      "KV store: config, not secrets",
+      "Service mesh preparation"
+     ],
+     "sources": [
+      {
+       "name": "HashiCorp Developer docs",
+       "url": "https://developer.hashicorp.com/",
+       "note": "Official Vault and Consul documentation: the exam's reference library."
+      },
+      {
+       "name": "KodeKloud — HashiCorp Learning Path",
+       "url": "https://kodekloud.com/learning-path/hashicorp/",
+       "note": "KodeKloud's HashiCorp path: Terraform Associate, Vault Associate, Consul Associate, Vault Operations Professional."
+      }
+     ],
+     "il_provides": "A discovery lab: services finding each other with no hardcoded addresses — the mesh's foundation."
+    },
+    {
+     "id": "consul-mesh",
+     "title": "Consul Service Mesh",
+     "kind": "core",
+     "topics": [
+      "Connect: mTLS between services",
+      "Intentions: allow/deny service traffic",
+      "Ingress and terminating gateways",
+      "Zero-trust networking in practice"
+     ],
+     "sources": [
+      {
+       "name": "HashiCorp Developer docs",
+       "url": "https://developer.hashicorp.com/",
+       "note": "Official Vault and Consul documentation: the exam's reference library."
+      }
+     ],
+     "il_provides": "A mesh lab: two services that can only talk through mTLS intentions — then break the intention and watch it fail closed."
+    },
+    {
+     "id": "vault-consul-prep",
+     "title": "Vault + Consul Associate Exam Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Two exams, one preparation discipline",
+      "Scenario questions: 'which engine' and 'which auth'",
+      "The Terraform Associate completes the trio (see il05-terraform)",
+      "Booking through HashiCorp's portal"
+     ],
+     "sources": [
+      {
+       "name": "HashiCorp Developer docs",
+       "url": "https://developer.hashicorp.com/",
+       "note": "Official Vault and Consul documentation: the exam's reference library."
+      },
+      {
+       "name": "KodeKloud — HashiCorp Learning Path",
+       "url": "https://kodekloud.com/learning-path/hashicorp/",
+       "note": "KodeKloud's HashiCorp path: Terraform Associate, Vault Associate, Consul Associate, Vault Operations Professional."
+      }
+     ],
+     "il_provides": "Readiness gates per exam; the trio (Terraform + Vault + Consul) mapped as one HashiCorp progression."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-hashicorp-vault-diagnostic",
+     "title": "Vault/Consul Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "An application needs database credentials that auto-expire. Which Vault engine?",
+       "choices": [
+        "KV v2",
+        "The database secrets engine (dynamic secrets)",
+        "Transit",
+        "SSH"
+       ],
+       "answer": 1,
+       "explain": "Dynamic secrets are generated on demand with leases — expiry is structural, not a calendar reminder."
+      },
+      {
+       "q": "A Vault policy grants 'read' on 'secret/data/app/*'. What can't the token do?",
+       "choices": [
+        "Read those secrets",
+        "Write to those paths or read anything else",
+        "Renew its own lease",
+        "Nothing — policies are advisory"
+       ],
+       "answer": 1,
+       "explain": "Policies are deny-by-default least privilege: only the listed capabilities on the listed paths."
+      },
+      {
+       "q": "After Vault initialization, what must be protected most carefully?",
+       "choices": [
+        "The Vault binary",
+        "The unseal key shares and initial root token",
+        "The config file",
+        "The log files"
+       ],
+       "answer": 1,
+       "explain": "Unseal shares and the root token are the keys to the kingdom — the ceremony exists for a reason."
+      },
+      {
+       "q": "In Consul, health checking determines…",
+       "choices": [
+        "Billing",
+        "Whether a service instance receives traffic",
+        "The TLS version",
+        "Log retention"
+       ],
+       "answer": 1,
+       "explain": "Unhealthy instances leave the catalog/discovery results — health checks are the mesh's truth source."
+      },
+      {
+       "q": "Consul 'intentions' control…",
+       "choices": [
+        "Which humans can SSH",
+        "Which services may communicate, enforced with mTLS",
+        "DNS TTLs",
+        "Backup schedules"
+       ],
+       "answer": 1,
+       "explain": "Intentions are L4/L7 allow/deny between services — the zero-trust policy of the mesh."
+      },
+      {
+       "q": "Storing production passwords in Consul KV is…",
+       "choices": [
+        "Best practice",
+        "Wrong — KV is for config; secrets belong in Vault",
+        "Fine with ACLs",
+        "Required for the exam"
+       ],
+       "answer": 1,
+       "explain": "Consul KV is not a secrets manager: no dynamic rotation, no lease model. Vault exists for this."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "il05-cn-associates",
+   "academy": "IL-05",
+   "title": "Cloud-Native Associate Stack: KCNA/KCSA/PCA/CCA/CAPA",
+   "subtitle": "The associate layer, all of it — Kubernetes and cloud-native fundamentals (KCNA), cloud-native security (KCSA), Prometheus observability (PCA), Cilium/eBPF networking (CCA), and Argo GitOps (CAPA). One progression feeding il05-cloud-native.",
+   "type": "certification",
+   "difficulty": "beginner",
+   "hours": 180,
+   "status": "published",
+   "tags": [
+    "kubernetes",
+    "kcna",
+    "kcsa",
+    "prometheus",
+    "cilium",
+    "argo",
+    "gitops"
+   ],
+   "modules": [
+    {
+     "id": "cn-kcna",
+     "title": "KCNA: Kubernetes and Cloud-Native Fundamentals",
+     "kind": "core",
+     "topics": [
+      "Kubernetes architecture: the control plane",
+      "Cloud-native principles and CNCF landscape",
+      "Containers and orchestration basics",
+      "GitOps and observability concepts"
+     ],
+     "sources": [
+      {
+       "name": "Linux Foundation Training",
+       "url": "https://training.linuxfoundation.org",
+       "note": "Official Linux Foundation training and exam portal: KCNA, KCSA, PCA, CCA, CAPA and the professional tier."
+      },
+      {
+       "name": "CNCF",
+       "url": "https://www.cncf.io/",
+       "note": "Cloud Native Computing Foundation: the certification programs behind the associate stack."
+      }
+     ],
+     "il_provides": "A fundamentals lab: a working cluster you can explain component by component — no magic boxes."
+    },
+    {
+     "id": "cn-kcsa",
+     "title": "KCSA: Cloud-Native Security Associate",
+     "kind": "core",
+     "topics": [
+      "Cloud-native threat model",
+      "Supply-chain security: image scanning, signing",
+      "Kubernetes security primitives: RBAC, PSP/PSA, secrets",
+      "Platform and runtime security"
+     ],
+     "sources": [
+      {
+       "name": "Linux Foundation Training",
+       "url": "https://training.linuxfoundation.org",
+       "note": "Official Linux Foundation training and exam portal: KCNA, KCSA, PCA, CCA, CAPA and the professional tier."
+      }
+     ],
+     "il_provides": "A security lab: scan and sign an image, enforce admission policy, and attack the cluster safely."
+    },
+    {
+     "id": "cn-pca",
+     "title": "PCA: Prometheus Observability",
+     "kind": "core",
+     "topics": [
+      "Metrics, labels, and PromQL",
+      "Exporters, Alertmanager, recording rules",
+      "Service discovery for monitoring",
+      "Dashboards that answer questions"
+     ],
+     "sources": [
+      {
+       "name": "Linux Foundation Training",
+       "url": "https://training.linuxfoundation.org",
+       "note": "Official Linux Foundation training and exam portal: KCNA, KCSA, PCA, CCA, CAPA and the professional tier."
+      }
+     ],
+     "il_provides": "An observability lab: instrument an app, write the PromQL that pages you, and tune the alert until it's quiet."
+    },
+    {
+     "id": "cn-cca",
+     "title": "CCA: Cilium and eBPF Networking",
+     "kind": "core",
+     "topics": [
+      "eBPF: what it is and why it matters",
+      "Cilium CNI: networking without kube-proxy",
+      "Network policies: L3-L7 enforcement",
+      "Hubble: the observability layer"
+     ],
+     "sources": [
+      {
+       "name": "Linux Foundation Training",
+       "url": "https://training.linuxfoundation.org",
+       "note": "Official Linux Foundation training and exam portal: KCNA, KCSA, PCA, CCA, CAPA and the professional tier."
+      }
+     ],
+     "il_provides": "A Cilium lab: L7-aware network policy and Hubble flow logs — see the packets the policy decided on."
+    },
+    {
+     "id": "cn-capa",
+     "title": "CAPA: Argo GitOps",
+     "kind": "core",
+     "topics": [
+      "GitOps principles: the repo as truth",
+      "Argo CD: applications, sync, drift",
+      "Progressive delivery concepts",
+      "Note: the 'ACA' name is superseded — the exam is CAPA"
+     ],
+     "sources": [
+      {
+       "name": "Linux Foundation Training",
+       "url": "https://training.linuxfoundation.org",
+       "note": "Official Linux Foundation training and exam portal: KCNA, KCSA, PCA, CCA, CAPA and the professional tier."
+      }
+     ],
+     "il_provides": "A GitOps lab: an app deployed only through git, drift corrected automatically — click-ops forbidden."
+    },
+    {
+     "id": "cn-prep",
+     "title": "Associate Exams Prep",
+     "kind": "exam_prep",
+     "topics": [
+      "Five associates, one study discipline",
+      "Multiple-choice strategy for LF exams",
+      "Each exam booked through the LF portal",
+      "Feeds il05-cloud-native (CKA/CKAD/CKS) next"
+     ],
+     "sources": [
+      {
+       "name": "Linux Foundation Training",
+       "url": "https://training.linuxfoundation.org",
+       "note": "Official Linux Foundation training and exam portal: KCNA, KCSA, PCA, CCA, CAPA and the professional tier."
+      },
+      {
+       "name": "CNCF",
+       "url": "https://www.cncf.io/",
+       "note": "Cloud Native Computing Foundation: the certification programs behind the associate stack."
+      }
+     ],
+     "il_provides": "Readiness gates per associate exam; the path into the professional tier mapped explicitly."
+    }
+   ],
+   "assessments": [
+    {
+     "id": "il05-cn-associates-diagnostic",
+     "title": "Cloud-Native Associate Readiness Diagnostic",
+     "kind": "diagnostic",
+     "questions": 0,
+     "items": [
+      {
+       "q": "In Kubernetes, what does etcd store?",
+       "choices": [
+        "Container images",
+        "The cluster's desired state — all objects",
+        "Application logs",
+        "User passwords in plaintext"
+       ],
+       "answer": 1,
+       "explain": "etcd is the source of truth for every Kubernetes object. Lose etcd, lose the cluster's memory."
+      },
+      {
+       "q": "A Pod's containers share…",
+       "choices": [
+        "Nothing",
+        "Network namespace and optionally storage volumes",
+        "The same process ID 1 always",
+        "The node's kernel version visibly"
+       ],
+       "answer": 1,
+       "explain": "Pod containers share network (one IP) and can share volumes — the pod is the atomic unit."
+      },
+      {
+       "q": "In PromQL, rate(http_requests_total[5m]) computes…",
+       "choices": [
+        "The total count",
+        "The per-second average rate of increase over 5 minutes",
+        "The 5-minute average latency",
+        "The error budget"
+       ],
+       "answer": 1,
+       "explain": "rate() over a counter gives per-second increase — the foundation of RED-method alerting."
+      },
+      {
+       "q": "A CiliumNetworkPolicy allowing HTTP GET on /api from a labeled client enforces at…",
+       "choices": [
+        "Layer 3 only",
+        "Layer 7 — Cilium understands HTTP",
+        "Layer 2",
+        "DNS only"
+       ],
+       "answer": 1,
+       "explain": "Cilium's eBPF datapath enforces L7 policy — beyond what standard NetworkPolicy can express."
+      },
+      {
+       "q": "Argo CD detects that live cluster state differs from git. What is this called, and what can Argo do?",
+       "choices": [
+        "Drift; it can auto-sync back to the git state",
+        "A bug; nothing",
+        "Scaling; it adds replicas",
+        "An outage; it pages"
+       ],
+       "answer": 0,
+       "explain": "Drift detection with optional auto-sync is GitOps' core loop — the repo stays the truth."
+      },
+      {
+       "q": "Signing container images with Cosign primarily defends against…",
+       "choices": [
+        "Slow pulls",
+        "Tampered or spoofed images in the supply chain",
+        "Large layers",
+        "Registry costs"
+       ],
+       "answer": 1,
+       "explain": "Signatures prove the image came from your pipeline untampered — supply-chain security's foundation."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
