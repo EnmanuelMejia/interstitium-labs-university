@@ -194,7 +194,8 @@
     ['courses.html', 'My Courses'],
     ['enroll.html', 'Enroll'],
     ['honesty.html', 'Honesty'],
-    ['about.html', 'About']
+    ['about.html', 'About'],
+    ['https://interstitiumlabs.dev/', 'Main Site \u2197']
   ];
 
   function currentPage() {
