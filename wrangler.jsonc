@@ -1,1 +1,18 @@
-{"$schema":"https://developers.cloudflare.com/workers/wrangler/configuration.schema.json","ai":{"binding":"AI"},"assets":{"directory":"./"},"compatibility_date":"2026-09-30","main":"./worker.js","name":"interstitium-labs-university"}
+{
+  "$schema": "https://developers.cloudflare.com/workers/wrangler/configuration.schema.json",
+  "ai": {
+    "binding": "AI"
+  },
+  "assets": {
+    "directory": "./"
+  },
+  "compatibility_date": "2026-09-30",
+  "main": "./worker.js",
+  "name": "interstitium-labs-university",
+  "kv_namespaces": [
+    {
+      "binding": "NOAH_STATS",
+      "id": "6c7b016f095d439b83d8231ee2ad4af5"
+    }
+  ]
+}
