@@ -10,7 +10,19 @@ Voice: measured hermetic treatise. No emojis, no hype copy.
 Honesty rules: official vendor pages / canonical domain roots only; no invented
 exam codes, prices, or URLs. Where an exact page URL could not be verified,
 the vendor's canonical domain root is used and the note says so.
+
+SOURCE-OF-TRUTH WARNING (2026-10-01): this script is PARTIAL. The live catalog
+(data/catalog/shard-*.json) additionally contains hand-maintained content this
+script does NOT emit:
+  - Academy IL-11 (Zero Trust & Endpoint Defense) + its 6 paths
+  - Assessments il01-hermetic-diagnostic, il01-hermetic-gate, il11-cyber-hero-gate
+  - il01-ccru-gate as kind "gate" with minutes=30 (this script's line still
+    said "diagnostic"/0 until the 2026-10-01 reconciliation)
+Regenerating catalog.json from this script alone and re-splitting shards would
+SILENTLY DROP all of the above. The drift check at the end of this file lists
+every shard-resident item this script cannot reproduce. Reconcile before deploy.
 """
+import glob
 import json
 import os
 import sys
@@ -298,8 +310,14 @@ def M(mid, title, kind, topics, sources, il_provides):
 
 
 def A(aid, title, kind, questions, minutes, items):
-    return {"id": aid, "title": title, "kind": kind, "questions": questions,
-            "minutes": minutes, "items": items}
+    # minutes=None means untimed: the key is omitted entirely. The adaptive
+    # engine treats a missing minutes key as "no deadline" and minutes=0 as
+    # "already expired", so 0 must never be used to mean untimed.
+    a = {"id": aid, "title": title, "kind": kind, "questions": questions,
+         "items": items}
+    if minutes is not None:
+        a["minutes"] = minutes
+    return a
 
 
 def I(q, choices, answer, explain, topic):
@@ -419,7 +437,7 @@ PATHS.append(P(
           [S("Principia Cybernetica", "Viable-system-model reference material.")],
           "A case study in applied cybernetics with the myth stripped out: the documented system, its real limits, and what the 1973 coup foreclosed."),
     ],
-    [A("il01-ccru-gate", "CCRU Seminar Gate", "diagnostic", 0, 0,
+    [A("il01-ccru-gate", "CCRU Seminar Gate", "gate", 12, 30,
        [I("Hyperstition, in one sentence, claims that fictions can ___.",
           ["describe the past accurately", "bootstrap themselves into reality through belief-driven feedback", "replace empirical science", "prove mathematical theorems"],
           1, "The hyperstitional circuit: fiction -> belief -> action -> conditions that make the fiction real. The seminar treats this as a theory with a status label, not a fact.", "hyperstition"),
@@ -434,7 +452,28 @@ PATHS.append(P(
           1, "CONTESTED marks claims without settled evidence or with active scholarly dispute — the honest label for hyperstition's stronger claims.", "tiers"),
         I("Second-order cybernetics differs from first-order in that it ___.",
           ["uses faster computers", "includes the observer in the system observed", "was invented by Turing", "rejects feedback"],
-          1, "Second-order cybernetics (von Foerster) makes the observer part of the system — the move the CCRU inherits.", "cybernetics")])]))
+          1, "Second-order cybernetics (von Foerster) makes the observer part of the system — the move the CCRU inherits.", "cybernetics"),
+        I("The CCRU (Cybernetic Culture Research Unit) operated at",
+          ["the University of Warwick in the 1990s", "MIT in the 1960s", "Oxford in the 1980s", "a Silicon Valley startup"], 0,
+          "DOCUMENTED: the CCRU was a postgraduate collective at Warwick's philosophy department, active roughly 1995-1998.", "ccru-history"),
+        I("'Lemurian time' in CCRU writing refers to",
+          ["the age of the dinosaurs", "a calendar reform proposal", "a programming language", "a non-linear, mythic deep-time schema used to scramble chronological history"], 3,
+          "The CCRU used Lemuria as a hyperstitional device: a submerged continent outside linear time, treated as a theoretical instrument (CONTESTED as history).", "lemurian-time"),
+        I("Nick Land's 'technocapital singularity' treats capital as",
+          ["a proven economic law", "a computer program", "a government policy", "an alien intelligence using humans as hosts -- a CONTESTED theoretical claim"], 3,
+          "CONTESTED: Land's thesis is theory-fiction, not an empirical finding; the tier label is part of the answer.", "theory-fiction"),
+        I("The numogram's named zones (e.g., the Warp) are",
+          ["countries on a map", "computer chips", "musical notes", "named regions of the diagram used to track different dynamical regimes"], 3,
+          "Diagram literacy: zones like the Warp, the Deep, and the zones of the decimal system name distinct behaviors of the numogram's currents.", "numogram"),
+        I("Stafford Beer's Viable System Model was",
+          ["a kind of computer", "a novel", "a religion", "a cybernetic model of organization, applied in Chile's Cybersyn project"], 3,
+          "DOCUMENTED: Beer's VSM (1972) modeled organizations as viable systems; Allende's government attempted a national-scale implementation.", "cybersyn"),
+        I("'Theory-fiction' as the CCRU practiced it means",
+          ["lying in academic papers", "science-fiction novels only", "debunking myths", "writing that deliberately blurs philosophy and fiction to produce hyperstitional effects"], 3,
+          "The method: texts engineered so their own circulation becomes part of the argument -- hyperstition as writing practice.", "theory-fiction"),
+        I("In this academy's tiering, the claim 'hyperstition literally rewrites physics' is",
+          ["DOCUMENTED", "TRADITIONAL", "disproven", "CONTESTED -- a strong theoretical claim without settled evidence"], 3,
+          "CONTESTED: the strong reading of hyperstition has no settled evidence; the seminar keeps the tier label attached to the claim.", "tiers")])]))
 
 # ============================================================ IL-02: Math
 PATHS.append(P(
@@ -768,7 +807,7 @@ PATHS.append(P(
           [S("CompTIA", "Official Network+ objectives and exam information from comptia.org.")],
           "il_provides: PBQ-style performance items and a readiness gate; the exam itself is booked through CompTIA's own portal — orchestrated, never cloned."),
     ],
-    [A("il04-networking-diagnostic", "Networking Placement Diagnostic", "diagnostic", 0, 0,
+    [A("il04-networking-diagnostic", "Networking Placement Diagnostic", "diagnostic", 0, None,
        [I("How many usable host addresses does a /26 IPv4 subnet provide?",
           ["30", "62", "64", "126"], 1,
           "A /26 leaves 6 host bits: 2^6 - 2 = 62 usable addresses.", "subnetting"),
@@ -846,7 +885,7 @@ PATHS.append(P(
            S("Grafana", "Official Grafana and Loki documentation.")],
           "il_provides: an instrumented demo fleet with a real incident to diagnose — the learner's first on-call, supervised."),
     ],
-    [A("il05-devops-diagnostic", "DevOps Placement Diagnostic", "diagnostic", 0, 0,
+    [A("il05-devops-diagnostic", "DevOps Placement Diagnostic", "diagnostic", 0, None,
        [I("In Git, which command creates a new branch and switches to it?",
           ["git branch new", "git checkout -b new", "git switch", "git new-branch"], 1,
           "git checkout -b <name> creates and switches in one step (git switch -c is the modern equivalent).", "git"),
@@ -989,7 +1028,7 @@ PATHS.append(P(
           [S("NIST NICE Framework (SP 800-181 Rev.1)", "The official framework: five categories, 42 work roles — never the superseded 7-category model.")],
           "il_provides: the career map — every IL-06 module tagged to NICE work roles by name, with honest notes on which roles need clearances or degrees the platform cannot grant."),
     ],
-    [A("il06-offensive-diagnostic", "Offensive Security Placement Diagnostic", "diagnostic", 0, 0,
+    [A("il06-offensive-diagnostic", "Offensive Security Placement Diagnostic", "diagnostic", 0, None,
        [I("In TCP, the three-way handshake sequence is ___.",
           ["SYN, SYN-ACK, ACK", "ACK, SYN, FIN", "SYN, ACK, PSH", "RST, SYN, ACK"], 0,
           "SYN -> SYN-ACK -> ACK establishes the connection; half-open scans exploit the middle state.", "networking"),
@@ -1192,7 +1231,7 @@ PATHS.append(P(
            S("Anthropic", "Anthropic's engineering notes on building effective agents (via anthropic.com).")],
           "il_provides: the evaluation-first discipline — every LLM system the learner builds ships with a benchmark harness, because unevaluated AI is astrology."),
     ],
-    [A("il07-ml-diagnostic", "ML Readiness Diagnostic", "diagnostic", 0, 0,
+    [A("il07-ml-diagnostic", "ML Readiness Diagnostic", "diagnostic", 0, None,
        [I("The bias/variance tradeoff states that ___.",
           ["more data always fixes everything", "expected error decomposes into bias, variance, and irreducible noise", "variance is always bad", "bias is always bad"],
           1, "Expected error = bias^2 + variance + irreducible noise; the tradeoff governs model selection.", "learning-theory"),
@@ -1345,7 +1384,7 @@ PATHS.append(P(
           [S("CompTIA", "Official stackable-certification documentation from help.comptia.org.")],
           "il_provides: the stacking planner — which combinations earn which stackables, and the order that minimizes exam spend."),
     ],
-    [A("il09-core-diagnostic", "CompTIA Core Placement Diagnostic", "diagnostic", 0, 0,
+    [A("il09-core-diagnostic", "CompTIA Core Placement Diagnostic", "diagnostic", 0, None,
        [I("Which A+ Core 1 domain carries the most weight?",
           ["Mobile Devices 13%", "Hardware 25%", "Virtualization & Cloud 11%", "Networking 23%"],
           1, "Per the official V15 objectives: Hardware 25%, HW/Network Troubleshooting 28%, Networking 23%.", "aplus"),
@@ -1841,15 +1880,19 @@ for _p in PATHS:
                 _fail("module %s/%s source %r has non-http url %r"
                       % (_p["id"], _m["id"], _s["name"], _s["url"]))
 
-# 3. Timed assessments >=10 items, valid answer index
+# 3. Timed assessments >=10 items; timed + gate: questions must equal the
+#    authored item count, and every item needs a valid answer + explanation.
+#    (Untimed diagnostics are placement instruments; their item banks are
+#    intentionally open-ended, so they are exempt from the count match.)
 for _p in PATHS:
     for _a in _p.get("assessments", []):
         if _a["kind"] == "timed":
             if len(_a["items"]) < 10:
                 _fail("timed assessment %s has only %d items" % (_a["id"], len(_a["items"])))
+        if _a["kind"] in ("timed", "gate"):
             if _a["questions"] != len(_a["items"]):
-                _fail("timed assessment %s questions=%d but items=%d"
-                      % (_a["id"], _a["questions"], len(_a["items"])))
+                _fail("%s assessment %s questions=%d but items=%d"
+                      % (_a["kind"], _a["id"], _a["questions"], len(_a["items"])))
             for _i, _it in enumerate(_a["items"]):
                 if not (0 <= _it["answer"] < len(_it["choices"])):
                     _fail("assessment %s item %d has invalid answer index" % (_a["id"], _i))
@@ -1891,8 +1934,11 @@ for _d in DEDUPE:
             _fail("dedupe %r canonical module %r not in path %r" % (_d["course"], _c, _pid))
 
 # ---------- Write the three files ----------
-OUT = os.path.expanduser(
-    "~/workspace/goals/interstitium-labs-learning-university-build/build/data")
+if len(sys.argv) > 1:
+    OUT = sys.argv[1]
+else:
+    OUT = os.path.expanduser(
+        "~/workspace/goals/interstitium-labs-learning-university-build/build/data")
 os.makedirs(OUT, exist_ok=True)
 with open(os.path.join(OUT, "catalog.json"), "w") as _f:
     json.dump(CATALOG, _f, indent=2)
@@ -1906,3 +1952,33 @@ print("OK: %d academies, %d paths, %d modules, %d assessments, %d sources, %d de
     sum(len(p["modules"]) for p in PATHS),
     sum(len(p.get("assessments", [])) for p in PATHS),
     len(SOURCES_JSON), len(DEDUPE)))
+# ---------- 7. Drift guard: shard-resident content this script cannot reproduce
+# The live catalog (data/catalog/shard-*.json) is hand-maintained ahead of this
+# script. Regenerating + re-splitting from here alone would SILENTLY DROP every
+# academy/path/assessment below. This guard lists them and fails loudly so no
+# future run can pretend the output is complete.
+_shard_academies, _shard_paths, _shard_assess = set(), set(), set()
+for _sf in sorted(glob.glob(os.path.join(DATA_DIR, "catalog", "shard-*.json"))):
+    with open(_sf) as _fh:
+        _sd = json.load(_fh)
+    for _a in _sd.get("academies", []):
+        _shard_academies.add(_a.get("code"))
+    for _p in _sd.get("paths", []):
+        _shard_paths.add(_p.get("id"))
+        for _a in _p.get("assessments", []):
+            _shard_assess.add(_a.get("id"))
+_gen_academies = {a["code"] for a in ACADEMIES}
+_gen_paths = {p["id"] for p in PATHS}
+_gen_assess = {a["id"] for p in PATHS for a in p.get("assessments", [])}
+_drift = {
+    "academies": sorted(_shard_academies - _gen_academies),
+    "paths": sorted(_shard_paths - _gen_paths),
+    "assessments": sorted(_shard_assess - _gen_assess),
+}
+if any(_drift.values()):
+    print("DRIFT GUARD: live shards contain content this script does NOT emit:")
+    for _k, _v in _drift.items():
+        for _x in _v:
+            print("  drift:%s %s" % (_k, _x))
+    print("Reconcile the script with the shards before regenerating + re-splitting.")
+    sys.exit(2)
