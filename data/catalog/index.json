@@ -1,1 +1,8 @@
-{"shards": ["shard-a.json", "shard-b.json", "shard-c.json"]}
+{
+ "shards": [
+  "shard-a.json",
+  "shard-b.json",
+  "shard-c.json",
+  "shard-d.json"
+ ]
+}

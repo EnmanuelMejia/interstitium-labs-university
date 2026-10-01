@@ -35,7 +35,7 @@
   }
 
   var ACTIONS = [
-    { kind: 'go', title: 'Pantheon (home)', sub: 'Cinematic index', href: 'index.html' },
+    { kind: 'go', title: 'Home', sub: 'Cinematic index', href: 'index.html' },
     { kind: 'go', title: 'All paths', sub: 'Filter by role · skill · cert · time', href: 'paths.html' },
     { kind: 'go', title: 'Assessments', sub: 'Diagnostics, gates, timed sittings', href: 'assess.html' },
     { kind: 'go', title: 'My courses', sub: 'Local mastery ledger', href: 'courses.html' },
