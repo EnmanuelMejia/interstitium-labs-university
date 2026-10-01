@@ -68,7 +68,7 @@
   <section class="block" id="academies" aria-labelledby="acad-h">
     <div class="wrap" data-catalog-slot>
       <p class="eyebrow">Curriculum OS</p>
-      <h2 id="acad-h">Ten academies</h2>
+      <h2 id="acad-h">The academies</h2>
       <p class="lede">Esoteric study is source-critical. Engineering is inspectable. Math sits on a cert. Code is a sitting you can fail. Not a photocopy of anyone's PDF.</p>
       <div class="grid grid-3" id="academy-grid" style="margin-top:1.6rem"></div>
     </div>
@@ -93,7 +93,7 @@
       <div class="grid" style="grid-template-columns:1fr; margin-top:1.4rem">
         <div class="noah-panel" style="max-width:760px">
           <div class="noah-head">
-            <img class="sig" src="assets/sigil.svg" alt="" width="26" height="26">
+            <img class="noah-face" src="assets/noah-avatar.png" alt="Noah — John Dee-inspired scholar portrait" width="34" height="34">
             <div><div class="name">Noah</div><div class="sub">Socratic tutor · local engine</div></div>
           </div>
           <div class="noah-log" id="noah-log" aria-live="polite" aria-label="Noah conversation"></div>
@@ -134,7 +134,7 @@
   function counter(n, label) {
     var d = document.createElement('div');
     d.className = 'counter'; d.setAttribute('role', 'listitem');
-    d.innerHTML = '<div class="n">' + IL.esc(n) + '</div><div class="l">' + IL.esc(label) + '</div>';
+    d.innerHTML = '<div class="n" data-countup="' + IL.esc(String(n).replace(/[^0-9]/g, '')) + '">' + IL.esc(n) + '</div><div class="l">' + IL.esc(label) + '</div>';
     return d;
   }
 
@@ -172,7 +172,7 @@
     var box = document.getElementById('counters');
     box.innerHTML = '';
     var nAcad = cat.academies.length || 10;
-    var hours = IL.totalHours() || 7330;
+    var hours = IL.totalHours() || 7690;
     var sittings = 0;
     cat.paths.forEach(function (p) { sittings += (p.modules || []).length; });
     if (!sittings) sittings = 138;
@@ -180,6 +180,12 @@
     box.appendChild(counter(hours.toLocaleString('en-US'), 'hours'));
     box.appendChild(counter(String(sittings), 'sittings'));
     box.appendChild(counter('12', 'weeks'));
+
+    // Keep the academies heading honest: it follows the catalog, not the copy.
+    var acadH = document.getElementById('acad-h');
+    if (acadH && cat.academies.length) {
+      acadH.textContent = cat.academies.length + ' academies';
+    }
 
     var grid = document.getElementById('academy-grid');
     grid.innerHTML = '';
@@ -190,7 +196,7 @@
     var paths = cat.paths.slice(0, 6);
     if (!paths.length) {
       prev.innerHTML = '<div class="empty-state"><h3>Paths are being published</h3>' +
-        '<p>The path catalog is still being assembled. The ten academies above are the standing index — check back, or <a href="honesty.html">read the ledger</a>.</p></div>';
+        '<p>The path catalog is still being assembled. The academies above are the standing index — check back, or <a href="honesty.html">read the ledger</a>.</p></div>';
     } else {
       paths.forEach(function (p) { prev.appendChild(pathCard(p)); });
     }
@@ -210,7 +216,27 @@
     log.scrollTop = log.scrollHeight;
     return d;
   }
-  addMsg('noah', 'I am Noah — Socratic, local, lab-aware. Bring me your hypothesis, not "just give me the answer." What are you working through?');
+  var greetNode = addMsg('noah', '');
+  // typewriter greeting (cinematic, respects reduced motion)
+  (function typeGreeting() {
+    var full = 'I am Noah — Socratic, local, lab-aware. Bring me your hypothesis, not "just give me the answer." What are you working through?';
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      greetNode.textContent = full;
+      return;
+    }
+    var txt = document.createTextNode('');
+    greetNode.appendChild(txt);
+    var caret = document.createElement('span');
+    caret.className = 'noah-typing-caret';
+    caret.setAttribute('aria-hidden', 'true');
+    greetNode.appendChild(caret);
+    var i = 0;
+    var t = setInterval(function () {
+      i += 2;
+      txt.textContent = full.slice(0, i);
+      if (i >= full.length) { clearInterval(t); caret.remove(); }
+    }, 24);
+  })();
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var q = input.value.trim();

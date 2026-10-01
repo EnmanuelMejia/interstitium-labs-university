@@ -1,7 +1,7 @@
 /* Interstitium Labs — service worker.
    Cache-first app shell (versioned), network-first for catalog data.
    No third-party requests are ever cached or made. */
-var CACHE = 'il-university-v3'; // v3: Noah AI widget + avatar (data/ stays network-first)
+var CACHE = 'il-university-v4'; // v4: command palette + Palantir motion pass (data/ stays network-first)
 
 var SHELL = [
   './',
@@ -20,6 +20,7 @@ var SHELL = [
   './js/hero.js',
   './js/adaptive.js',
   './js/noah.js',
+  './js/palette.js',
   './assets/sigil.svg',
   './assets/noah-avatar.png',
   './manifest.webmanifest'
