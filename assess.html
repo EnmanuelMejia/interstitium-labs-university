@@ -52,15 +52,18 @@
     return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
   }
 
-  /* Palantir-grade confirm dialog — never the native confirm() */
+  /* Palantir-grade confirm dialog — never the native confirm().
+     Focus-trapped, Escape-aware, returns focus to the opener. */
   function ilConfirm(title, message, okLabel) {
     return new Promise(function (resolve) {
       var done = false;
+      var opener = document.activeElement;
       function close(val) {
         if (done) return;
         done = true;
         document.removeEventListener('keydown', onKey, true);
         if (bd.parentNode) bd.parentNode.removeChild(bd);
+        if (opener && opener.focus) { try { opener.focus(); } catch (e) {} }
         resolve(val);
       }
       var bd = IL.el('div', { 'class': 'il-dialog-backdrop' });
@@ -73,8 +76,17 @@
       ok.addEventListener('click', function () { close(true); });
       bd.addEventListener('click', function (e) { if (e.target === bd) close(false); });
       function onKey(e) {
-        if (e.key === 'Escape') { e.stopPropagation(); close(false); }
-        if (e.key === 'Enter' && document.activeElement !== cancel) { e.stopPropagation(); close(true); }
+        if (e.key === 'Escape') { e.stopPropagation(); close(false); return; }
+        if (e.key === 'Enter' && document.activeElement !== cancel) { e.stopPropagation(); close(true); return; }
+        // Focus trap: Tab cycles between the dialog's buttons.
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          e.stopPropagation();
+          var btns = [cancel, ok];
+          var i = btns.indexOf(document.activeElement);
+          var n = e.shiftKey ? (i <= 0 ? btns.length - 1 : i - 1) : (i === -1 || i === btns.length - 1 ? 0 : i + 1);
+          btns[n].focus();
+        }
       }
       document.addEventListener('keydown', onKey, true);
       row.appendChild(cancel); row.appendChild(ok);

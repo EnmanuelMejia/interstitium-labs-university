@@ -135,6 +135,7 @@
     tabs.forEach(function (t) {
       var on = t.dataset.stage === name;
       t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
       document.getElementById('panel-' + t.dataset.stage).classList.toggle('active', on);
     });
     if (name === 'fringe') renderFringe();
@@ -145,13 +146,21 @@
   tabs.forEach(function (t) {
     t.addEventListener('click', function () { selectStage(t.dataset.stage); });
     t.addEventListener('keydown', function (e) {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var i = tabs.indexOf(t), n = -1;
+      if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') n = 0;
+      else if (e.key === 'End') n = tabs.length - 1;
+      else return;
       e.preventDefault();
-      var i = tabs.indexOf(t);
-      var n = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
       tabs[n].focus(); selectStage(tabs[n].dataset.stage);
     });
   });
+  // Initialize roving tabindex to match the initially selected tab.
+  (function initTabs() {
+    var sel = tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || tabs[0];
+    tabs.forEach(function (t) { t.tabIndex = (t === sel) ? 0 : -1; });
+  })();
 
   /* ---------- shared quiz widget (one question at a time) ---------- */
   function quizWidget(container, items, opts) {
@@ -304,6 +313,7 @@
         state.mastery = out.mastery;
         if (!state.topics.length) state.topics = topics.slice();
         persist();
+        paintStageDots('place');
         result.innerHTML = '<h3>Placement complete</h3>';
         var bars = IL.el('div');
         result.appendChild(bars);
@@ -363,6 +373,7 @@
             var ok = answers[0] === step.item.answer;
             A().record(state, step.topicId, ok, 0.6);
             persist();
+            paintStageDots('fringe');
             fb.innerHTML = ok
               ? '<div class="notice cyan"><strong>Correct.</strong> Mastery updated — the fringe re-sequenced.</div>'
               : '<div class="notice"><strong>Not yet.</strong> Wrong answers get Socratic tips — bring your hypothesis to Noah on the right, then try the next item.</div>';
@@ -379,8 +390,8 @@
       var row = IL.el('div', { 'class': 'quiz-actions' });
       var got = IL.el('button', { 'class': 'btn btn-sm', type: 'button', text: 'I can teach it' });
       var fuzzy = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Still fuzzy' });
-      got.addEventListener('click', function () { A().record(state, step.topicId, true, 0.3); persist(); renderFringe(); });
-      fuzzy.addEventListener('click', function () { A().record(state, step.topicId, false, 0.3); persist(); renderFringe(); });
+      got.addEventListener('click', function () { A().record(state, step.topicId, true, 0.3); persist(); renderFringe(); paintStageDots('fringe'); });
+      fuzzy.addEventListener('click', function () { A().record(state, step.topicId, false, 0.3); persist(); renderFringe(); paintStageDots('fringe'); });
       row.appendChild(got); row.appendChild(fuzzy);
       card.appendChild(row);
       box.appendChild(card);
@@ -418,12 +429,15 @@
     panel.appendChild(info);
     var holder = IL.el('div');
     panel.appendChild(holder);
-    var result = IL.el('div', { style: 'margin-top:1rem' });
+    var result = IL.el('div', { style: 'margin-top:1rem', role: 'status', 'aria-live': 'polite' });
     panel.appendChild(result);
 
     var ctrl = A().timed(ga);
     var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining' });
     holder.appendChild(timer);
+    var gtrack = IL.el('div', { 'class': 'timer-track', 'aria-hidden': 'true' });
+    gtrack.appendChild(IL.el('i', {}));
+    holder.appendChild(gtrack);
     var qholder = IL.el('div');
     holder.appendChild(qholder);
     var tick = setInterval(function () {
@@ -432,10 +446,15 @@
       var ss = String(s % 60).padStart(2, '0');
       timer.textContent = mm + ':' + ss;
       timer.classList.toggle('low', s < 300);
+      var pct = Math.max(0, (s / (ga.minutes * 60)) * 100);
+      gtrack.firstChild.style.width = pct + '%';
+      gtrack.firstChild.classList.toggle('low', s < 300);
       if (s <= 0) { clearInterval(tick); finish(); }
     }, 500);
 
     function finish() {
+      if (finish.done) return;
+      finish.done = true;
       clearInterval(tick);
       var res = ctrl.submit();
       (res.perTopic ? Object.keys(res.perTopic) : []).forEach(function (t) {
@@ -495,7 +514,10 @@
   }
 
   /* ---------- gate-pass celebration ---------- */
+  var gateCelebrated = false;
   function celebrateGate(scorePct) {
+    if (gateCelebrated) return;
+    gateCelebrated = true;
     if (motionReduced) return;
     var veil = IL.el('div', { 'class': 'celebrate-veil', role: 'alert', 'aria-label': 'Gate passed' });
     var inner = IL.el('div', { 'class': 'inner' });
