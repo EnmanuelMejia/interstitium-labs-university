@@ -18,6 +18,7 @@
 <link rel="canonical" href="https://learn.interstitiumlabs.dev/assess.html">
 
 <link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#06080c">
 <link rel="stylesheet" href="css/il.css">
@@ -140,7 +141,10 @@
       ' questions' + (a.minutes ? ' · ' + a.minutes + ' minutes' : '') + '</p>';
     body.appendChild(head);
 
-    var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining', text: mmss(ctrl.remaining()) });
+    var timer = IL.el('div', { 'class': 'timer', role: 'timer',
+      'aria-label': ctrl.timed ? 'Time remaining' : 'Untimed assessment' });
+    timer.textContent = ctrl.timed ? mmss(ctrl.remaining()) : 'Untimed — take the time the material deserves.';
+    if (!ctrl.timed) timer.classList.add('untimed');
     body.appendChild(timer);
     var totalSecs = Math.max(1, (a.minutes || 0) * 60);
     var track = null;
@@ -235,7 +239,7 @@
     document.addEventListener('keydown', function onKey(e) {
       if (finished) { document.removeEventListener('keydown', onKey); return; }
       if (document.querySelector('.il-dialog-backdrop')) return; // modal open: keys belong to it
-      if (e.target.matches('input, textarea, select')) return;
+      if (e.target && e.target.matches && e.target.matches('input, textarea, select')) return;
       if (e.key === '[' && idx > 0) { idx--; draw(); }
       else if (e.key === ']' && idx < items.length - 1) { idx++; draw(); }
       else if (e.key === 'f' || e.key === 'F') { toggleFlag(); }
@@ -246,24 +250,27 @@
       }
     });
 
-    var tick = setInterval(function () {
-      var s = ctrl.remaining();
-      timer.textContent = mmss(s);
-      timer.classList.toggle('low', s < 300 && s > 0);
-      if (track) {
-        var fill = track.firstChild;
-        fill.style.width = Math.max(0, (s / totalSecs) * 100) + '%';
-        fill.classList.toggle('low', s < 300 && s > 0);
-      }
-      if (s <= 0) { clearInterval(tick); doSubmit(true); }
-    }, 500);
+    var tick = null;
+    if (ctrl.timed) {
+      tick = setInterval(function () {
+        var s = ctrl.remaining();
+        timer.textContent = mmss(s);
+        timer.classList.toggle('low', s < 300 && s > 0);
+        if (track) {
+          var fill = track.firstChild;
+          fill.style.width = Math.max(0, (s / totalSecs) * 100) + '%';
+          fill.classList.toggle('low', s < 300 && s > 0);
+        }
+        if (s <= 0) { clearInterval(tick); tick = null; doSubmit(true); }
+      }, 500);
+    }
 
     function doSubmit(auto) {
       if (finished) return;
       var un = sel.filter(function (x) { return x === null; }).length;
       if (!auto && un > 0) {
         ilConfirm('Submit assessment?',
-          un + ' question(s) unanswered. The timer keeps running while you decide.',
+          un + ' question(s) unanswered.' + (ctrl.timed ? ' The timer keeps running while you decide.' : ''),
           'Submit anyway').then(function (ok) { if (ok) finishSubmit(false); });
         return;
       }

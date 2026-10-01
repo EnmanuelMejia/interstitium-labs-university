@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found — Interstitium Labs</title>
+<meta name="description" content="This page does not exist in the Interstitium Labs Learning University.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#06080c">
+<link rel="stylesheet" href="css/il.css">
+<style>
+  .nf-stage { position: relative; overflow: hidden; }
+  .nf-watermark {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: clamp(10rem, 38vw, 26rem); line-height: 1;
+    color: transparent; -webkit-text-stroke: 1px rgba(201, 162, 39, 0.14);
+    pointer-events: none; user-select: none;
+  }
+  .nf-sweep {
+    position: absolute; inset: -20%; pointer-events: none;
+    background: linear-gradient(105deg, transparent 42%, rgba(201, 162, 39, 0.06) 50%, transparent 58%);
+    animation: nfSweep 9s ease-in-out infinite;
+  }
+  @keyframes nfSweep {
+    0%, 100% { transform: translateX(-30%); opacity: 0; }
+    15% { opacity: 1; }
+    55% { transform: translateX(30%); opacity: 1; }
+    70%, 100% { transform: translateX(30%); opacity: 0; }
+  }
+  .nf-sigil-pulse { animation: nfPulse 5s ease-in-out infinite; }
+  @keyframes nfPulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nf-sweep, .nf-sigil-pulse { animation: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#il-main">Skip to main content</a>
+<div id="il-header"></div>
+
+<main id="il-main">
+  <section class="block nf-stage" aria-labelledby="nf-h">
+    <div class="nf-watermark" aria-hidden="true">404</div>
+    <div class="nf-sweep" aria-hidden="true"></div>
+    <div class="wrap" style="text-align:center; padding: 6rem 1.5rem; position: relative;">
+      <p class="eyebrow">404 · Outside the map</p>
+      <img class="nf-sigil-pulse" src="assets/sigil.svg" alt="" width="72" height="72" style="margin: 1rem auto; display: block; opacity: 0.8;">
+      <h1 id="nf-h" style="font-size: clamp(3rem, 10vw, 6rem); margin: 0.6rem 0;">No such sitting.</h1>
+      <p class="lede" style="max-width: 34rem; margin: 0 auto;">The page you asked for isn't in the catalog. The university keeps an honest ledger — this isn't in it.</p>
+      <div class="hero-cta-row" style="margin-top: 2rem; justify-content: center;">
+        <a class="btn" href="index.html">Return to the university</a>
+        <a class="btn btn-ghost" href="paths.html">Browse the paths</a>
+      </div>
+      <p style="margin-top: 2.4rem; color: var(--ink-faint); font-family: var(--mono); font-size: 0.8rem;">
+        Lost? Ask <a href="index.html#noah">Noah</a> — Socratic, local, lab-aware.
+      </p>
+    </div>
+  </section>
+</main>
+
+<div id="il-footer"></div>
+
+<script src="js/app.js"></script>
+<script src="js/noah.js"></script>
+</body>
+</html>
