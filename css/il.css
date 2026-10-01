@@ -281,6 +281,21 @@ section.block { padding: clamp(2.5rem, 6vw, 5rem) 0; }
 .counter .n { font-family: var(--serif); font-size: 2.1rem; color: var(--gold-bright); }
 .counter .l { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.24em; color: var(--ink-faint); text-transform: uppercase; }
 
+/* ---------- skeleton shimmer (catalog loading) ---------- */
+.skel {
+  position: relative; overflow: hidden;
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  min-height: 84px;
+}
+.skel::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(201,162,75,0.10) 50%, transparent 80%);
+  animation: skelsweep 1.6s ease-in-out infinite;
+}
+@keyframes skelsweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
 /* ---------- terminal-storm motif (section transitions / loading) ---------- */
 .terminal-storm {
   position: relative; overflow: hidden;
@@ -332,6 +347,8 @@ table.ledger td.date { font-family: var(--mono); font-size: 0.8rem; white-space:
   background: var(--gold-faint); margin-bottom: 1rem;
 }
 .timer.low { color: #ff9d7a; border-color: rgba(255,157,122,0.5); background: rgba(255,157,122,0.08); }
+.timer.untimed { font-family: var(--sans); font-size: 0.95rem; letter-spacing: 0.01em;
+  color: var(--ink-dim); border-color: var(--line); background: var(--panel-2); }
 .qnav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; }
 .qnav button {
   width: 2.5rem; height: 2.5rem; border-radius: var(--radius-sm);
@@ -552,6 +569,8 @@ body.il-leaving #il-veil { opacity: 1; }
   .pantheon-controls { left: 1rem; right: 1rem; justify-content: flex-start; }
   .site-nav { margin-left: 0; }
   .pal-hint .pal-hint-label { display: none; }
+  /* learn.html sitting layout: stack the stage column above the Noah panel */
+  #sit-layout { grid-template-columns: 1fr !important; }
 }
 
 /* reduced motion: everything slow becomes still */
@@ -601,7 +620,7 @@ body.il-leaving #il-veil { opacity: 1; }
 }
 @keyframes dlgIn { from { opacity: 0; } to { opacity: 1; } }
 .il-dialog {
-  width: min(440px, 100%); background: var(--panel-1); border: 1px solid var(--line);
+  width: min(440px, 100%); background: var(--panel-2); border: 1px solid var(--line);
   border-radius: 14px; padding: 1.4rem 1.5rem; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
   animation: dlgPop 0.26s cubic-bezier(0.22, 0.9, 0.3, 1.2) both;
 }
