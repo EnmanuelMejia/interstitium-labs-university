@@ -56,13 +56,13 @@
     { code: 'IL-02', name: 'Mathematical Maturity Engine', hours: 680, tagline: 'Not a worksheet mill.', blurb: 'Adaptive knowledge space — CIDR, nines, HPA, ALE, chmod — bound to certs and career tracks.' },
     { code: 'IL-03', name: 'Programming Language Forge', hours: 860, tagline: 'Code is a sitting you can fail.', blurb: 'Python, Java, C++, TypeScript, and systems languages as instruments — semantics, memory, and inspectable programs.' },
     { code: 'IL-04', name: 'Systems, Linux, Windows & Networks', hours: 740, tagline: 'Engineering is inspectable.', blurb: 'Operating systems, performance-based Linux, PowerShell, TCP/IP, and the machines certifications actually examine.' },
-    { code: 'IL-05', name: 'Cloud, DevSecOps, Platform & SRE', hours: 910, tagline: 'Honesty over fleet wallpaper.', blurb: 'Azure, AWS, GCP, Kubernetes, identity, and reliability engineering as one platform practice.' },
-    { code: 'IL-06', name: 'Cybersecurity & Secure Engineering', hours: 980, tagline: 'Evidence, not dumps.', blurb: 'SOC, pentest, appsec, identity, and architecture — defensive and offensive paths with evidence, not dumps.' },
-    { code: 'IL-07', name: 'SQL, Data Engineering, Analytics & AI', hours: 1200, tagline: 'Blueprints, not trivia.', blurb: 'Relational models, warehouses, analytics, and the statistical floor of machine learning.' },
+    { code: 'IL-05', name: 'Cloud, DevSecOps, Platform & SRE', hours: 2990, tagline: 'Honesty over fleet wallpaper.', blurb: 'Azure, AWS, GCP, Kubernetes, identity, and reliability engineering as one platform practice.' },
+    { code: 'IL-06', name: 'Cybersecurity & Secure Engineering', hours: 1180, tagline: 'Evidence, not dumps.', blurb: 'SOC, pentest, appsec, identity, and architecture — defensive and offensive paths with evidence, not dumps.' },
+    { code: 'IL-07', name: 'SQL, Data Engineering, Analytics & AI', hours: 1560, tagline: 'Blueprints, not trivia.', blurb: 'Relational models, warehouses, analytics, and the statistical floor of machine learning.' },
     { code: 'IL-08', name: 'Algorithms, Compilers, Distributed & Formal', hours: 640, tagline: 'The proofs that keep systems honest.', blurb: 'Data structures, language implementation, consensus, and the proofs that keep systems honest.' },
     { code: 'IL-09', name: 'Adaptive Certification Command', hours: 1100, tagline: 'Blueprints, not trivia.', blurb: 'Computer-adaptive prep for CompTIA, Microsoft, Azure, Oracle Java, Red Hat, Python Institute, and vendor families.' },
     { code: 'IL-10', name: 'Portfolio, Career & Professional Practice', hours: 280, tagline: 'The work is the record.', blurb: 'Inspectable evidence: labs, writeups, interviews, and the public work that outlives a badge.' },
-    { code: 'IL-11', name: 'Zero Trust & Endpoint Defense', hours: 360, tagline: 'Never trust, always verify.', blurb: 'Zero Trust doctrine, AD defense, allowlisting and ringfencing, red/blue operations — distilled from the public shape of ThreatLocker\u2019s bootcamp.' }
+    { code: 'IL-11', name: 'Zero Trust & Endpoint Defense', hours: 520, tagline: 'Never trust, always verify.', blurb: 'Zero Trust doctrine, AD defense, allowlisting and ringfencing, red/blue operations — distilled from the public shape of ThreatLocker\u2019s bootcamp.' }
   ];
 
   /* ---------- catalog loader (sharded: data/catalog/index.json lists shards;
