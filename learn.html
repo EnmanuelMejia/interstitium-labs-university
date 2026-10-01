@@ -87,6 +87,8 @@
   var topics = [];
   var storeKey = 'il_sitting_' + (pathId || 'free');
   var state = loadState();
+  var motionReduced = false;
+  try { motionReduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
 
   function loadState() {
     try {
@@ -101,6 +103,34 @@
 
   /* ---------- stage tabs ---------- */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.stage-tab'));
+  // status dots: ensure each tab carries one
+  tabs.forEach(function (t) {
+    if (!t.querySelector('.st-dot')) {
+      var d = document.createElement('span');
+      d.className = 'st-dot';
+      d.setAttribute('aria-hidden', 'true');
+      t.appendChild(d);
+    }
+  });
+  function paintStageDots(active) {
+    var verdict = null, fringeDone = false, placed = false;
+    try {
+      placed = Object.keys(state.mastery || {}).length > 0;
+      verdict = A().gate(state, pathId || 'free');
+      fringeDone = !!(A().next(state) || {}).done;
+    } catch (e) {}
+    var states = {
+      place: placed ? 'done' : (active === 'place' ? 'now' : ''),
+      fringe: fringeDone ? 'done' : (active === 'fringe' ? 'now' : ''),
+      gate: verdict && verdict.passed ? 'done' : (active === 'gate' ? 'now' : ''),
+      deepen: (verdict && verdict.passed) ? (active === 'deepen' ? 'now' : 'done') : ''
+    };
+    tabs.forEach(function (t) {
+      var dot = t.querySelector('.st-dot');
+      if (!dot) return;
+      dot.className = 'st-dot' + (states[t.dataset.stage] ? ' ' + states[t.dataset.stage] : '');
+    });
+  }
   function selectStage(name) {
     tabs.forEach(function (t) {
       var on = t.dataset.stage === name;
@@ -110,6 +140,7 @@
     if (name === 'fringe') renderFringe();
     if (name === 'gate') renderGate();
     if (name === 'deepen') renderDeepen();
+    paintStageDots(name);
   }
   tabs.forEach(function (t) {
     t.addEventListener('click', function () { selectStage(t.dataset.stage); });
@@ -144,20 +175,16 @@
       var it = items[idx];
       prog.textContent = 'Question ' + (idx + 1) + ' of ' + items.length + (it.topic ? ' · ' + it.topic : '');
       qbox.innerHTML = '';
-      var qd = IL.el('div', { 'class': 'question' });
+      var qd = IL.el('div', { 'class': 'question q-enter' });
       qd.appendChild(IL.el('h3', { text: it.q }));
       var ul = IL.el('ul', { 'class': 'choices', role: 'radiogroup', 'aria-label': 'Question ' + (idx + 1) });
       (it.choices || []).forEach(function (c, ci) {
         var lab = IL.el('label', answers[idx] === ci ? { 'class': 'picked' } : {});
         var radio = IL.el('input', { type: 'radio', name: 'q' + idx, value: String(ci) });
         if (answers[idx] === ci) radio.checked = true;
-        radio.addEventListener('change', function () {
-          answers[idx] = ci;
-          Array.prototype.forEach.call(ul.querySelectorAll('label'), function (l) { l.classList.remove('picked'); });
-          lab.classList.add('picked');
-          if (opts.onAnswer) opts.onAnswer(idx, ci);
-        });
+        radio.addEventListener('change', function () { pick(ci); });
         lab.appendChild(radio);
+        if (ci < 9) lab.appendChild(IL.el('kbd', { 'class': 'key-hint', 'aria-hidden': 'true', text: String(ci + 1) }));
         lab.appendChild(document.createTextNode(c));
         ul.appendChild(lab);
       });
@@ -172,6 +199,20 @@
       qd.querySelector('h3').setAttribute('tabindex', '-1');
       qd.querySelector('h3').focus({ preventScroll: true });
     }
+    function pick(ci) {
+      if (ci < 0 || ci >= (items[idx].choices || []).length) return;
+      answers[idx] = ci;
+      var labs = qbox.querySelectorAll('.choices label');
+      Array.prototype.forEach.call(labs, function (l, li) { l.classList.toggle('picked', li === ci); });
+      var r = qbox.querySelectorAll('.choices input[type="radio"]')[ci];
+      if (r) r.checked = true;
+      if (opts.onAnswer) opts.onAnswer(idx, ci);
+    }
+    shell.addEventListener('keydown', function (e) {
+      if (e.target.matches('input, textarea, select') && e.target.type !== 'radio') return;
+      var n = parseInt(e.key, 10);
+      if (n >= 1 && n <= 9) { e.preventDefault(); pick(n - 1); }
+    });
     prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(); } });
     nextb.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(); } });
     done.addEventListener('click', function () {
@@ -190,16 +231,26 @@
     }
     list.forEach(function (t) {
       var m = mastery[t];
+      var pct = Math.round(m * 100);
       var row = IL.el('div', { 'class': 'topic-row' });
       var left = IL.el('div');
       left.appendChild(IL.el('div', { 'class': 't', text: t }));
-      var bar = IL.el('div', { 'class': 'mastery-bar', role: 'img', 'aria-label': t + ' mastery ' + Math.round(m * 100) + ' percent' });
-      bar.appendChild(IL.el('i', {}));
-      bar.firstChild.style.width = Math.round(m * 100) + '%';
+      var bar = IL.el('div', { 'class': 'mastery-bar', role: 'img', 'aria-label': t + ' mastery ' + pct + ' percent' });
+      var fill = IL.el('i', {});
+      bar.appendChild(fill);
       left.appendChild(bar);
       row.appendChild(left);
-      row.appendChild(IL.el('div', { 'class': 'm', text: Math.round(m * 100) + '%' }));
+      row.appendChild(IL.el('div', { 'class': 'm', text: pct + '%' }));
       container.appendChild(row);
+      // animate the fill from zero so progress reads as motion, not a static bar
+      if (!motionReduced) {
+        fill.style.width = '0%';
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { fill.style.width = pct + '%'; });
+        });
+      } else {
+        fill.style.width = pct + '%';
+      }
     });
   }
 
@@ -401,6 +452,8 @@
       var go = IL.el('button', { 'class': 'btn', type: 'button', text: v.passed ? 'Deepen' : 'Back to the fringe' });
       go.addEventListener('click', function () { selectStage(v.passed ? 'deepen' : 'fringe'); });
       result.appendChild(go);
+      paintStageDots('gate');
+      if (res.passed) celebrateGate(Math.round(res.score * 100));
     }
 
     quizWidget(qholder, (ga.items || []).map(function (it) {
@@ -439,6 +492,33 @@
       d.appendChild(ul);
       panel.appendChild(d);
     });
+  }
+
+  /* ---------- gate-pass celebration ---------- */
+  function celebrateGate(scorePct) {
+    if (motionReduced) return;
+    var veil = IL.el('div', { 'class': 'celebrate-veil', role: 'alert', 'aria-label': 'Gate passed' });
+    var inner = IL.el('div', { 'class': 'inner' });
+    inner.innerHTML = '<span class="sigil" aria-hidden="true">◈</span>' +
+      '<h2>Gate passed</h2>' +
+      '<p>' + scorePct + '% — the fringe held. Deepen now.</p>';
+    veil.appendChild(inner);
+    var gone = false;
+    function onKey(e) {
+      if (e.key === 'Escape' || e.key === 'Enter') dismiss();
+    }
+    function dismiss() {
+      if (gone) return;
+      gone = true;
+      clearTimeout(auto);
+      document.removeEventListener('keydown', onKey);
+      if (veil.parentNode) veil.parentNode.removeChild(veil);
+      selectStage('deepen');
+    }
+    var auto = setTimeout(dismiss, 5000);
+    veil.addEventListener('click', dismiss);
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(veil);
   }
 
   /* ---------- Noah panel ---------- */
@@ -520,6 +600,7 @@
     else { topics.forEach(function (t) { if (state.topics.indexOf(t) === -1) state.topics.push(t); }); persist(); }
     paintGoal();
     renderPlace();
+    paintStageDots('place');
   }
   IL.renderPage = boot;
   IL.onCatalog(boot);

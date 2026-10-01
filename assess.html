@@ -52,6 +52,38 @@
     return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
   }
 
+  /* Palantir-grade confirm dialog — never the native confirm() */
+  function ilConfirm(title, message, okLabel) {
+    return new Promise(function (resolve) {
+      var done = false;
+      function close(val) {
+        if (done) return;
+        done = true;
+        document.removeEventListener('keydown', onKey, true);
+        if (bd.parentNode) bd.parentNode.removeChild(bd);
+        resolve(val);
+      }
+      var bd = IL.el('div', { 'class': 'il-dialog-backdrop' });
+      var dlg = IL.el('div', { 'class': 'il-dialog', role: 'alertdialog', 'aria-modal': 'true', 'aria-label': title });
+      dlg.innerHTML = '<h3>' + IL.esc(title) + '</h3><p>' + IL.esc(message) + '</p>';
+      var row = IL.el('div', { 'class': 'row' });
+      var cancel = IL.el('button', { 'class': 'btn btn-sm btn-ghost', type: 'button', text: 'Keep working' });
+      var ok = IL.el('button', { 'class': 'btn btn-sm', type: 'button', text: okLabel || 'Submit' });
+      cancel.addEventListener('click', function () { close(false); });
+      ok.addEventListener('click', function () { close(true); });
+      bd.addEventListener('click', function (e) { if (e.target === bd) close(false); });
+      function onKey(e) {
+        if (e.key === 'Escape') { e.stopPropagation(); close(false); }
+        if (e.key === 'Enter' && document.activeElement !== cancel) { e.stopPropagation(); close(true); }
+      }
+      document.addEventListener('keydown', onKey, true);
+      row.appendChild(cancel); row.appendChild(ok);
+      dlg.appendChild(row); bd.appendChild(dlg);
+      document.body.appendChild(bd);
+      ok.focus();
+    });
+  }
+
   function listView() {
     document.title = 'Assessment Center — Interstitium Labs';
     var list = IL.assessments();
@@ -98,6 +130,13 @@
 
     var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining', text: mmss(ctrl.remaining()) });
     body.appendChild(timer);
+    var totalSecs = Math.max(1, (a.minutes || 0) * 60);
+    var track = null;
+    if (a.minutes) {
+      track = IL.el('div', { 'class': 'timer-track', 'aria-hidden': 'true' });
+      track.appendChild(IL.el('i', {}));
+      body.appendChild(track);
+    }
 
     var nav = IL.el('div', { 'class': 'qnav', role: 'group', 'aria-label': 'Question navigation' });
     body.appendChild(nav);
@@ -135,7 +174,7 @@
     function draw() {
       var it = items[idx];
       qbox.innerHTML = '';
-      var qd = IL.el('div', { 'class': 'question' });
+      var qd = IL.el('div', { 'class': 'question q-enter' });
       var h = IL.el('h3', { text: 'Question ' + (idx + 1) + ' — ' + it.q, tabindex: '-1' });
       qd.appendChild(h);
       var ul = IL.el('ul', { 'class': 'choices', role: 'radiogroup', 'aria-label': 'Question ' + (idx + 1) });
@@ -143,14 +182,12 @@
         var lab = IL.el('label', sel[idx] === ci ? { 'class': 'picked' } : {});
         var radio = IL.el('input', { type: 'radio', name: 'aq' + idx, value: String(ci) });
         if (sel[idx] === ci) radio.checked = true;
-        radio.addEventListener('change', function () {
-          sel[idx] = ci;
-          ctrl.answer(idx, ci);
-          lab.classList.add('picked');
-          Array.prototype.forEach.call(ul.querySelectorAll('label'), function (l) { if (l !== lab) l.classList.remove('picked'); });
-          drawNav();
-        });
+        radio.addEventListener('change', function () { pick(ci); });
         lab.appendChild(radio);
+        if (ci < 9) {
+          var k = IL.el('kbd', { 'class': 'key-hint', 'aria-hidden': 'true', text: String(ci + 1) });
+          lab.appendChild(k);
+        }
         lab.appendChild(document.createTextNode(c));
         ul.appendChild(lab);
       });
@@ -162,34 +199,66 @@
       drawNav();
     }
 
-    prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(); } });
-    next.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(); } });
-    flag.addEventListener('click', function () {
+    function pick(ci) {
+      if (finished) return;
+      sel[idx] = ci;
+      ctrl.answer(idx, ci);
+      var labs = qbox.querySelectorAll('.choices label');
+      Array.prototype.forEach.call(labs, function (l, li) { l.classList.toggle('picked', li === ci); });
+      var r = qbox.querySelectorAll('.choices input[type="radio"]')[ci];
+      if (r) r.checked = true;
+      drawNav();
+    }
+
+    function toggleFlag() {
       flagged[idx] = !flagged[idx];
       flag.textContent = flagged[idx] ? 'Unflag question' : 'Flag for review';
       drawNav();
-    });
-    // keyboard: [ and ] move between questions
+    }
+
+    prev.addEventListener('click', function () { if (idx > 0) { idx--; draw(); } });
+    next.addEventListener('click', function () { if (idx < items.length - 1) { idx++; draw(); } });
+    flag.addEventListener('click', toggleFlag);
+    // keyboard: [ and ] move between questions, 1-9 answer, f flags
     document.addEventListener('keydown', function onKey(e) {
       if (finished) { document.removeEventListener('keydown', onKey); return; }
+      if (document.querySelector('.il-dialog-backdrop')) return; // modal open: keys belong to it
       if (e.target.matches('input, textarea, select')) return;
       if (e.key === '[' && idx > 0) { idx--; draw(); }
-      if (e.key === ']' && idx < items.length - 1) { idx++; draw(); }
+      else if (e.key === ']' && idx < items.length - 1) { idx++; draw(); }
+      else if (e.key === 'f' || e.key === 'F') { toggleFlag(); }
+      else {
+        var n = parseInt(e.key, 10);
+        var choices = (items[idx].choices || []).length;
+        if (n >= 1 && n <= Math.min(9, choices)) pick(n - 1);
+      }
     });
 
     var tick = setInterval(function () {
       var s = ctrl.remaining();
       timer.textContent = mmss(s);
       timer.classList.toggle('low', s < 300 && s > 0);
+      if (track) {
+        var fill = track.firstChild;
+        fill.style.width = Math.max(0, (s / totalSecs) * 100) + '%';
+        fill.classList.toggle('low', s < 300 && s > 0);
+      }
       if (s <= 0) { clearInterval(tick); doSubmit(true); }
     }, 500);
 
     function doSubmit(auto) {
       if (finished) return;
       var un = sel.filter(function (x) { return x === null; }).length;
-      if (!auto && un > 0 && !confirm(un + ' question(s) unanswered. Submit anyway?')) {
-        return; // user cancelled: timer keeps running, nothing submitted
+      if (!auto && un > 0) {
+        ilConfirm('Submit assessment?',
+          un + ' question(s) unanswered. The timer keeps running while you decide.',
+          'Submit anyway').then(function (ok) { if (ok) finishSubmit(false); });
+        return;
       }
+      finishSubmit(auto);
+    }
+
+    function finishSubmit(auto) {
       finished = true;
       clearInterval(tick);
       var res = ctrl.submit();
@@ -211,11 +280,68 @@
     function showResult(res, auto) {
       body.innerHTML = '';
       var wrap = IL.el('div', { 'class': 'quiz-shell' });
-      wrap.innerHTML =
-        '<h2>' + (res.passed ? 'Passed' : 'Not passed') + ' — ' + Math.round(res.score * 100) + '%</h2>' +
-        '<div class="score-ring">' + res.correct + ' / ' + res.total + '</div>' +
-        '<p style="color:var(--ink-dim)">' + (auto ? 'Time expired — auto-submitted. ' : '') +
-        'Your fringe was updated from every miss. Review the explanations, work the fringe, re-attempt.</p>';
+      var pct = Math.round(res.score * 100);
+      var CIRC = 2 * Math.PI * 52;
+      var NS = 'http://www.w3.org/2000/svg';
+      var h2 = IL.el('h2', { text: (res.passed ? 'Passed' : 'Not passed') + ' — ' + pct + '%' });
+      wrap.appendChild(h2);
+      var svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('viewBox', '0 0 120 120');
+      svg.setAttribute('class', 'score-svg');
+      svg.setAttribute('role', 'img');
+      svg.setAttribute('aria-label', 'Score ' + pct + ' percent, ' + res.correct + ' of ' + res.total + ' correct');
+      var defs = document.createElementNS(NS, 'defs');
+      var grad = document.createElementNS(NS, 'linearGradient');
+      grad.setAttribute('id', 'scoreGrad');
+      grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
+      grad.setAttribute('x2', '1'); grad.setAttribute('y2', '1');
+      [['0%', res.passed ? '#22d3ee' : '#d4af37'], ['100%', res.passed ? '#0e7490' : '#a67c1a']].forEach(function (st) {
+        var s = document.createElementNS(NS, 'stop');
+        s.setAttribute('offset', st[0]); s.setAttribute('stop-color', st[1]);
+        grad.appendChild(s);
+      });
+      defs.appendChild(grad); svg.appendChild(defs);
+      [['ring-bg', 0], ['ring-fg', CIRC]].forEach(function (cfg) {
+        var c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', '60'); c.setAttribute('cy', '60'); c.setAttribute('r', '52');
+        c.setAttribute('class', cfg[0]);
+        if (cfg[0] === 'ring-fg') {
+          c.setAttribute('stroke-dasharray', CIRC.toFixed(1));
+          c.setAttribute('stroke-dashoffset', CIRC.toFixed(1));
+        }
+        svg.appendChild(c);
+      });
+      var t1 = document.createElementNS(NS, 'text');
+      t1.setAttribute('x', '60'); t1.setAttribute('y', '60'); t1.setAttribute('class', 'ring-pct');
+      t1.textContent = '0%';
+      var t2 = document.createElementNS(NS, 'text');
+      t2.setAttribute('x', '60'); t2.setAttribute('y', '78'); t2.setAttribute('class', 'ring-sub');
+      t2.textContent = res.correct + ' / ' + res.total;
+      svg.appendChild(t1); svg.appendChild(t2);
+      wrap.appendChild(svg);
+      var note = IL.el('p', {
+        text: (auto ? 'Time expired — auto-submitted. ' : '') +
+          'Your fringe was updated from every miss. Review the explanations, work the fringe, re-attempt.'
+      });
+      note.style.color = 'var(--ink-dim)';
+      wrap.appendChild(note);
+      // animate ring + count-up
+      var reduced = false;
+      try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+      var fg = svg.querySelector('.ring-fg');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          fg.setAttribute('stroke-dashoffset', (CIRC * (1 - res.score)).toFixed(1));
+          if (reduced) { t1.textContent = pct + '%'; return; }
+          var t0 = null;
+          (function count(t) {
+            if (!t0) t0 = t;
+            var p = Math.min((t - t0) / 1100, 1);
+            t1.textContent = Math.round(pct * (1 - Math.pow(1 - p, 3))) + '%';
+            if (p < 1) requestAnimationFrame(count);
+          })(performance.now());
+        });
+      });
       items.forEach(function (it, i) {
         var ok = sel[i] === it.answer;
         var qd = IL.el('div', { 'class': 'question' });
