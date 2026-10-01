@@ -335,15 +335,6 @@
     "canonical": "il06-fde-interface/elvtr-ai-cybersecurity"
   },
   {
-    "course": "Palantir Learn",
-    "sources": [
-      "Palantir Learn"
-    ],
-    "decision": "kept",
-    "reason": "Official or primary source retained at its canonical node: il09-palantir/foundry-data-engineer.",
-    "canonical": "il09-palantir/foundry-data-engineer"
-  },
-  {
     "course": "Humanmetrics",
     "sources": [
       "Humanmetrics"
@@ -610,8 +601,8 @@
       "Principia Cybernetica"
     ],
     "decision": "kept",
-    "reason": "Official or primary source retained at its canonical node: il01-ccru-seminar/cybernetics-arc.",
-    "canonical": "il01-ccru-seminar/cybernetics-arc"
+    "reason": "Official or primary source retained at its canonical node: il01-ccru-seminar/cybersyn-case.",
+    "canonical": "il01-ccru-seminar/cybersyn-case"
   },
   {
     "course": "Hugging Face LLM Course",

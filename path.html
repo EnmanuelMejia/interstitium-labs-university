@@ -21,6 +21,19 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#06080c">
 <link rel="stylesheet" href="css/il.css">
+<style>
+.il-lessons{margin-top:1rem;border-top:1px solid var(--line);padding-top:0.8rem}
+.lessons-h,.checks-h{font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-dim);margin:0.6rem 0}
+details.lesson{border:1px solid var(--line);border-radius:8px;margin:0.5rem 0;background:rgba(255,255,255,0.015)}
+details.lesson>summary{cursor:pointer;padding:0.7rem 0.9rem;font-weight:600}
+details.lesson>summary .n{color:var(--gold,#c9a227);margin-right:0.4rem}
+.lesson-body{padding:0 1rem 1rem}
+.worked{border-left:3px solid var(--gold,#c9a227);padding:0.4rem 0.8rem;margin:0.8rem 0;background:rgba(201,162,39,0.06)}
+.worked .sol{color:var(--ink-dim)}
+details.check{margin:0.4rem 0}
+details.check>summary{cursor:pointer;color:var(--ink)}
+details.check>summary::-webkit-details-marker{color:var(--gold,#c9a227)}
+</style>
 </head>
 <body>
 <noscript><div class="noscript-note"><strong>Interstitium Labs</strong> renders its curriculum from local data and needs JavaScript for the full experience. Start here: <a href="paths.html">paths</a> · <a href="assess.html">assessments</a> · <a href="honesty.html">honesty ledger</a>.</div></noscript>
@@ -48,6 +61,8 @@
       <h2 style="margin-top:2.6rem">Modules</h2>
       <div id="modules"></div>
 
+      <div id="open-shelf-wrap"></div>
+
       <h2 style="margin-top:2.2rem">Assessments</h2>
       <div id="assessments"></div>
 
@@ -73,6 +88,33 @@
       : name;
     li.innerHTML = body + (s.note ? '<span class="note">' + IL.esc(s.note) + '</span>' : '');
     return li;
+  }
+
+  function lessonHtml(l, idx) {
+    var body = (l.body || []).map(function (par) {
+      return '<p>' + IL.esc(par) + '</p>';
+    }).join('');
+    var worked = (l.worked || []).map(function (w) {
+      return '<div class="worked"><p><b>Worked example.</b> ' + IL.esc(w.problem) + '</p>' +
+        '<p class="sol">' + IL.esc(w.solution) + '</p></div>';
+    }).join('');
+    var checks = (l.checks || []).map(function (c) {
+      return '<details class="check"><summary>' + IL.esc(c.q) + '</summary><p>' + IL.esc(c.a) + '</p></details>';
+    }).join('');
+    return '<details class="lesson"><summary><span class="n">' + (idx + 1) + '.</span> ' +
+      IL.esc(l.title) + '</summary><div class="lesson-body">' + body + worked +
+      (checks ? '<p class="checks-h">Check yourself</p>' + checks : '') + '</div></details>';
+  }
+
+  function shelfHtml(items) {
+    return items.map(function (s) {
+      var name = IL.esc(s.name || 'Resource');
+      var link = (/^https?:\/\//.test(s.url || ''))
+        ? '<a href="' + IL.esc(s.url) + '" rel="noopener">' + name + '</a>' : name;
+      return '<li>' + link +
+        (s.license ? ' <span class="pill">' + IL.esc(s.license) + '</span>' : '') +
+        (s.note ? '<span class="note">' + IL.esc(s.note) + '</span>' : '') + '</li>';
+    }).join('');
   }
 
   function render() {
@@ -111,7 +153,11 @@
       d.innerHTML = '<div class="kind">' + IL.esc(m.kind || 'module') + '</div>' +
         '<h3>' + IL.esc(m.title) + '</h3>' +
         (m.il_provides ? '<p style="color:var(--ink-dim)">' + IL.esc(m.il_provides) + '</p>' : '') +
-        (topics ? '<div>' + topics + '</div>' : '');
+        (topics ? '<div>' + topics + '</div>' : '') +
+        ((m.lessons && m.lessons.length)
+          ? '<div class="il-lessons"><p class="lessons-h">Distilled lessons — original instruction</p>' +
+            m.lessons.map(lessonHtml).join('') + '</div>'
+          : '');
       var ul = document.createElement('ul');
       ul.className = 'source-list';
       ul.setAttribute('aria-label', 'Official sources for ' + m.title);
@@ -126,6 +172,15 @@
     });
     if (!(p.modules || []).length) {
       mbox.innerHTML = '<div class="empty-state"><h3>Modules being published</h3><p>Module detail for this path is still being written.</p></div>';
+    }
+
+    var shelfWrap = document.getElementById('open-shelf-wrap');
+    if (shelfWrap) {
+      shelfWrap.innerHTML = (p.open_shelf && p.open_shelf.length)
+        ? '<h2 style="margin-top:2.2rem">The open shelf</h2>' +
+          '<p style="color:var(--ink-dim)">Free and open alternatives that stand beside the official sources — textbooks, simulators, and references you can use without paying or pirating.</p>' +
+          '<ul class="source-list">' + shelfHtml(p.open_shelf) + '</ul>'
+        : '';
     }
 
     var abox = document.getElementById('assessments');

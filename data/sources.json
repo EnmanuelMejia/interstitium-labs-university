@@ -244,15 +244,6 @@
     ]
   },
   {
-    "name": "Palantir Learn",
-    "url": "https://learn.palantir.com/",
-    "category": "certification",
-    "description": "Palantir's official learning portal: Foundry and AIP courses, speedruns, and deep dives feeding the Associate certification exams.",
-    "used_in": [
-      "il09-palantir"
-    ]
-  },
-  {
     "name": "Humanmetrics",
     "url": "https://www.humanmetrics.com/",
     "category": "career",

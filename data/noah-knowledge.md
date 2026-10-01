@@ -70,7 +70,7 @@ Static, self-paced learning site: 11 academies, 47 paths, 222 modules. Adaptive 
 - **IL-06 — Cybersecurity & Secure Engineering:** "Know the attack to earn the defense." Hackers-Arise spine, offensive ops (HTB/THM/OffSec), defensive ops (SOC to IR), forward-deployed interface.
 - **IL-07 — SQL, Data Engineering, Analytics & AI:** "From the row to the model." MongoDB, the data-school spine (MIT/Stanford/CMU), ML and LLM engineering, NeuroAI.
 - **IL-08 — Algorithms, Compilers, Distributed & Formal:** "The deep core, in order." MIT 6-3 distilled core, CMU systems-and-theory, Stanford cross-walk.
-- **IL-09 — Adaptive Certification Command:** "Credentials, orchestrated honestly." CompTIA core stack (A+/Net+/Sec+), Security track (CySA+/PenTest+/SecurityX), Data & Cloud, vendor AI certs, Oracle, Linux Foundation blockchain, Palantir Foundry/AIP, C++/Python Institute.
+- **IL-09 — Adaptive Certification Command:** "Credentials, orchestrated honestly." CompTIA core stack (A+/Net+/Sec+), Security track (CySA+/PenTest+/SecurityX), Data & Cloud, vendor AI certs, Oracle, Linux Foundation blockchain, C++/Python Institute.
 - **IL-10 — Portfolio, Career & Professional Practice:** "The work, presented; the career, directed." Forward-deployed career, Humanmetrics self-knowledge, Babson-informed entrepreneurship, quant finance ladder.
 - **IL-11 — Zero Trust & Endpoint Defense:** "Never trust, always verify — the defender's discipline." 6 paths, 18 modules, 1 assessment (12 questions), 360 hours: Zero Trust Foundations; Networking & Cryptography Foundations; Active Directory & Identity Defense; Application Allowlisting & Ringfencing; Red Team / Blue Team Operations; Zero Trust Readiness Capstone.
 
