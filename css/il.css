@@ -714,3 +714,22 @@ body.il-leaving #il-veil { opacity: 1; }
 .noscript-note { padding: 1rem 1.4rem; background: #141007; border-bottom: 1px solid rgba(201,162,39,0.5);
   color: #f2e8c9; text-align: center; font-size: 0.95rem; }
 .noscript-note a { color: var(--gold-bright); }
+
+/* ---------- layout-audit fixes ---------- */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll table { min-width: 560px; }
+
+@media (max-width: 720px) {
+  /* keep the sticky header to one slim row: brand + scrollable nav */
+  .site-header .wrap { flex-wrap: nowrap; }
+  .site-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-left: 0;
+  }
+  .site-nav::-webkit-scrollbar { display: none; }
+  .site-nav a { flex: none; }
+  .pal-hint .pal-hint-label { display: none; }
+}

@@ -188,7 +188,7 @@
 
   /* ---------- shared header ---------- */
   var NAV = [
-    ['index.html', 'Pantheon'],
+    ['index.html', 'Home'],
     ['paths.html', 'Paths'],
     ['assess.html', 'Assessments'],
     ['courses.html', 'My Courses'],
@@ -202,6 +202,14 @@
     var p = window.location.pathname.split('/').pop() || 'index.html';
     return p.split('?')[0].split('#')[0] || 'index.html';
   }
+
+  /* sub-pages that are not in NAV map to their parent tab for aria-current */
+  var NAV_PARENT = {
+    'path.html': 'paths.html',
+    'academy.html': 'paths.html',
+    'lab-generative-packing.html': 'paths.html',
+    'learn.html': 'index.html'
+  };
 
   function renderHeader() {
     var host = document.getElementById('il-header');
@@ -219,7 +227,7 @@
         el('nav', { 'class': 'site-nav', 'aria-label': 'Primary' },
           NAV.map(function (item) {
             var a = el('a', { href: item[0], text: item[1] });
-            if (item[0] === page) a.setAttribute('aria-current', 'page');
+            if (item[0] === page || NAV_PARENT[page] === item[0]) a.setAttribute('aria-current', 'page');
             return a;
           })
         ),
