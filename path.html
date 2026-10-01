@@ -154,6 +154,10 @@ details.check>summary::-webkit-details-marker{color:var(--gold,#c9a227)}
         '<h3>' + IL.esc(m.title) + '</h3>' +
         (m.il_provides ? '<p style="color:var(--ink-dim)">' + IL.esc(m.il_provides) + '</p>' : '') +
         (topics ? '<div>' + topics + '</div>' : '') +
+        ((m.lab && m.lab.url)
+          ? '<p style="margin-top:0.9rem"><a class="btn btn-sm btn-gold" href="' + IL.esc(m.lab.url) + '">' +
+            IL.esc(m.lab.label || 'Open the lab') + '</a></p>'
+          : '') +
         ((m.lessons && m.lessons.length)
           ? '<div class="il-lessons"><p class="lessons-h">Distilled lessons — original instruction</p>' +
             m.lessons.map(lessonHtml).join('') + '</div>'

@@ -260,7 +260,7 @@ if (sources && dedupe && catalog) {
     .sort();
   // 404.html is the branded error page, not a catalog content page
   const pages = allPages.filter((f) => f !== '404.html');
-  check(pages.length === 10, `expected 10 HTML pages, found ${pages.length}: ${pages.join(', ')}`);
+  check(pages.length === 11, `expected 11 HTML pages, found ${pages.length}: ${pages.join(', ')}`);
 
   const attrRe = /(?:href|src)\s*=\s*(['"])(.*?)\1/g;
   let checked = 0;
