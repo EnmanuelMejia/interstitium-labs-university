@@ -315,22 +315,30 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * timed(assessment) — timed assessment controller.
-   * assessment: {items:[{q, choices, answer, topic?}], minutes}.
-   * Timer is timestamp-based (Date.now), robust to tab sleep.
-   * passed = score >= 0.7. perTopic aggregates {correct,total,score}.
+   * timed(assessment) — assessment controller, timed or untimed.
+   * assessment: {items:[{q, choices, answer, topic?}], minutes?}.
+   * minutes > 0: timed; timer is timestamp-based (Date.now), robust to
+   *   tab sleep. passed = score >= 0.7.
+   * minutes missing / null / 0 / negative / non-numeric: UNTIMED — no
+   *   deadline; expired() is always false and remainingSec() is Infinity.
+   *   (minutes: 0 must never mean "already expired": that was the bug that
+   *   instantly killed every untimed placement diagnostic.)
+   * perTopic aggregates {correct,total,score}.
    * ------------------------------------------------------------------ */
   function timed(assessment) {
     var items = (assessment && assessment.items) || [];
-    var totalMs = Math.max(0, ((assessment && assessment.minutes) || 0) * 60000);
-    var deadline = Date.now() + totalMs;
+    var minutes = assessment ? assessment.minutes : undefined;
+    var isTimed = typeof minutes === 'number' && isFinite(minutes) && minutes > 0;
+    var deadline = isTimed ? Date.now() + minutes * 60000 : Infinity;
     var sel = new Array(items.length).fill(null);
     var submitted = false;
     var cached = null;
     function expired() { return Date.now() >= deadline; }
     return {
+      timed: isTimed, // pages use this to decide whether to render a timer
       total: items.length,
       remainingSec: function () {
+        if (!isTimed) return Infinity;
         return Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
       },
       remaining: function () { return this.remainingSec(); }, // legacy alias

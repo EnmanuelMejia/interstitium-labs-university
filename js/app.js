@@ -50,7 +50,7 @@
   IL.qs = qs;
 
   /* ---------- fallback academy index (verified against the live site 2026-09-30;
-       used only when data/catalog.json cannot be loaded) ---------- */
+       used only when the sharded catalog (data/catalog/index.json) cannot be loaded) ---------- */
   var FALLBACK_ACADEMIES = [
     { code: 'IL-01', name: 'Esoteric Traditions & Digital Hermetica', hours: 420, tagline: 'Not a ritual school.', blurb: 'Source-critical study of Enochian records and neighboring esoteric corpora — manuscripts, reception, and method.' },
     { code: 'IL-02', name: 'Mathematical Maturity Engine', hours: 680, tagline: 'Not a worksheet mill.', blurb: 'Adaptive knowledge space — CIDR, nines, HPA, ALE, chmod — bound to certs and career tracks.' },

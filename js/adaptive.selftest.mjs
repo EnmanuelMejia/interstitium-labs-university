@@ -343,12 +343,43 @@ assert(threw, 'genMath throws on unknown topic');
   assert(Math.abs(res.perTopic.fractions.score - 4 / 6) < 1e-9, 'timed: perTopic fractions');
   assert(c.submit() === res, 'timed: submit idempotent');
 
-  // Expired controller: zero minutes -> no answers accepted.
-  const c2 = adaptive.timed({ items, minutes: 0 });
-  assert(c2.remainingSec() === 0, 'timed: expired remainingSec is 0');
-  assert(c2.answer(0, 0) === false, 'timed: expired answer rejected');
-  const r2 = c2.submit();
-  assert(r2.score === 0 && r2.passed === false, 'timed: expired submit scores zero');
+  // Untimed controller: minutes 0 / missing / null / negative -> no deadline.
+  // (minutes: 0 must never mean "already expired": that instantly killed
+  // every untimed placement diagnostic.)
+  for (const m of [0, undefined, null, -5, 'x', NaN]) {
+    const cu = adaptive.timed({ items, minutes: m });
+    assert(cu.timed === false, 'timed: untimed flag for minutes=' + String(m));
+    assert(cu.remainingSec() === Infinity, 'timed: untimed remainingSec is Infinity');
+    assert(cu.answer(0, 0) === true, 'timed: untimed answers accepted');
+    for (let i = 0; i < 12; i++) cu.answer(i, 0);
+    const ru = cu.submit();
+    assert(ru.correct === 12 && ru.passed === true, 'timed: untimed full-score submit');
+  }
+  const c2 = adaptive.timed({ items }); // minutes key absent entirely
+  assert(c2.timed === false && c2.answer(3, 1) === true, 'timed: absent minutes untimed');
+
+  // Timed flag exposed on timed controllers.
+  assert(c.timed === true, 'timed: timed flag true for positive minutes');
+
+  // Deterministic expiry: patch the vm sandbox's Date (adaptive.js runs
+  // inside the sandbox, so the outer Date.now is invisible to it).
+  {
+    const sandboxDate = vm.runInContext('Date', aBox);
+    const realNow = sandboxDate.now;
+    let now = realNow();
+    sandboxDate.now = () => now;
+    try {
+      const c4 = adaptive.timed({ items, minutes: 1 });
+      assert(c4.answer(0, 0) === true, 'timed: answer accepted before deadline');
+      now += 61 * 1000; // past the 60 s deadline
+      assert(c4.remainingSec() === 0, 'timed: remainingSec 0 after deadline');
+      assert(c4.answer(1, 0) === false, 'timed: answer rejected after deadline');
+      const r4 = c4.submit();
+      assert(r4.correct === 1 && r4.passed === false, 'timed: submit after expiry scores given answers');
+    } finally {
+      sandboxDate.now = realNow;
+    }
+  }
 
   // Failing score.
   const c3 = adaptive.timed({ items, minutes: 5 });
