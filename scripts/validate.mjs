@@ -255,14 +255,16 @@ if (sources && dedupe && catalog) {
 
 /* ---------- 8. internal page links resolve ---------- */
 (function checkInternalLinks() {
-  const pages = fs.readdirSync(ROOT)
+  const allPages = fs.readdirSync(ROOT)
     .filter((f) => f.endsWith('.html'))
     .sort();
+  // 404.html is the branded error page, not a catalog content page
+  const pages = allPages.filter((f) => f !== '404.html');
   check(pages.length === 10, `expected 10 HTML pages, found ${pages.length}: ${pages.join(', ')}`);
 
   const attrRe = /(?:href|src)\s*=\s*(['"])(.*?)\1/g;
   let checked = 0;
-  pages.forEach((page) => {
+  allPages.forEach((page) => {
     const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
     let m;
     while ((m = attrRe.exec(html)) !== null) {
@@ -290,7 +292,7 @@ if (sources && dedupe && catalog) {
 
   /* dynamic (JS-built) page targets referenced in templates */
   const dynTargets = ['academy.html', 'path.html', 'learn.html', 'assess.html'];
-  pages.forEach((page) => {
+  allPages.forEach((page) => {
     const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
     dynTargets.forEach((t) => {
       if (html.includes(`'${t}`) || html.includes(`"${t}`) || html.includes(`=${t}`)) {
@@ -300,7 +302,7 @@ if (sources && dedupe && catalog) {
   });
 
   /* every js/* referenced by script tags must exist */
-  pages.forEach((page) => {
+  allPages.forEach((page) => {
     const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
     const srcRe = /<script[^>]+src\s*=\s*(['"])(.*?)\1/g;
     let m;
