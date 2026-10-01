@@ -189,7 +189,7 @@
     "name": "MIT OpenCourseWare",
     "url": "https://ocw.mit.edu/",
     "category": "reference",
-    "description": "MIT's open course materials: OCW Scholar sequences (18.01SC/18.02SC/18.03SC/18.06SC) and 6-3 course content. Training only \u2014 no certification.",
+    "description": "MIT's open course materials: OCW Scholar sequences (18.01SC/18.02SC/18.03SC/18.06SC) and 6-3 course content. Training only — no certification.",
     "used_in": [
       "il03-mit-ocw",
       "il02-math-spine",
@@ -643,6 +643,72 @@
     "description": "AWS Training and Certification: AI Practitioner (AIF-C01) and Machine Learning Engineer Associate (MLA-C02); consult AWS for current exam guides.",
     "used_in": [
       "il09-vendor-ai"
+    ]
+  },
+  {
+    "name": "NIST SP 800-207 — Zero Trust Architecture",
+    "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+    "category": "cybersecurity",
+    "description": "The canonical Zero Trust reference: tenets, logical components, deployment models. Anchor, not copy.",
+    "used_in": [
+      "il11-cyber-hero-prep",
+      "il11-network-crypto-foundations",
+      "il11-zero-trust-foundations"
+    ]
+  },
+  {
+    "name": "CISA Zero Trust Maturity Model",
+    "url": "https://www.cisa.gov/zero-trust-maturity-model",
+    "category": "cybersecurity",
+    "description": "Five pillars (identity, devices, networks, applications, data) across four maturity steps; the federal yardstick.",
+    "used_in": [
+      "il11-active-directory-defense",
+      "il11-cyber-hero-prep",
+      "il11-network-crypto-foundations",
+      "il11-red-blue-operations",
+      "il11-zero-trust-foundations"
+    ]
+  },
+  {
+    "name": "ThreatLocker — product documentation",
+    "url": "https://www.threatlocker.com/",
+    "category": "cybersecurity",
+    "description": "Vendor documentation for Allowlisting, Ringfencing, Storage Control, Elevation Control. Link, don't copy.",
+    "used_in": [
+      "il11-allowlisting-ringfencing",
+      "il11-cyber-hero-prep",
+      "il11-red-blue-operations",
+      "il11-zero-trust-foundations"
+    ]
+  },
+  {
+    "name": "Microsoft Learn — Active Directory Domain Services overview",
+    "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
+    "category": "cybersecurity",
+    "description": "AD DS structure: domains, forests, trusts, FSMO roles. Foundation before attacking or defending it.",
+    "used_in": [
+      "il11-active-directory-defense"
+    ]
+  },
+  {
+    "name": "ThreatLocker — Zero Trust Cybersecurity Bootcamp announcement",
+    "url": "https://www.threatlocker.com/press-release/threatlocker-launches-no-cost-zero-trust-cybersecurity-bootcamp",
+    "category": "cybersecurity",
+    "description": "Public program shape: six weeks, foundational IT, red-team/blue-team simulation, Cyber Hero certification.",
+    "used_in": [
+      "il11-active-directory-defense",
+      "il11-allowlisting-ringfencing",
+      "il11-cyber-hero-prep",
+      "il11-red-blue-operations"
+    ]
+  },
+  {
+    "name": "OWASP Top 10",
+    "url": "https://owasp.org/www-project-top-ten/",
+    "category": "cybersecurity",
+    "description": "The web-attack canon (injection, broken access control) behind the bootcamp's web-attack simulations.",
+    "used_in": [
+      "il11-red-blue-operations"
     ]
   }
 ]
