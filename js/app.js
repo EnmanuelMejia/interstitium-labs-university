@@ -221,7 +221,16 @@
             if (item[0] === page) a.setAttribute('aria-current', 'page');
             return a;
           })
-        )
+        ),
+        el('button', {
+          'class': 'pal-hint', type: 'button',
+          'aria-label': 'Open command palette (Control K)',
+          title: 'Search the curriculum (Ctrl/⌘+K)',
+          onclick: function () { document.dispatchEvent(new CustomEvent('il:palette-open')); }
+        }, [
+          el('span', { 'class': 'pal-hint-label', text: 'Search' }),
+          el('kbd', { text: 'Ctrl K' })
+        ])
       ])
     ]);
     host.appendChild(header);
@@ -268,10 +277,140 @@
     });
   }
 
+  /* ---------- scroll reveal (Palantir pass) ---------- */
+  var motionReduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function initReveals() {
+    document.documentElement.classList.add('js');
+    if (motionReduced || !('IntersectionObserver' in window)) {
+      document.querySelectorAll('.il-reveal').forEach(function (n) { n.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    function tag(scope) {
+      var items = (scope || document).querySelectorAll(
+        'main#il-main > section.block, .card, .module, .notice, .counters .counter, .terminal-storm'
+      );
+      items.forEach(function (n) {
+        if (n.classList.contains('il-reveal')) return;
+        n.classList.add('il-reveal');
+        // stagger siblings sharing a parent
+        var sibs = n.parentElement ? n.parentElement.querySelectorAll(':scope > .il-reveal') : [];
+        var pos = sibs.length ? Array.prototype.indexOf.call(sibs, n) : 0;
+        n.style.setProperty('--reveal-delay', String((pos % 6) * 55) + 'ms');
+        io.observe(n);
+      });
+    }
+    tag(document);
+    // re-tag after dynamic catalog renders
+    document.addEventListener('il:catalog', function () { setTimeout(function () { tag(document); }, 30); });
+  }
+
+  /* ---------- animated counters ---------- */
+  var countUpIO = null;
+  var countUpSeen = (typeof WeakSet !== 'undefined') ? new WeakSet() : null;
+  function watchCountUps(scope) {
+    if (!countUpIO) return;
+    (scope || document).querySelectorAll('[data-countup]').forEach(function (n) {
+      if (countUpSeen && countUpSeen.has(n)) return;
+      if (countUpSeen) countUpSeen.add(n);
+      countUpIO.observe(n);
+    });
+  }
+  function initCountUp() {
+    function animate(n) {
+      var raw = (n.getAttribute('data-countup') || n.textContent || '').replace(/[^0-9]/g, '');
+      var target = parseInt(raw, 10);
+      if (!target || motionReduced) return;
+      var t0 = null, dur = 1100;
+      function frame(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        n.textContent = Math.round(target * eased).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+    if (!('IntersectionObserver' in window) || !('WeakSet' in window)) return;
+    countUpIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { animate(e.target); countUpIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.4 });
+    watchCountUps(document);
+    // counters render when the catalog lands — watch then too
+    document.addEventListener('il:catalog', function () { setTimeout(function () { watchCountUps(document); }, 30); });
+  }
+
+  /* ---------- page transition veil ---------- */
+  function initVeil() {
+    var veil = document.createElement('div');
+    veil.id = 'il-veil';
+    veil.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(veil);
+    if (motionReduced) return;
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var href = a.getAttribute('href');
+      if (!href || href.charAt(0) === '#' || a.target === '_blank' || a.hasAttribute('download')) return;
+      var url;
+      try { url = new URL(href, window.location.href); } catch (err) { return; }
+      if (url.origin !== window.location.origin) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      document.body.classList.add('il-leaving');
+      setTimeout(function () { window.location.href = url.href; }, 170);
+    });
+  }
+
+  /* ---------- hero parallax (subtle; pantheon cinematic) ---------- */
+  function initParallax() {
+    if (motionReduced) return;
+    var sigil = document.querySelector('.pantheon-sigil');
+    var copy = document.querySelector('.pantheon-copy');
+    if (!sigil && !copy) return;
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY || 0;
+        if (y < window.innerHeight * 1.2) {
+          if (sigil) sigil.style.transform = 'translateY(' + (y * 0.12).toFixed(1) + 'px)';
+          if (copy) copy.style.transform = 'translateY(' + (y * 0.06).toFixed(1) + 'px)';
+        }
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  /* ---------- command palette loader ---------- */
+  function loadPalette() {
+    var s = document.createElement('script');
+    s.src = 'js/palette.js';
+    s.defer = true;
+    s.onerror = function () { /* palette is enhancement-only; never break chrome */ };
+    document.body.appendChild(s);
+  }
+
   /* ---------- boot ---------- */
   function boot() {
     renderHeader();
     renderFooter();
+    initReveals();
+    initCountUp();
+    initVeil();
+    initParallax();
+    loadPalette();
     IL.ready.then(renderOfflineNotices);
     // Re-run page render hooks when the catalog arrives.
     document.addEventListener('il:catalog', function () {
