@@ -18,6 +18,7 @@
 <link rel="canonical" href="https://learn.interstitiumlabs.dev/learn.html">
 
 <link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#06080c">
 <link rel="stylesheet" href="css/il.css">
@@ -51,7 +52,7 @@
         <aside aria-label="Noah tutor">
           <div class="noah-panel">
             <div class="noah-head">
-              <img class="sig" src="assets/sigil.svg" alt="" width="26" height="26">
+              <img class="noah-face" src="assets/noah-avatar.png" alt="Noah — tutor portrait" width="34" height="34">
               <div><div class="name">Noah</div><div class="sub">Socratic tutor · local engine</div></div>
             </div>
             <div class="noah-log" id="noah-log" aria-live="polite" aria-label="Noah conversation"></div>
@@ -433,24 +434,37 @@
     panel.appendChild(result);
 
     var ctrl = A().timed(ga);
-    var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining' });
-    holder.appendChild(timer);
-    var gtrack = IL.el('div', { 'class': 'timer-track', 'aria-hidden': 'true' });
-    gtrack.appendChild(IL.el('i', {}));
-    holder.appendChild(gtrack);
     var qholder = IL.el('div');
+    var tick = null;
+    if (ctrl.timed) {
+      var timer = IL.el('div', { 'class': 'timer', role: 'timer', 'aria-label': 'Time remaining' });
+      holder.appendChild(timer);
+      var gtrack = IL.el('div', { 'class': 'timer-track', 'aria-hidden': 'true' });
+      gtrack.appendChild(IL.el('i', {}));
+      holder.appendChild(gtrack);
+      var totalGateSecs = Math.max(1, (ga.minutes || 0) * 60);
+      var paintGateTimer = function () {
+        var s = ctrl.remaining();
+        var mm = String(Math.floor(s / 60)).padStart(2, '0');
+        var ss = String(s % 60).padStart(2, '0');
+        timer.textContent = mm + ':' + ss;
+        timer.classList.toggle('low', s < 300);
+        var pct = Math.max(0, (s / totalGateSecs) * 100);
+        gtrack.firstChild.style.width = pct + '%';
+        gtrack.firstChild.classList.toggle('low', s < 300);
+      };
+      paintGateTimer(); // paint immediately; never leave the timer blank
+      tick = setInterval(function () {
+        paintGateTimer();
+        if (ctrl.remaining() <= 0) { clearInterval(tick); tick = null; finish(); }
+      }, 500);
+    } else {
+      var untimed = IL.el('div', { 'class': 'timer untimed' });
+      untimed.textContent = 'Untimed — take the time the material deserves.';
+      untimed.setAttribute('aria-label', 'Untimed gate assessment');
+      holder.appendChild(untimed);
+    }
     holder.appendChild(qholder);
-    var tick = setInterval(function () {
-      var s = ctrl.remaining();
-      var mm = String(Math.floor(s / 60)).padStart(2, '0');
-      var ss = String(s % 60).padStart(2, '0');
-      timer.textContent = mm + ':' + ss;
-      timer.classList.toggle('low', s < 300);
-      var pct = Math.max(0, (s / (ga.minutes * 60)) * 100);
-      gtrack.firstChild.style.width = pct + '%';
-      gtrack.firstChild.classList.toggle('low', s < 300);
-      if (s <= 0) { clearInterval(tick); finish(); }
-    }, 500);
 
     function finish() {
       if (finish.done) return;
