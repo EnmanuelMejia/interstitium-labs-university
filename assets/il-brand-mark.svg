@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Interstitium Labs sigil">
+  <!-- Glyph-only sigil variant for launcher icons and splash screens.
+       No wordmark: derived from docs/assets/il-muse-avatar-sigil.svg.
+       Brand void #070B16 ground; Interstitium gold #d4a853; cyan #5eead4. -->
+  <rect width="64" height="64" fill="#070B16"/>
+  <g>
+    <polygon points="32,8 52,48 12,48" fill="none" stroke="#d4a853" stroke-width="1.35" opacity="0.9"/>
+    <ellipse cx="32" cy="32" rx="16" ry="6.2" fill="none" stroke="#5eead4" stroke-width="1.35"/>
+    <ellipse cx="32" cy="32" rx="16" ry="6.2" fill="none" stroke="#5eead4" stroke-width="1.1" transform="rotate(60 32 32)" opacity="0.75"/>
+    <ellipse cx="32" cy="32" rx="16" ry="6.2" fill="none" stroke="#5eead4" stroke-width="1" transform="rotate(-60 32 32)" opacity="0.55"/>
+    <rect x="21.5" y="18" width="2.4" height="26" rx="0.4" fill="#d4a853"/>
+    <rect x="40.1" y="18" width="2.4" height="26" rx="0.4" fill="#d4a853"/>
+    <rect x="40.1" y="41.2" width="10.5" height="2.4" rx="0.4" fill="#d4a853"/>
+    <circle cx="32" cy="32" r="3.2" fill="#d4a853"/>
+  </g>
+</svg>
