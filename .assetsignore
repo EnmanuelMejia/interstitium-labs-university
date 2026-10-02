@@ -1,8 +1,12 @@
-# Files that must never be served publicly.
-# Local tooling (validate.mjs, bake-404.mjs) reads them from disk; the
-# deployed bundle must not include them. Misses fall through to the
-# worker's branded 404. (.assetsignore syntax: gitignore-style, relative
-# to the assets directory.)
+# Publish only university assets. Do not expose repo/configuration/tooling.
+# Cloudflare Workers Assets reads this file at deployment, relative to the assets.directory root.
+.assetsignore
+.github/
+node_modules/
+README.md
 CONTRACT.md
 DEPLOY.md
+wrangler.jsonc
+worker.js
 scripts/
+js/adaptive.selftest.mjs
