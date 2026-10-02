@@ -105,3 +105,13 @@ shell instead of the stale one.
 - Check `https://interstitiumlabs.dev/noah/` and `https://interstitiumlabs.dev/portfolio/` links from the university navigation.
 - `main` branch updates do not prove the university Worker was deployed. Verify the authorized Wrangler/Cloudflare deployment and then validate the live hostname separately.
 - Never modify DNS, certificate or zone routing until a current zone export, dependency inventory and rollback path have been reviewed.
+
+## Manual GitHub Actions university release
+
+Workflow: `.github/workflows/deploy-university.yml` (manual `workflow_dispatch`, `main` branch only, production environment). It performs the same catalog, identity, link, and adaptive-engine checks before invoking Wrangler. It has no automatic deploy trigger.
+
+For an authorized maintainer to use the workflow, the university repository's GitHub Actions secrets must include `CLOUDFLARE_API_TOKEN` (a least-privilege, Worker-deployment token) and `CLOUDFLARE_ACCOUNT_ID`. Set secrets through GitHub's secure interface; never publish them in this repository, chat, or workflow logs. The production environment may require a separate reviewer as configured in GitHub.
+
+The workflow updates **only** the existing `interstitium-labs-university` Worker defined in `wrangler.jsonc`, then verifies the live `learn.interstitiumlabs.dev` manifest. It does not create DNS records or modify the apex website. If the university custom-domain binding is missing, restore or confirm it with an authorized zone administrator before retrying.
+
+The `.assetsignore` release allow/deny boundary must remain effective. CI verifies that build instructions, repository metadata, Worker source, configuration and test tooling are not published as public static files. The public `/data/noah-knowledge.md` and curriculum shards remain static resources because the existing university Worker loads them. Review those resources separately before inserting any private information.
