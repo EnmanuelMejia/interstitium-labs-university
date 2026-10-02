@@ -31,4 +31,8 @@ assert.doesNotMatch(headers, /max-age=31536000, immutable/, 'Unversioned assets 
 const manifest = JSON.parse(read('manifest.webmanifest'));
 assert.equal(manifest.theme_color, '#0a0f1d', 'App shell theme must match main site');
 assert.equal(manifest.icons[0].src, 'assets/il-brand-mark.svg', 'Installable app must use canonical mark');
+const ignored = read('.assetsignore');
+for (const secretPath of ['.github/', 'node_modules/', 'README.md', 'CONTRACT.md', 'DEPLOY.md', 'wrangler.jsonc', 'worker.js', 'scripts/', 'js/adaptive.selftest.mjs']) {
+  assert.ok(ignored.split('\\n').some(line => line.trim() === secretPath), 'Worker Assets must exclude ' + secretPath);
+}
 console.log('BRAND CHECKS PASSED:', JSON.stringify({ pages: pages.length, ...totals, crossAppLinks:3, status:'passed' }));
