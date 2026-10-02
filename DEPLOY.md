@@ -1,7 +1,7 @@
 # DEPLOY.md — Interstitium Labs Learning University (static production build)
 
 Production target: **Cloudflare Workers Assets** (pure static, no build step, no server).
-Deploy root: `build/` — `wrangler.jsonc` sets `assets.directory: "./"` and worker name
+Deploy root: repository root (or its equivalent prepared release directory) — `wrangler.jsonc` sets `assets.directory: "./"` and worker name
 `interstitium-labs-university`.
 
 ## 0. Pre-deploy verification (do this every time)
@@ -14,8 +14,8 @@ node js/adaptive.selftest.mjs      # adaptive engine: must print ALL TESTS PASSE
 node --check js/app.js && node --check js/hero.js && node --check js/noah.js
 ```
 
-All three must pass. `validate.mjs` checks: catalog schema (10 academies, 41 paths,
-204 modules, 8 assessments), every path ≥1 module, every module ≥1 source with an
+All three must pass. `validate.mjs` checks: catalog schema (11 academies, 65 paths,
+349 modules, 8 assessments), every path ≥1 module, every module ≥1 source with an
 http(s) URL, every timed assessment ≥10 items with valid answer index + explanation,
 dedupe-matrix covering all 70 sources.json names, no duplicate (path, module) titles,
 every non-null canonical resolving to a real path/module id, and every internal
@@ -39,8 +39,8 @@ href/src resolving to a file in `build/`.
   custom domain (Workers & Pages → the worker → Settings → Domains & Routes →
   Add Custom Domain). Cloudflare provisions the certificate automatically.
 - Recommended mapping (founder decision; either is fine):
-  - Apex `interstitiumlabs.dev` → the university (this build), or
-  - `app.interstitiumlabs.dev` (or `learn.`) → the university, apex kept for the
+  - Keep apex `interstitiumlabs.dev` on the primary Interstitium Labs site.
+  - Bind `learn.interstitiumlabs.dev` to this university worker; the primary site stays on the apex.
     marketing/portfolio site. If the apex serves something else, bind the university
     to the subdomain instead — no code change needed, the app uses relative URLs.
 - `start_url` and `scope` in `manifest.webmanifest` are relative (`./`), so the PWA
