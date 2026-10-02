@@ -195,6 +195,8 @@
     ['enroll.html', 'Enroll'],
     ['honesty.html', 'Honesty'],
     ['about.html', 'About'],
+    ['https://interstitiumlabs.dev/noah/', 'Noah AI \u2197'],
+    ['https://interstitiumlabs.dev/portfolio/', 'Portfolio \u2197'],
     ['https://interstitiumlabs.dev/', 'Main Site \u2197']
   ];
 
@@ -218,10 +220,10 @@
     var header = el('div', { 'class': 'site-header' }, [
       el('div', { 'class': 'wrap' }, [
         el('a', { 'class': 'brand', href: 'index.html', 'aria-label': 'Interstitium Labs — home' }, [
-          el('img', { src: 'assets/sigil.svg', alt: '', width: 30, height: 30 }),
+          el('img', { src: 'assets/il-brand-mark.svg', alt: '', width: 30, height: 30 }),
           el('span', { 'class': 'wordmark' }, [
             'Interstitium Labs',
-            el('small', { text: 'LEARNING UNIVERSITY' })
+            el('small', { text: 'SCIENTIA OMNIA VINCIT' })
           ])
         ]),
         el('nav', { 'class': 'site-nav', 'aria-label': 'Primary' },

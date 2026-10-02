@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 /* Interstitium Labs — Learning University design system
    Doctrine: gold is a nucleus, never a fill. Cyan is a signal, never a wash.
    Marks stay small. Motion stays slow. */
@@ -14,22 +15,22 @@
   --cyan-dim: rgba(98, 216, 233, 0.35);
   --cyan-faint: rgba(98, 216, 233, 0.08);
   /* Hermetic dark palette */
-  --bg: #06080c;
-  --bg-2: #090d14;
-  --panel: #0b1018;
-  --panel-2: #0e1520;
-  --panel-3: #121a28;
+  --bg: #0a0f1d;
+  --bg-2: #0d1423;
+  --panel: #101a2a;
+  --panel-2: #142035;
+  --panel-3: #192943;
   /* Ink */
-  --ink: #ece9de;
-  --ink-dim: #bdb9ab;
-  --ink-faint: #8f8b7d;
+  --ink: #f2ede1;
+  --ink-dim: #c3cbd5;
+  --ink-faint: #9faebf;
   /* Lines */
   --line: rgba(236, 233, 222, 0.13);
   --line-soft: rgba(236, 233, 222, 0.07);
   /* Type */
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
-  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --serif: "Space Grotesk", system-ui, sans-serif;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   /* Aurora backdrop: deep, slow, never loud */
   --aurora:
     radial-gradient(1100px 520px at 12% -8%, rgba(47, 169, 189, 0.10), transparent 60%),
@@ -125,7 +126,7 @@ section.block { padding: clamp(2.5rem, 6vw, 5rem) 0; }
 /* ---------- header / nav ---------- */
 .site-header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(6, 8, 12, 0.86);
+  background: rgba(10, 15, 29, 0.93);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line-soft);
@@ -732,4 +733,21 @@ body.il-leaving #il-veil { opacity: 1; }
   .site-nav::-webkit-scrollbar { display: none; }
   .site-nav a { flex: none; }
   .pal-hint .pal-hint-label { display: none; }
+}
+
+/* Cross-domain brand and mobile navigation baseline. */
+.site-header .wrap { min-width: 0; }
+.site-header .brand { flex-shrink: 0; }
+.site-header .brand .wordmark { letter-spacing: -0.025em; }
+.site-header .brand .wordmark small { letter-spacing: .14em; font-size: .56rem; }
+.site-nav a[href^="https://interstitiumlabs.dev/"] { color: var(--cyan); }
+.site-nav a[href^="https://interstitiumlabs.dev/"]:focus-visible { outline-color: var(--gold-bright); }
+@media (max-width: 720px) {
+  .site-header .wrap { gap: .45rem; }
+  .site-header .brand img { width: 27px; height: 27px; }
+  .site-header .brand .wordmark { font-size: .8rem; line-height: 1.12; }
+  .site-header .brand .wordmark small { font-size: .48rem; letter-spacing: .08em; }
+  .site-nav { flex: 1 1 0; min-width: 0; }
+  .site-nav a { min-height: 44px; display: inline-flex; align-items: center; }
+  .pal-hint { flex-shrink: 0; min-width: 44px; min-height: 44px; }
 }

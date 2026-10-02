@@ -1,0 +1,30 @@
+name: University integrity and brand verification
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: university-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    name: Catalog, brand, assets and adaptive engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate application JavaScript
+        run: |
+          for file in js/*.js worker.js; do node --check "$file"; done
+      - name: Validate catalog and internal links
+        run: node scripts/validate.mjs
+      - name: Validate shared brand, metadata, caching and cross-app routes
+        run: node scripts/brand-check.mjs
+      - name: Validate adaptive learning
+        run: node js/adaptive.selftest.mjs
