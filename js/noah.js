@@ -229,7 +229,7 @@
     return (m ? m[1] : '') + '/assets/noah-avatar.png';
   })();
   var LS_KEY = 'noah-ai-history-v1';
-  var CHIPS = ['What should I learn first?', 'Tell me about IL-11 Zero Trust', 'Who built this site?', 'Explain a DevOps concept'];
+  var CHIPS = ['Place me — where do I start?', 'Which path fits my goal?', 'Explain a DevOps concept', 'Quiz me on Security+ basics'];
 
   var els = {};
   var history = [];
@@ -359,7 +359,9 @@
       agg.sessions++;
       save();
       try {
-        lastSent = JSON.parse(JSON.stringify(agg));
+        var savedSent = localStorage.getItem(KEY + '-sent');
+        lastSent = savedSent ? JSON.parse(savedSent) : fresh();
+        if (!lastSent || lastSent.v !== 1 || !lastSent.byTopic) lastSent = fresh();
       } catch (e) { lastSent = fresh(); }
     }
     function save() {
@@ -382,16 +384,19 @@
       }
       return d;
     }
-    function maybeBeacon() {
+    function maybeBeacon(force) {
       var now = Date.now();
-      if (now - lastBeacon < 5 * 60 * 1000) return;
+      if (!force && now - lastBeacon < 5 * 60 * 1000) return;
       var url = statsEndpoint();
       if (!url) return;
       var d = delta();
       var total = d.opens + d.asks + d.remotes + d.fallbacks + d.nudges + d.chips + d.errors;
       if (!total) return;
       lastBeacon = now;
-      try { lastSent = JSON.parse(JSON.stringify(agg)); } catch (e) {}
+      try {
+        lastSent = JSON.parse(JSON.stringify(agg));
+        localStorage.setItem(KEY + '-sent', JSON.stringify(lastSent));
+      } catch (e) {}
       try {
         var payload = JSON.stringify({
           v: 1,
@@ -406,14 +411,14 @@
     function track(ev, topic) {
       if (!agg) load();
       if (ev === 'open') agg.opens++;
-      else if (ev === 'ask') { agg.asks++; if (topic && topic !== 'general') agg.byTopic[topic] = (agg.byTopic[topic] || 0) + 1; }
+      else if (ev === 'ask') { agg.asks++; if (topic) agg.byTopic[topic] = (agg.byTopic[topic] || 0) + 1; }
       else if (ev === 'remote') { agg.remotes++; fallbackStreak = 0; }
       else if (ev === 'fallback') { agg.fallbacks++; fallbackStreak++; }
       else if (ev === 'nudge') agg.nudges++;
       else if (ev === 'chip') agg.chips++;
       else if (ev === 'error') agg.errors++;
       save();
-      maybeBeacon();
+      maybeBeacon(ev === 'remote' || ev === 'fallback' || ev === 'error');
     }
     function topTopic() {
       if (!agg) load();
@@ -423,6 +428,12 @@
     }
     function getFallbackStreak() { return fallbackStreak; }
     function getSessions() { if (!agg) load(); return agg.sessions; }
+    try {
+      window.addEventListener('pagehide', function () { maybeBeacon(true); });
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') maybeBeacon(true);
+      });
+    } catch (e) {}
     return { load: load, track: track, topTopic: topTopic,
       fallbackStreak: getFallbackStreak, sessions: getSessions };
   })();
